@@ -1,9 +1,11 @@
 export const IMAGES = {
   hero: {
-    /** Intérieur tabac / épicerie de proximité */
-    shop: 'https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?w=640&q=85&auto=format&fit=crop',
+    /** Intérieur tabac — gauche du hero */
+    shop: 'https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?w=520&h=720&q=85&auto=format&fit=crop',
+    /** Salon de coiffure — droite du hero */
+    side: 'https://images.unsplash.com/photo-1759134198561-e2041049419c?w=520&h=720&q=85&auto=format&fit=crop',
     /** Paiement en caisse — fidélisation client */
-    counter: 'https://images.unsplash.com/photo-1556745753-b290719bb967?w=640&q=85&auto=format&fit=crop',
+    counter: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=640&q=85&auto=format&fit=crop',
   },
   features: {
     shop: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=900&q=80&auto=format&fit=crop',
@@ -15,9 +17,9 @@ export const IMAGES = {
     launch: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80&auto=format&fit=crop',
   },
   stores: [
-    'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&q=80&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=80&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?w=600&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80&auto=format&fit=crop',
   ],
   loyalty: 'https://images.unsplash.com/photo-1556740758-90de374c12ef?w=900&q=85&auto=format&fit=crop',
   cta: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1400&q=85&auto=format&fit=crop',

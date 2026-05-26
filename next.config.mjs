@@ -10,6 +10,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'vaakai-store.vercel.app',
       },
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+      },
     ],
   },
 }

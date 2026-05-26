@@ -1,32 +1,37 @@
 'use client'
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useSyncExternalStore } from 'react'
 import { WEBSITE_NAME } from '@/context/constants/constants_app'
 import { interpolate, LOCALES, messages } from '@/i18n/messages'
-import { getLocaleLabel, LOCALE_FLAGS, LOCALE_NAMES } from '@/i18n/locales'
+import { getLocaleLabel, getSortedLocales, isRtlLocale, LOCALE_FLAGS, LOCALE_NAMES } from '@/i18n/locales'
 
 const STORAGE_KEY = 'fidtab-locale'
 const LanguageContext = createContext(null)
 
-function getInitialLocale() {
+const localeListeners = new Set()
+
+function subscribeToLocale(callback) {
+  localeListeners.add(callback)
+  return () => localeListeners.delete(callback)
+}
+
+function getClientLocale() {
   if (typeof window === 'undefined') return 'fr'
   const stored = localStorage.getItem(STORAGE_KEY)
   return LOCALES.includes(stored) ? stored : 'fr'
 }
 
-export function LanguageProvider({ children }) {
-  const [locale, setLocaleState] = useState('fr')
-  const [ready, setReady] = useState(false)
+function notifyLocaleChange() {
+  localeListeners.forEach((listener) => listener())
+}
 
-  useEffect(() => {
-    setLocaleState(getInitialLocale())
-    setReady(true)
-  }, [])
+export function LanguageProvider({ children }) {
+  const locale = useSyncExternalStore(subscribeToLocale, getClientLocale, () => 'fr')
 
   const setLocale = useCallback((next) => {
     if (!LOCALES.includes(next)) return
-    setLocaleState(next)
     localStorage.setItem(STORAGE_KEY, next)
+    notifyLocaleChange()
   }, [])
 
   const content = useMemo(() => messages[locale] ?? messages.fr, [locale])
@@ -37,10 +42,12 @@ export function LanguageProvider({ children }) {
   )
 
   useEffect(() => {
-    if (!ready) return
     document.documentElement.lang = locale
+    document.documentElement.dir = isRtlLocale(locale) ? 'rtl' : 'ltr'
     document.title = `${WEBSITE_NAME} — ${t(content.meta.titleSuffix)}`
-  }, [ready, locale, content.meta.titleSuffix, t])
+  }, [locale, content.meta.titleSuffix, t])
+
+  const sortedLocales = useMemo(() => getSortedLocales(locale), [locale])
 
   const value = useMemo(
     () => ({
@@ -48,12 +55,13 @@ export function LanguageProvider({ children }) {
       setLocale,
       content,
       t,
-      locales: LOCALES,
+      locales: sortedLocales,
       localeFlags: LOCALE_FLAGS,
       getLocaleLabel: (code) => getLocaleLabel(locale, code),
       localeNames: LOCALE_NAMES[locale] ?? LOCALE_NAMES.fr,
+      isRtl: isRtlLocale(locale),
     }),
-    [locale, setLocale, content, t]
+    [locale, setLocale, content, t, sortedLocales]
   )
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>

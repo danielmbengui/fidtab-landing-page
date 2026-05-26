@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-export function useScrollReveal(deps = []) {
+export function useScrollReveal(contentKey) {
   useEffect(() => {
     const els = document.querySelectorAll('.reveal')
     const observer = new IntersectionObserver(
@@ -13,7 +13,7 @@ export function useScrollReveal(deps = []) {
     )
     els.forEach((el) => observer.observe(el))
     return () => observer.disconnect()
-  }, deps)
+  }, [contentKey])
 }
 
 export function useParallax() {
@@ -30,28 +30,44 @@ export function useParallax() {
   }, [])
 }
 
+function parseCounterValue(value) {
+  const match = value.match(/^([+]?)(\d+(?:\s\d+)*)(.*)$/)
+  if (!match) return null
+
+  const target = parseInt(match[2].replace(/\s/g, ''), 10)
+  if (Number.isNaN(target)) return null
+
+  return {
+    prefix: match[1],
+    rest: match[3],
+    target,
+  }
+}
+
 export function AnimatedCounter({ value, suffix = '' }) {
+  const parsed = parseCounterValue(value)
+
+  if (!parsed) {
+    return <span>{value}{suffix}</span>
+  }
+
+  return (
+    <AnimatedCounterInner
+      prefix={parsed.prefix}
+      rest={parsed.rest}
+      target={parsed.target}
+      suffix={suffix}
+    />
+  )
+}
+
+function AnimatedCounterInner({ prefix, rest, target, suffix }) {
   const ref = useRef(null)
-  const [display, setDisplay] = useState(value)
+  const [display, setDisplay] = useState(`${prefix}0${rest}`)
 
   useEffect(() => {
     const el = ref.current
     if (!el) return
-
-    const match = value.match(/^([+]?)(\d+(?:\s\d+)*)(.*)$/)
-    if (!match) {
-      setDisplay(value)
-      return
-    }
-
-    const prefix = match[1]
-    const numStr = match[2].replace(/\s/g, '')
-    const rest = match[3]
-    const target = parseInt(numStr, 10)
-    if (Number.isNaN(target)) {
-      setDisplay(value)
-      return
-    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -75,7 +91,7 @@ export function AnimatedCounter({ value, suffix = '' }) {
     )
     observer.observe(el)
     return () => observer.disconnect()
-  }, [value, suffix])
+  }, [prefix, rest, suffix, target])
 
   return <span ref={ref}>{display}</span>
 }
