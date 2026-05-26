@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# TabacDigital — Landing Page
 
-## Getting Started
+Landing page Next.js (App Router, JavaScript) pour vendre une solution de boutique en ligne + carte de fidélité aux tabacs indépendants.
 
-First, run the development server:
+## Démarrage rapide
 
 ```bash
+# Installation des dépendances
+npm install
+
+# Serveur de développement
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Next.js 14** — App Router, mode JavaScript
+- **Google Fonts** — Cormorant Garamond (display) + DM Sans (corps)
+- **CSS natif** — variables CSS, animations, responsive
 
-## Learn More
+## Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+  layout.js      → Layout racine + polices Google
+  page.js        → Page complète (1 composant client)
+  globals.css    → Tous les styles
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Sections
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Hero** — Accroche + mockup téléphone animé
+2. **Logos** — Tabacs partenaires
+3. **Fonctionnalités** — Grille 6 fonctionnalités
+4. **Carte de fidélité** — Section mise en avant avec carte rotative
+5. **Comment ça marche** — 3 étapes
+6. **Vitrine multi-tabacs** — 3 exemples avec identités différentes
+7. **Témoignages** — 3 avis gérants
+8. **Tarifs** — 3 plans
+9. **CTA final** — Formulaire de contact
+10. **Footer**
 
-## Deploy on Vercel
+## Personnalisation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Modifiez les couleurs dans les variables CSS (`:root` dans `globals.css`)
+- Remplacez les noms de tabacs dans `page.js`
+- Mettez à jour l'email de contact dans la section CTA
+- Adaptez les tarifs selon votre offre réelle

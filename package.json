@@ -1,23 +1,33 @@
 {
-  "name": "fidtab-webapp",
+  "name": "tabac-landing",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint"
   },
   "dependencies": {
-    "next": "16.2.6",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@formatjs/intl-localematcher": "^0.8.2",
+    "@mui/icons-material": "^9.0.0",
+    "@mui/material": "^9.0.0",
+    "@mui/material-nextjs": "^9.0.0",
+    "@react-google-maps/api": "^2.20.8",
+    "chart.js": "^4.5.1",
+    "dayjs": "^1.11.20",
+    "firebase": "^12.11.0",
+    "libphonenumber-js": "^1.12.12",
+    "next": "16.2.2",
+    "next-intl": "^4.9.0",
     "react": "19.2.4",
+    "react-chartjs-2": "^5.3.1",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "babel-plugin-react-compiler": "1.0.0",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.6",
-    "tailwindcss": "^4"
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5"
   }
 }
