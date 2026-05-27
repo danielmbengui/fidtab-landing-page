@@ -63,18 +63,15 @@ export class ClassUser extends ClassFirestore {
    * Ex. `favorite_sport` → docs dans `SPORT`, `blocked_list` → `USERS`.
    */
   static TYPE = Object.freeze({
-    FIDTAB: 'fidtab', // fidtab
     COMPANY: 'company', // entreprise
     EXTERNAL: 'external', // externe
     UNKNOWN: 'unknown',
   });
   static ROLE = Object.freeze({
-    SYSTEM: 'system', // système
     ADMIN: 'admin', // administrateur
     EMPLOYEE: 'employee', // employé
-    CUSTOMER: 'customer', // client,
-    GUEST: 'guest', // invité,
-    UNKNOWN: 'unknown', // inconnu,
+    CUSTOMER: 'customer', // client
+    UNKNOWN: 'unknown',
   });
   static GENDER = Object.freeze({
     WOMAN: 'female',
@@ -285,9 +282,6 @@ export class ClassUser extends ClassFirestore {
 */
 
   static makeInstance(uid, data = {}) {
-    if(data.type === ClassUser.TYPE.FIDTAB) {
-      return new ClassUserFidTab({ uid, ...data });
-    }
     if(data.role === ClassUser.ROLE.ADMIN) {
       return new ClassUserAdmin({ uid, ...data });
     }
@@ -442,29 +436,6 @@ export class ClassUser extends ClassFirestore {
   // ── Remove ───────────────────────────────────────────────
   async removeFirestore() {
     return super.removeFirestore();
-  }
-}
-export class ClassUserFidTab extends ClassUser {
-  static FIELDS_TO_OMIT_FIREBASE = [
-    ...ClassUser.FIELDS_TO_OMIT_FIREBASE,
-    //'storage_url',
-    //'is_verified',
-    //'scores',
-  ];
-  static TYPE = Object.freeze({
-    FIDTAB: 'fidtab', // fidtab
-  });
-  static ROLE = Object.freeze({
-    SYSTEM: 'system', // système
-  });
-
-  constructor(data = {}) {
-    super(data);
-    this._type = ClassUser.TYPE.FIDTAB;
-    this._role = ClassUser.ROLE.SYSTEM;
-  }
-  static makeInstance(uid, data = {}) {
-    return new ClassUserFidTab({ uid, ...data });
   }
 }
 /**

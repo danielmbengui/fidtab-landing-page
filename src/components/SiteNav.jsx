@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useEffect } from 'react'
 import BrandLogo from '@/components/BrandLogo'
 import LanguageSelector from '@/components/LanguageSelector'
-import ThemeSelector from '@/components/ThemeSelector'
 
 export default function SiteNav({
   c,
@@ -42,7 +41,7 @@ export default function SiteNav({
                 type="button"
                 className="nav-burger nav-burger--open"
                 onClick={() => setMenuOpen(true)}
-                aria-label={c.nav.openMenu}
+                aria-label="Ouvrir le menu"
                 aria-expanded={menuOpen}
               >
                 <span /><span /><span />
@@ -75,14 +74,13 @@ export default function SiteNav({
             </ul>
           ) : null}
           <div className="nav-right">
-            <ThemeSelector compact />
             <LanguageSelector />
             {!demoPageActive ? (
               <button
                 type="button"
                 className="nav-burger nav-burger--close open"
                 onClick={() => setMenuOpen(false)}
-                aria-label={c.nav.closeMenu}
+                aria-label="Fermer le menu"
               >
                 <span /><span /><span />
               </button>

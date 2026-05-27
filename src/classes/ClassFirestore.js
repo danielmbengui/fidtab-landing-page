@@ -286,7 +286,7 @@ export class ClassFirestore {
                 return this;
             }
         } catch (e) {
-            console.error(`${this.constructor.name}.updateFirestore`, e?.code ?? e?.name, e?.message ?? e);
+            console.error("ClassUser.updateFirestore", e?.code ?? e?.name, e?.message ?? e);
             return null;
         }
     }

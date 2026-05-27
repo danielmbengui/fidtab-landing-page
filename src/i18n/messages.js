@@ -108,8 +108,9 @@ const sharedStores = [
 
 function withShared(localeKey, locale) {
   const admin = getAdminTranslations(localeKey)
+  const { loyalty: loyaltySection, ...marketing } = locale
   return {
-    ...locale,
+    ...marketing,
     meta: { ...locale.meta, ...admin.meta },
     nav: { ...locale.nav, ...admin.nav },
     login: admin.login,
@@ -119,7 +120,8 @@ function withShared(localeKey, locale) {
     brands: admin.brands,
     companies: admin.companies,
     customers: admin.customers,
-    loyalty: admin.loyalty,
+    loyalty: loyaltySection,
+    loyaltyAdmin: admin.loyalty,
     cards: sharedCards,
     phoneItems: sharedPhoneItems,
     partnerLogos: sharedPartnerLogos,
@@ -893,6 +895,774 @@ export const messages = {
       privacy: 'Privacy',
       contact: 'Contact',
       copyright: '© {year} {name}. All rights reserved.',
+    },
+  }),
+  de: withShared('de', {
+    meta: {
+      titleSuffix: 'Digitalisieren Sie Ihr Tabakgeschäft',
+      description:
+        'Die schlüsselfertige Lösung für Ihren Online-Shop und Kundenbindung. Digitale Treuekarte, einfache Verwaltung, eigene Identität.',
+    },
+    nav: {
+      features: 'Funktionen',
+      loyalty: 'Treueprogramm',
+      how: 'So funktioniert\'s',
+      pricing: 'Preise',
+      cta: 'Jetzt starten',
+    },
+    hero: {
+      eyebrow: 'Schlüsselfertige Lösung für unabhängige Tabakläden',
+      titleLines: ['Ihr Geschäft,', 'in der Tasche', 'Ihrer Kunden.'],
+      titleGoldIndex: 1,
+      sub: 'Personalisierter Online-Shop, digitale Treuekarte und einfaches Dashboard — alles, um Kunden zu binden und zurückzubringen, ohne technischen Aufwand.',
+      ctaPrimary: 'Meinen Online-Shop starten',
+      ctaSecondary: 'So funktioniert\'s',
+      stats: [
+        { num: '+38%', label: 'Stammkunden' },
+        { num: '2 Wo.', label: 'bis zum Start' },
+        { num: '0 CHF', label: 'versteckte Gebühren' },
+      ],
+      floatReward: { label: 'Belohnung freigeschaltet', value: '-5 CHF', sub: 'auf Ihre nächste Bestellung' },
+      floatOrder: { label: 'Neue Bestellung', value: '14,50 CHF', sub: 'vor 3 Minuten' },
+      phoneLoyaltyLabel: 'Treuekarte',
+      phonePointsSuffix: 'Punkte',
+      phoneNextReward: '120 Pkt. bis zum nächsten Gutschein',
+      appStoreName: 'Vaakai Store',
+      appOpen: 'Geöffnet',
+      appOrderTitle: 'Bestellen',
+      appSeeAll: 'Alle',
+      appNextRewardLabel: '-5 CHF bald verfügbar',
+      appTabHome: 'Start',
+      appTabShop: 'Shop',
+      appTabLoyalty: 'Treue',
+      appTabAccount: 'Konto',
+    },
+    cardSubs: {
+      presse: 'Tabak · Presse',
+      librairie: 'Tabak · Buchhandlung',
+      epicerie: 'Tabak · Lebensmittel',
+      coiffeur: 'Friseur · Salon',
+    },
+    cardRewardLabel: 'ab {pts} Pkt.',
+    logos: {
+      label: 'Unabhängige Tabakläden, die {name} vertrauen',
+    },
+    features: {
+      label: 'Funktionen',
+      title: 'Alles, was Sie brauchen, um',
+      titleEm: 'Ihren Laden zu digitalisieren',
+      sub: 'Eine komplette Plattform speziell für unabhängige Tabakläden.',
+      comingSoon: 'Demnächst',
+      items: [
+        { icon: '🛍', name: 'Online-Shop', desc: 'Ihr eigener Shop mit Name, Logo und Farben. Kunden bestellen in wenigen Klicks, rund um die Uhr.' },
+        { icon: '💳', name: 'Digitale Treuekarte', desc: 'Automatische Punkte bei jedem Einkauf. Kunden sammeln, Sie wählen die Belohnungen.' },
+        { icon: '📊', name: 'Dashboard', desc: 'Verkäufe, treueste Kunden und Bestseller in Echtzeit vom Handy aus verfolgen.' },
+        { icon: '📦', name: 'Click & Collect', desc: 'Kunden können bald online bestellen und am Tresen abholen. Funktion wird in Kürze freigeschaltet.' },
+        { icon: '🔔', name: 'Push-Benachrichtigungen', desc: 'Gezielte Aktionen direkt auf das Handy Ihrer Kunden. Sofortige Ergebnisse.' },
+        { icon: '🗂', name: 'Bestandsverwaltung', desc: 'Produktkatalog einfach verwalten. Hinzufügen, bearbeiten, Ausverkauf — in Sekunden erledigt.' },
+        { icon: '⚡', name: 'Schneller Start', desc: 'Ihr Shop ist in unter 2 Wochen bereit. Design, Einrichtung und Schulung übernehmen wir.' },
+      ],
+    },
+    loyalty: {
+      label: 'Treuekarte',
+      title: 'Die Karte, die',
+      titleEm: 'Kunden zurückbringt.',
+      desc: 'Jeder Einkauf bringt Punkte. Kunden sehen sie in Echtzeit auf dem Handy und kommen zurück, um Belohnungen freizuschalten. Sie legen die Regeln fest, wir erledigen den Rest.',
+      points: [
+        { title: 'Automatische Punkte', text: 'Punkte bei jeder Bestellung, ohne Ihr Zutun.' },
+        { title: 'Individuelle Belohnungen', text: 'Rabattgutschein, Gratisprodukt, kostenlose Lieferung — Sie entscheiden.' },
+        { title: 'Multi-Shop-Karte', text: 'Kunden behalten ihre Karte auch bei Partnerläden.' },
+        { title: 'Intelligente Benachrichtigungen', text: 'Automatische Erinnerungen, wenn ein Kunde einer Belohnung nahe ist.' },
+      ],
+      cta: 'Treuekarte aktivieren',
+      pointsLabel: 'Punkte',
+      cardTypeLabel: 'Treuekarte',
+      cardMemberLabel: 'Inhaber',
+      cardNumberLabel: 'Karten-Nr.',
+      statReturn: 'Rückkehrrate',
+      statActive: 'aktive Karten',
+    },
+    how: {
+      label: 'So funktioniert\'s',
+      title: 'Online in',
+      titleEm: '3 einfachen Schritten',
+      steps: [
+        { num: '01', icon: '🎨', title: 'Personalisierung', desc: 'Wir gestalten Ihren Shop nach Ihrem Bild: Logo, Farben, Produktkatalog. Sie genehmigen, wir verfeinern.' },
+        { num: '02', icon: '🚀', title: 'Start', desc: 'Ihr Shop geht live. Wir richten die Treuekarte ein und schulen Ihr Team in 1 Stunde.' },
+        { num: '03', icon: '📈', title: 'Wachstum', desc: 'Kunden bestellen, sammeln Punkte, kommen zurück. Alles vom Dashboard aus verfolgen.' },
+      ],
+    },
+    stores: {
+      label: 'Multi-Shop',
+      title: 'Jeder Laden behält',
+      titleEm: 'seine eigene Identität',
+      sub: 'Ihr Shop, Ihre Farben, Ihre Kundschaft. Nichts Generisches.',
+      loyalClients: 'Stammkunden',
+      orders: 'Bestellungen',
+      online: 'Online',
+      visitSite: 'Shop besuchen',
+    },
+    testimonials: {
+      label: 'Partner',
+      title: 'FidTab',
+      titleEm: 'in Aktion',
+      sub: 'Vaakai Store ist bereits live auf der Plattform. Das bringt {name} konkret für ein unabhängiges Geschäft.',
+      partnerBadge: 'Live-Partner',
+      items: [
+        {
+          kind: 'partner',
+          name: VAAKAI_STORE_PARTNER.name,
+          tag: VAAKAI_STORE_PARTNER.tag,
+          location: VAAKAI_STORE_PARTNER.location,
+          description:
+            'Online-Shop mit eigener Identität, Produktkatalog und Bestellungen auf einer Plattform — ohne individuelle Entwicklung.',
+          url: VAAKAI_STORE_PARTNER.websiteUrl,
+          logoUrl: VAAKAI_STORE_PARTNER.logoUrl,
+        },
+        {
+          kind: 'benefit',
+          icon: '🎨',
+          title: 'Eigene Identität',
+          text: 'Logo, Farben und Name Ihres Geschäfts. Jeder Shop hat seine URL und sein Erscheinungsbild, wie in der Vitrine oben.',
+        },
+        {
+          kind: 'benefit',
+          icon: '⚡',
+          title: 'Begleiteter Start',
+          text: 'Design, Katalog-Setup und Schulung: Ihr Shop ist in weniger als 2 Wochen online, ohne technische Kenntnisse.',
+        },
+      ],
+    },
+    pricing: {
+      label: 'Preise',
+      title: 'Einfach,',
+      titleEm: 'transparent',
+      sub: 'Ohne Bindung, ohne versteckte Gebühren. Jederzeit kündbar.',
+      popular: 'BELIEBT',
+      billingMonthly: 'Monatlich',
+      billingAnnual: 'Jährlich',
+      billingSave: '2 Monate gratis',
+      perMonth: '/Monat',
+      perYear: '/Jahr',
+      plans: [
+        { plan: 'Starter', price: '49', priceAnnual: '490', desc: 'Zum Starten und Testen der Lösung.', features: ['Online-Shop', 'Bis zu 50 Produkte', 'Basis-Treuekarte', 'E-Mail-Support'], cta: 'Starten', featured: false },
+        { plan: 'Pro', price: '99', priceAnnual: '990', desc: 'Die komplette Lösung zur Kundenbindung.', features: ['Unbegrenzter Online-Shop', 'Unbegrenzte Produkte', 'Erweiterte Treuekarte', 'Push-Benachrichtigungen', 'Analytics-Dashboard', 'Prioritäts-Support'], cta: 'Starten', featured: true },
+        { plan: 'Multi', price: '149', priceAnnual: '1490', desc: 'Für mehrere Standorte.', features: ['Bis zu 5 Shops', 'Multi-Marken-Treuekarte', 'Zentrales Dashboard', 'Schulungen inklusive', 'Dedizierter Account Manager'], cta: 'Kontakt', featured: false },
+      ],
+      websiteOption: {
+        label: 'Optionale Zusatzleistung',
+        title: 'Individuelle Website-Erstellung',
+        desc: 'Eine massgeschneiderte Website in Ihrem Look — Logo, Farben und Inhalte für Ihr Geschäft. Ergänzend zu Ihrem FidTab-Abo.',
+        price: '199',
+        priceOnce: 'Einmalzahlung',
+        cta: 'Angebot anfordern',
+      },
+    },
+    cta: {
+      title: 'Bereit, Ihren Laden',
+      titleEm: 'zu digitalisieren?',
+      sub: 'Schließen Sie sich unabhängigen Tabakläden an, die {name} gewählt haben, um Kunden zu binden und den Umsatz zu steigern.',
+      primary: 'Kostenlose Demo anfragen',
+      secondary: '📞 Anrufen',
+      note: 'Unverbindliche Demo · Live in 2 Wochen · Support inklusive',
+    },
+    requestDemo: {
+      metaTitle: 'Demo anfragen',
+      title: 'Lassen Sie uns',
+      titleEm: 'starten',
+      sub: 'Sagen Sie uns, wie wir Sie erreichen können — wir melden uns schnell, um Ihnen {name} vorzustellen.',
+      methodLabel: 'Wie möchten Sie kontaktiert werden?',
+      methods: {
+        email: { id: 'email', label: 'Per E-Mail', icon: '✉️' },
+        phone: { id: 'phone', label: 'Per Telefon', icon: '📞' },
+        whatsapp: { id: 'whatsapp', label: 'Per WhatsApp', icon: '💬' },
+      },
+      fields: {
+        shop: 'Name des Geschäfts',
+        name: 'Ihr Name',
+        email: 'E-Mail-Adresse',
+        phone: 'Telefonnummer',
+        whatsapp: 'WhatsApp-Nummer',
+        emailInvalid: 'Ungültige E-Mail-Adresse.',
+        phoneInvalid: 'Ungültige Nummer für das ausgewählte Land.',
+        message: 'Nachricht',
+        optional: 'optional',
+      },
+      submit: 'Anfrage senden',
+      back: '← Zurück zur Startseite',
+      successTitle: 'Anfrage gesendet',
+      successText: 'Vielen Dank! Wir melden uns in Kürze über den gewählten Kanal.',
+    },
+    legalNotice: {
+      metaTitle: 'Impressum',
+      title: 'Impressum',
+      back: '← Zurück zur Startseite',
+      updated: 'Letzte Aktualisierung: Mai 2026',
+      relatedLabel: 'Verwandte Dokumente',
+      sections: [
+        {
+          title: 'Herausgeber',
+          paragraphs: [
+            'Die Website {name} wird von FidTab betrieben, einer Digitalisierungslösung für lokale Händler.',
+            'Kontakt: contact@fidtab.com',
+          ],
+        },
+        {
+          title: 'Hosting',
+          paragraphs: [
+            'Die Website wird bei einem Cloud-Anbieter gehostet, der aktuelle Sicherheitsstandards erfüllt.',
+            'Bei Fragen zum Hosting kontaktieren Sie uns unter der oben genannten Adresse.',
+          ],
+        },
+        {
+          title: 'Geistiges Eigentum',
+          paragraphs: [
+            'Alle Elemente der Website (Texte, Bilder, Logo, Struktur) sind urheberrechtlich geschützt.',
+            'Jede Vervielfältigung oder Darstellung, ganz oder teilweise, ohne vorherige schriftliche Genehmigung ist untersagt.',
+          ],
+        },
+        {
+          title: 'Haftung',
+          paragraphs: [
+            'FidTab bemüht sich, genaue und aktuelle Informationen bereitzustellen, kann jedoch Fehler oder Auslassungen nicht ausschließen.',
+            'Der Nutzer ist allein verantwortlich für die Nutzung der auf der Website verfügbaren Informationen.',
+            'Bei der digitalen Treuekarte hängen gesammelte Punkte und Prämien vom jeweiligen Partner-Tabakgeschäft ab. Der Partnerhändler ist allein verantwortlich für die Kundenregistrierung, das Scannen des QR-Codes und die Alterskontrolle. Details finden Sie in unseren Nutzungsbedingungen.',
+          ],
+        },
+      ],
+    },
+    terms: {
+      metaTitle: 'Allgemeine Geschäftsbedingungen',
+      title: 'Allgemeine Nutzungsbedingungen',
+      back: '← Zurück zur Startseite',
+      updated: 'Letzte Aktualisierung: Mai 2026',
+      relatedLabel: 'Verwandte Dokumente',
+      sections: [
+        {
+          title: 'Gegenstand',
+          paragraphs: [
+            'Diese Bedingungen regeln den Zugang zu und die Nutzung der von {name} angebotenen Dienste für Partnerhändler.',
+            'Mit der Nutzung unserer Dienste akzeptieren Sie diese Bedingungen vorbehaltlos.',
+          ],
+        },
+        {
+          title: 'Angebotene Dienste',
+          paragraphs: [
+            '{name} bietet eine schlüsselfertige Lösung mit Online-Shop, digitaler Treuekarte und Verwaltungstools.',
+            'Verfügbare Funktionen hängen vom gewählten Abonnement ab.',
+          ],
+        },
+        {
+          title: 'Treuekarte',
+          paragraphs: [
+            'Treuepunkte, die über die digitale {name}-Karte gesammelt werden, hängen vom Partner-Tabakgeschäft ab, in dem der Kunde einkauft. Punktetabellen, Prämien und deren Bedingungen werden von jedem Partnerbetrieb eigenständig festgelegt und angewendet.',
+            'Die Anmeldung eines Kunden zum Treueprogramm und die Punktevergabe beim Scannen seines QR-Codes erfolgen durch das Partnergeschäft vor Ort. Der Händler ist allein verantwortlich für die Prüfung der Berechtigung des Kunden, insbesondere für die Kontrolle des gesetzlich vorgeschriebenen Mindestalters für Tabak- und Dampfprodukte und gegebenenfalls für die Teilnahme am Treueprogramm.',
+            'Erfüllt ein Kunde das erforderliche Alter nicht, um am Programm teilzunehmen oder die betreffenden Produkte zu kaufen, trägt ausschließlich das Partner-Tabakgeschäft die Verantwortung, da es den Kunden registriert und seinen QR-Code gescannt hat. {name} stellt nur die technische Treue-Lösung bereit und greift weder in das Kaufverhältnis noch in die Kontrollen an der Kasse ein.',
+          ],
+        },
+        {
+          title: 'Abonnement und Preise',
+          paragraphs: [
+            'Die aktuellen Preise für monatliche und jährliche Formeln sowie gegebenenfalls für einmalige Optionen sind auf der Website angegeben. Sie können mit angemessener Frist angepasst werden.',
+            'Das Abonnement wird je nach gewählter Formel monatlich oder jährlich abgeschlossen und verlängert sich am Ende der Laufzeit automatisch, sofern es nicht gekündigt wird.',
+          ],
+        },
+        {
+          title: 'Pflichten der Parteien',
+          paragraphs: [
+            'Der Händler verpflichtet sich, korrekte Angaben zu machen und die für seine Tätigkeit geltenden Vorschriften einzuhalten.',
+            '{name} verpflichtet sich, die erforderlichen Mittel für Verfügbarkeit und Sicherheit des Dienstes bereitzustellen.',
+          ],
+        },
+        {
+          title: 'Personenbezogene Daten',
+          paragraphs: [
+            'Die Verarbeitung personenbezogener Daten ist in unserer Datenschutzerklärung beschrieben.',
+            'Jede Partei bleibt für die von ihr verarbeiteten Daten verantwortlich.',
+          ],
+        },
+        {
+          title: 'Anwendbares Recht',
+          paragraphs: [
+            'Diese Bedingungen unterliegen dem am Sitz von FidTab geltenden Recht.',
+            'Im Streitfall bemühen sich die Parteien um eine gütliche Einigung, bevor sie rechtliche Schritte einleiten.',
+          ],
+        },
+      ],
+    },
+    privacy: {
+      metaTitle: 'Datenschutzerklärung',
+      title: 'Datenschutzerklärung',
+      back: '← Zurück zur Startseite',
+      updated: 'Letzte Aktualisierung: Mai 2026',
+      relatedLabel: 'Verwandte Dokumente',
+      sections: [
+        {
+          title: 'Verantwortlicher',
+          paragraphs: [
+            'FidTab ist für die Verarbeitung der über die Website {name} und zugehörige Formulare erhobenen Daten verantwortlich.',
+            'Fragen: contact@fidtab.com',
+          ],
+        },
+        {
+          title: 'Erhobene Daten',
+          paragraphs: [
+            'Wir können erheben: Name, Kontaktdaten (E-Mail, Telefon), Geschäftsname, über unsere Formulare gesendete Nachrichten.',
+            'Technische Daten (IP-Adresse, Browser) können zu Sicherheits- und Statistikzwecken protokolliert werden.',
+          ],
+        },
+        {
+          title: 'Zwecke',
+          paragraphs: [
+            'Beantwortung von Demo- oder Kontaktanfragen, Pflege der Geschäftsbeziehung und Verbesserung unserer Dienste.',
+            'Wir verkaufen Ihre Daten nicht an Dritte.',
+          ],
+        },
+        {
+          title: 'Treueprogramm',
+          paragraphs: [
+            'Im Rahmen des Treueprogramms werden bestimmte Daten (Kundenkennung, Punktestand und -verlauf) vom Partner-Tabakgeschäft verarbeitet, das für deren Erhebung bei der Kundenregistrierung und beim Scannen des QR-Codes im Geschäft verantwortlich ist.',
+            'Gesammelte Punkte und zugehörige Prämien richten sich nach den Regeln des jeweiligen Partnergeschäfts. Der Händler ist allein verantwortlich für die Einhaltung gesetzlicher Pflichten, insbesondere die Alterskontrolle vor der Punktevergabe.',
+            'Einzelheiten zu den geltenden Verantwortlichkeiten finden Sie in unseren Nutzungsbedingungen.',
+          ],
+        },
+        {
+          title: 'Aufbewahrungsdauer',
+          paragraphs: [
+            'Daten werden so lange aufbewahrt, wie es für die Zwecke der Erhebung erforderlich ist.',
+            'Danach werden sie gelöscht oder anonymisiert, sofern keine gesetzliche Aufbewahrungspflicht besteht.',
+          ],
+        },
+        {
+          title: 'Ihre Rechte',
+          paragraphs: [
+            'Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung und Widerspruch gegen die Verarbeitung.',
+            'Zur Ausübung Ihrer Rechte kontaktieren Sie uns unter contact@fidtab.com.',
+          ],
+        },
+        {
+          title: 'Cookies',
+          paragraphs: [
+            'Die Website kann technische Cookies für den Betrieb und Mess-Cookies für die Reichweitenmessung verwenden.',
+            'Sie können Ihren Browser so einstellen, dass nicht wesentliche Cookies abgelehnt werden.',
+          ],
+        },
+      ],
+    },
+    contactPage: {
+      metaTitle: 'Kontakt',
+      title: 'Kontakt',
+      titleEm: 'aufnehmen',
+      sub: 'Fragen zu {name}? Schreiben Sie uns oder kontaktieren Sie uns per WhatsApp — wir antworten schnell.',
+      back: '← Zurück zur Startseite',
+      emailSubject: 'FidTab Kontakt',
+      methods: {
+        email: {
+          label: 'Per E-Mail',
+          desc: 'Senden Sie uns eine Nachricht — Antwort innerhalb eines Werktags.',
+          action: 'E-Mail-App öffnen',
+        },
+        whatsapp: {
+          label: 'Per WhatsApp',
+          desc: 'Chatten Sie direkt mit unserem Team auf WhatsApp.',
+          action: 'WhatsApp öffnen',
+        },
+      },
+    },
+    footer: {
+      home: 'Startseite',
+      features: 'Funktionen',
+      pricing: 'Preise',
+      legal: 'Impressum',
+      terms: 'AGB',
+      privacy: 'Datenschutz',
+      contact: 'Kontakt',
+      copyright: '© {year} {name}. Alle Rechte vorbehalten.',
+    },
+  }),
+
+
+  it: withShared('it', {
+    meta: {
+      titleSuffix: 'Digitalizza la tua tabaccheria',
+      description:
+        'La soluzione chiavi in mano per lanciare il tuo negozio online e fidelizzare i clienti. Carta fedeltà digitale, gestione semplice, identità propria.',
+    },
+    nav: {
+      features: 'Funzionalità',
+      loyalty: 'Fedeltà',
+      how: 'Come funziona',
+      pricing: 'Prezzi',
+      cta: 'Passa all\'azione',
+    },
+    hero: {
+      eyebrow: 'Soluzione chiavi in mano per tabaccherie indipendenti',
+      titleLines: ['Il tuo commercio,', 'in tasca', 'ai tuoi clienti.'],
+      titleGoldIndex: 1,
+      sub: 'Negozio online personalizzato, carta fedeltà digitale e dashboard semplice — tutto per fidelizzare e far tornare i clienti, senza sforzo tecnico.',
+      ctaPrimary: 'Lancia il mio negozio online',
+      ctaSecondary: 'Scopri come funziona',
+      stats: [
+        { num: '+38%', label: 'clienti abituali' },
+        { num: '2 sett.', label: 'per andare online' },
+        { num: '0 CHF', label: 'costi nascosti' },
+      ],
+      floatReward: { label: 'Premio sbloccato', value: '-5 CHF', sub: 'sul tuo prossimo ordine' },
+      floatOrder: { label: 'Nuovo ordine', value: '14,50 CHF', sub: '3 minuti fa' },
+      phoneLoyaltyLabel: 'Carta fedeltà',
+      phonePointsSuffix: 'punti',
+      phoneNextReward: '120 pt al prossimo buono',
+      appStoreName: 'Vaakai Store',
+      appOpen: 'Aperto',
+      appOrderTitle: 'Ordina',
+      appSeeAll: 'Vedi tutto',
+      appNextRewardLabel: '-5 CHF presto disponibile',
+      appTabHome: 'Home',
+      appTabShop: 'Negozio',
+      appTabLoyalty: 'Fedeltà',
+      appTabAccount: 'Profilo',
+    },
+    cardSubs: {
+      presse: 'Tabaccheria · Stampa',
+      librairie: 'Tabaccheria · Libreria',
+      epicerie: 'Tabaccheria · Alimentari',
+      coiffeur: 'Parrucchiere · Salone',
+    },
+    cardRewardLabel: 'a {pts} pt',
+    logos: {
+      label: 'Tabaccherie indipendenti che si fidano di {name}',
+    },
+    features: {
+      label: 'Funzionalità',
+      title: 'Tutto ciò che serve per',
+      titleEm: 'digitalizzare la tua tabaccheria',
+      sub: 'Una piattaforma completa pensata appositamente per le tabaccherie indipendenti.',
+      comingSoon: 'Prossimamente',
+      items: [
+        { icon: '🛍', name: 'Negozio online', desc: 'Il tuo negozio con il tuo nome, logo e colori. I clienti ordinano in pochi clic, 24 ore su 24.' },
+        { icon: '💳', name: 'Carta fedeltà digitale', desc: 'Punti automatici ad ogni acquisto. I clienti accumulano, tu scegli i premi.' },
+        { icon: '📊', name: 'Dashboard', desc: 'Monitora vendite, clienti più fedeli e bestseller in tempo reale dal telefono.' },
+        { icon: '📦', name: 'Click & Collect', desc: 'I clienti potranno presto ordinare online e ritirare al banco. Funzionalità in arrivo a breve.' },
+        { icon: '🔔', name: 'Notifiche push', desc: 'Promozioni mirate direttamente sul telefono dei clienti. Risultati immediati.' },
+        { icon: '🗂', name: 'Gestione scorte', desc: 'Gestisci facilmente il catalogo prodotti. Aggiunta, modifica, esaurimento — tutto in pochi secondi.' },
+        { icon: '⚡', name: 'Avvio rapido', desc: 'Il tuo negozio è pronto in meno di 2 settimane. Ci occupiamo di design, configurazione e formazione.' },
+      ],
+    },
+    loyalty: {
+      label: 'Carta fedeltà',
+      title: 'La carta che fa',
+      titleEm: 'tornare i clienti.',
+      desc: 'Ogni acquisto fa guadagnare punti. I clienti li vedono in tempo reale sul telefono e tornano per sbloccare i premi. Tu definisci le regole, noi gestiamo il resto.',
+      points: [
+        { title: 'Punti automatici', text: 'Punti assegnati ad ogni ordine, senza alcuna azione da parte tua.' },
+        { title: 'Premi personalizzati', text: 'Buono sconto, prodotto omaggio, consegna gratuita — decidi tu.' },
+        { title: 'Carta multi-tabaccheria', text: 'I clienti mantengono la carta anche cambiando tabaccheria partner.' },
+        { title: 'Notifiche intelligenti', text: 'Promemoria automatici quando un cliente è vicino a un premio.' },
+      ],
+      cta: 'Attiva la carta fedeltà',
+      pointsLabel: 'punti',
+      cardTypeLabel: 'Carta fedeltà',
+      cardMemberLabel: 'Titolare',
+      cardNumberLabel: 'N° carta',
+      statReturn: 'tasso di ritorno',
+      statActive: 'carte attive',
+    },
+    how: {
+      label: 'Come funziona',
+      title: 'Online in',
+      titleEm: '3 semplici passi',
+      steps: [
+        { num: '01', icon: '🎨', title: 'Personalizzazione', desc: 'Creiamo il tuo negozio a tua immagine: logo, colori, catalogo prodotti. Tu approvi, noi perfezioniamo.' },
+        { num: '02', icon: '🚀', title: 'Lancio', desc: 'Il tuo negozio va online. Configuriamo la carta fedeltà e formiamo il tuo team in 1 ora.' },
+        { num: '03', icon: '📈', title: 'Crescita', desc: 'I clienti ordinano, accumulano punti, tornano. Segui tutto dalla dashboard.' },
+      ],
+    },
+    stores: {
+      label: 'Multi-tabaccheria',
+      title: 'Ogni tabaccheria mantiene',
+      titleEm: 'la propria identità',
+      sub: 'Il tuo negozio, i tuoi colori, la tua clientela. Niente di generico.',
+      loyalClients: 'clienti fedeli',
+      orders: 'ordini',
+      online: 'Online',
+      visitSite: 'Visita il negozio',
+    },
+    testimonials: {
+      label: 'Partner',
+      title: 'FidTab',
+      titleEm: 'in azione',
+      sub: 'Vaakai Store è già online sulla piattaforma. Ecco cosa {name} offre concretamente a un negozio indipendente.',
+      partnerBadge: 'Partner online',
+      items: [
+        {
+          kind: 'partner',
+          name: VAAKAI_STORE_PARTNER.name,
+          tag: VAAKAI_STORE_PARTNER.tag,
+          location: 'Ginevra',
+          description:
+            'Negozio online con identità propria, catalogo prodotti e ordini gestiti su un\'unica piattaforma — senza sviluppo su misura.',
+          url: VAAKAI_STORE_PARTNER.websiteUrl,
+          logoUrl: VAAKAI_STORE_PARTNER.logoUrl,
+        },
+        {
+          kind: 'benefit',
+          icon: '🎨',
+          title: 'Identità propria',
+          text: 'Logo, colori e nome del tuo negozio. Ogni boutique ha il suo URL e il suo look, come nella vetrina sopra.',
+        },
+        {
+          kind: 'benefit',
+          icon: '⚡',
+          title: 'Lancio accompagnato',
+          text: 'Design, configurazione del catalogo e formazione: il tuo negozio è online in meno di 2 settimane, senza competenze tecniche.',
+        },
+      ],
+    },
+    pricing: {
+      label: 'Prezzi',
+      title: 'Semplice,',
+      titleEm: 'trasparente',
+      sub: 'Senza impegno, senza costi nascosti. Disdetta in qualsiasi momento.',
+      popular: 'POPOLARE',
+      billingMonthly: 'Mensile',
+      billingAnnual: 'Annuale',
+      billingSave: '2 mesi gratis',
+      perMonth: '/mese',
+      perYear: '/anno',
+      plans: [
+        { plan: 'Starter', price: '49', priceAnnual: '490', desc: 'Per iniziare e testare la soluzione.', features: ['Negozio online', 'Fino a 50 prodotti', 'Carta fedeltà base', 'Supporto email'], cta: 'Inizia', featured: false },
+        { plan: 'Pro', price: '99', priceAnnual: '990', desc: 'La soluzione completa per fidelizzare.', features: ['Negozio online illimitato', 'Prodotti illimitati', 'Carta fedeltà avanzata', 'Notifiche push', 'Dashboard analytics', 'Supporto prioritario'], cta: 'Inizia', featured: true },
+        { plan: 'Multi', price: '149', priceAnnual: '1490', desc: 'Per gestire più punti vendita.', features: ['Fino a 5 negozi', 'Carta fedeltà multi-brand', 'Dashboard centralizzata', 'Formazione inclusa', 'Account manager dedicato'], cta: 'Contattaci', featured: false },
+      ],
+      websiteOption: {
+        label: 'Opzione aggiuntiva',
+        title: 'Realizzazione di un sito web personalizzato',
+        desc: 'Un sito su misura per il tuo brand — logo, colori e contenuti adattati al tuo negozio. In aggiunta al tuo abbonamento FidTab.',
+        price: '199',
+        priceOnce: 'forfait unico',
+        cta: 'Richiedi un preventivo',
+      },
+    },
+    cta: {
+      title: 'Pronto a digitalizzare',
+      titleEm: 'la tua tabaccheria?',
+      sub: 'Unisciti alle tabaccherie indipendenti che hanno scelto {name} per fidelizzare i clienti e aumentare il fatturato.',
+      primary: 'Richiedi una demo gratuita',
+      secondary: '📞 Chiamaci',
+      note: 'Demo senza impegno · Online in 2 settimane · Supporto incluso',
+    },
+    requestDemo: {
+      metaTitle: 'Richiedi una demo',
+      title: 'Passiamo',
+      titleEm: 'all\'azione',
+      sub: 'Dicci come contattarti — ti richiamiamo presto per presentarti {name}.',
+      methodLabel: 'Come preferisci essere ricontattato?',
+      methods: {
+        email: { id: 'email', label: 'Via e-mail', icon: '✉️' },
+        phone: { id: 'phone', label: 'Via telefono', icon: '📞' },
+        whatsapp: { id: 'whatsapp', label: 'Via WhatsApp', icon: '💬' },
+      },
+      fields: {
+        shop: 'Nome del negozio',
+        name: 'Il tuo nome',
+        email: 'Indirizzo e-mail',
+        phone: 'Numero di telefono',
+        whatsapp: 'Numero WhatsApp',
+        emailInvalid: 'Indirizzo e-mail non valido.',
+        phoneInvalid: 'Numero non valido per il paese selezionato.',
+        message: 'Messaggio',
+        optional: 'facoltativo',
+      },
+      submit: 'Invia la mia richiesta',
+      back: '← Torna alla home',
+      successTitle: 'Richiesta inviata',
+      successText: 'Grazie! Ti ricontatteremo a breve sul canale scelto.',
+    },
+    legalNotice: {
+      metaTitle: 'Note legali',
+      title: 'Note legali',
+      back: '← Torna alla home',
+      updated: 'Ultimo aggiornamento: maggio 2026',
+      relatedLabel: 'Documenti correlati',
+      sections: [
+        {
+          title: 'Editore del sito',
+          paragraphs: [
+            'Il sito {name} è edito da FidTab, soluzione di digitalizzazione per negozi locali.',
+            'Contatto: contact@fidtab.com',
+          ],
+        },
+        {
+          title: 'Hosting',
+          paragraphs: [
+            'Il sito è ospitato da un provider cloud conforme agli standard di sicurezza vigenti.',
+            'Per domande sull\'hosting, contattaci all\'indirizzo indicato sopra.',
+          ],
+        },
+        {
+          title: 'Proprietà intellettuale',
+          paragraphs: [
+            'Tutti gli elementi del sito (testi, immagini, logo, struttura) sono protetti dalla legge sulla proprietà intellettuale.',
+            'Qualsiasi riproduzione o rappresentazione, totale o parziale, senza autorizzazione scritta è vietata.',
+          ],
+        },
+        {
+          title: 'Responsabilità',
+          paragraphs: [
+            'FidTab si impegna a fornire informazioni accurate e aggiornate, senza tuttavia garantire l\'assenza di errori o omissioni.',
+            'L\'utente è l\'unico responsabile dell\'uso delle informazioni disponibili sul sito.',
+            'Per quanto riguarda la carta fedeltà digitale, i punti guadagnati e i premi dipendono da ciascun tabaccheria partner. Il commerciante partner è l\'unico responsabile della registrazione dei clienti, della scansione del codice QR e del controllo dell\'età minima richiesta. Vedi le nostre condizioni generali d\'uso per i dettagli.',
+          ],
+        },
+      ],
+    },
+    terms: {
+      metaTitle: 'Condizioni generali',
+      title: 'Condizioni generali d\'uso',
+      back: '← Torna alla home',
+      updated: 'Ultimo aggiornamento: maggio 2026',
+      relatedLabel: 'Documenti correlati',
+      sections: [
+        {
+          title: 'Oggetto',
+          paragraphs: [
+            'Le presenti condizioni regolano l\'accesso e l\'utilizzo dei servizi offerti da {name} ai commercianti partner.',
+            'Utilizzando i nostri servizi, accetti senza riserve le presenti condizioni.',
+          ],
+        },
+        {
+          title: 'Servizi offerti',
+          paragraphs: [
+            '{name} propone una soluzione chiavi in mano con negozio online, carta fedeltà digitale e strumenti di gestione.',
+            'Le funzionalità disponibili dipendono dal piano di abbonamento sottoscritto.',
+          ],
+        },
+        {
+          title: 'Carta fedeltà',
+          paragraphs: [
+            'I punti fedeltà ottenuti tramite la carta digitale {name} dipendono dal tabaccheria o commerciante partner presso cui il cliente effettua i suoi acquisti. La scala di attribuzione dei punti, i premi e le relative condizioni sono definiti e applicati da ciascun esercizio partner, sotto la sua esclusiva responsabilità.',
+            'L\'iscrizione di un cliente al programma fedeltà e l\'attribuzione dei punti durante la scansione del suo codice QR sono effettuate dal tabaccheria partner, in negozio. Il commerciante è l\'unico responsabile del controllo dell\'idoneità del cliente, in particolare della verifica dell\'età legale minima richiesta per l\'acquisto di prodotti del tabacco, del vape e, se del caso, per la partecipazione al programma fedeltà.',
+            'Se un cliente non ha l\'età richiesta per beneficiare del programma o per acquistare i prodotti interessati, la responsabilità spetta esclusivamente al tabaccheria partner, in quanto commerciante che ha registrato il cliente e scansionato il suo codice QR. {name} fornisce lo strumento tecnico di fedeltà ma non interviene nel rapporto commerciale né nei controlli effettuati alla cassa.',
+          ],
+        },
+        {
+          title: 'Abbonamento e tariffe',
+          paragraphs: [
+            'Le tariffe in vigore sono indicate sul sito per le formule mensili e annuali, nonché per le eventuali opzioni una tantum. Possono essere modificate con un preavviso ragionevole.',
+            'L\'abbonamento è sottoscritto con durata mensile o annuale, a seconda della formula scelta, e si rinnova tacitamente a scadenza salvo disdetta.',
+          ],
+        },
+        {
+          title: 'Obblighi delle parti',
+          paragraphs: [
+            'Il commerciante si impegna a fornire informazioni corrette e a rispettare la normativa applicabile alla propria attività.',
+            '{name} si impegna a mettere in atto i mezzi necessari per garantire disponibilità e sicurezza del servizio.',
+          ],
+        },
+        {
+          title: 'Dati personali',
+          paragraphs: [
+            'Il trattamento dei dati personali è descritto nella nostra informativa sulla privacy.',
+            'Ciascuna parte resta responsabile dei dati che tratta nell\'ambito della propria attività.',
+          ],
+        },
+        {
+          title: 'Diritto applicabile',
+          paragraphs: [
+            'Le presenti condizioni sono soggette al diritto applicabile presso la sede di FidTab.',
+            'In caso di controversia, le parti cercheranno una soluzione amichevole prima di qualsiasi azione legale.',
+          ],
+        },
+      ],
+    },
+    privacy: {
+      metaTitle: 'Informativa sulla privacy',
+      title: 'Informativa sulla privacy',
+      back: '← Torna alla home',
+      updated: 'Ultimo aggiornamento: maggio 2026',
+      relatedLabel: 'Documenti correlati',
+      sections: [
+        {
+          title: 'Titolare del trattamento',
+          paragraphs: [
+            'FidTab è responsabile del trattamento dei dati raccolti tramite il sito {name} e i moduli associati.',
+            'Domande: contact@fidtab.com',
+          ],
+        },
+        {
+          title: 'Dati raccolti',
+          paragraphs: [
+            'Possiamo raccogliere: nome, recapiti (e-mail, telefono), nome del negozio, messaggi inviati tramite i nostri moduli.',
+            'Dati tecnici (indirizzo IP, browser) possono essere registrati per sicurezza e statistiche.',
+          ],
+        },
+        {
+          title: 'Finalità',
+          paragraphs: [
+            'Rispondere alle richieste di demo o contatto, gestire il rapporto commerciale e migliorare i nostri servizi.',
+            'Non vendiamo i tuoi dati a terzi.',
+          ],
+        },
+        {
+          title: 'Programma fedeltà',
+          paragraphs: [
+            'Nell\'ambito del programma fedeltà, alcuni dati (identificativo cliente, saldo e storico punti) sono trattati dal tabaccheria partner, responsabile della loro raccolta durante la registrazione del cliente e la scansione del codice QR in negozio.',
+            'I punti guadagnati e i premi associati dipendono dalle regole fissate da ciascun tabaccheria partner. Il commerciante è l\'unico responsabile del rispetto degli obblighi legali, in particolare della verifica dell\'età del cliente prima dell\'attribuzione dei punti.',
+            'Per i dettagli sulle responsabilità applicabili, consulta le nostre condizioni generali d\'uso.',
+          ],
+        },
+        {
+          title: 'Periodo di conservazione',
+          paragraphs: [
+            'I dati sono conservati per il tempo necessario alle finalità per cui sono stati raccolti.',
+            'Successivamente vengono cancellati o anonimizzati, salvo obblighi legali di conservazione.',
+          ],
+        },
+        {
+          title: 'I tuoi diritti',
+          paragraphs: [
+            'Hai diritto di accesso, rettifica, cancellazione, limitazione e opposizione al trattamento.',
+            'Per esercitare i tuoi diritti, contattaci a contact@fidtab.com.',
+          ],
+        },
+        {
+          title: 'Cookie',
+          paragraphs: [
+            'Il sito può utilizzare cookie tecnici necessari al funzionamento e cookie di misurazione del pubblico.',
+            'Puoi configurare il browser per rifiutare i cookie non essenziali.',
+          ],
+        },
+      ],
+    },
+    contactPage: {
+      metaTitle: 'Contatto',
+      title: 'Contattaci',
+      titleEm: 'subito',
+      sub: 'Hai una domanda su {name}? Scrivici o contattaci su WhatsApp — rispondiamo rapidamente.',
+      back: '← Torna alla home',
+      emailSubject: 'Contatto FidTab',
+      methods: {
+        email: {
+          label: 'Via e-mail',
+          desc: 'Inviaci un messaggio — rispondiamo entro un giorno lavorativo.',
+          action: 'Apri la mia e-mail',
+        },
+        whatsapp: {
+          label: 'Via WhatsApp',
+          desc: 'Chatta direttamente con il nostro team su WhatsApp.',
+          action: 'Apri WhatsApp',
+        },
+      },
+    },
+    footer: {
+      home: 'Home',
+      features: 'Funzionalità',
+      pricing: 'Prezzi',
+      legal: 'Note legali',
+      terms: 'Condizioni',
+      privacy: 'Privacy',
+      contact: 'Contatto',
+      copyright: '© {year} {name}. Tutti i diritti riservati.',
     },
   }),
 

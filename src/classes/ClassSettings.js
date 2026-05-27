@@ -27,26 +27,26 @@ export class ClassSettings extends ClassFirestore {
   static DEFAULT_CURRENCY = "CHF";
 
   constructor({
-    uid = ClassSettings.DEFAULT_UID,
-    min_amount_to_earn_one_point = ClassSettings.MIN_AMOUNT_TO_EARN_ONE_POINT,
-    max_amount_to_earn_one_point = ClassSettings.MAX_AMOUNT_TO_EARN_ONE_POINT,
-    amount_to_use_one_point = ClassSettings.AMOUNT_TO_USE_ONE_POINT,
-    currency_to_earn_one_point = ClassSettings.DEFAULT_CURRENCY,
+    uid = ClassSettingsFidTab.DEFAULT_UID,
+    min_amount_to_earn_one_point = ClassSettingsFidTab.MIN_AMOUNT_TO_EARN_ONE_POINT,
+    max_amount_to_earn_one_point = ClassSettingsFidTab.MAX_AMOUNT_TO_EARN_ONE_POINT,
+    amount_to_use_one_point = ClassSettingsFidTab.AMOUNT_TO_USE_ONE_POINT,
+    currency_to_earn_one_point = ClassSettingsFidTab.DEFAULT_CURRENCY,
     uids_products_prohibited_from_earning_points = [],
     created_time = new Date(),
     last_edit_time = new Date(),
   } = {}) {
     super(uid, created_time, last_edit_time, "");
     this._min_amount_to_earn_one_point = Number(
-      min_amount_to_earn_one_point ?? ClassSettings.MIN_AMOUNT_TO_EARN_ONE_POINT,
+      min_amount_to_earn_one_point ?? ClassSettingsFidTab.MIN_AMOUNT_TO_EARN_ONE_POINT,
     );
     this._max_amount_to_earn_one_point = Number(
-      max_amount_to_earn_one_point ?? ClassSettings.MAX_AMOUNT_TO_EARN_ONE_POINT,
+      max_amount_to_earn_one_point ?? ClassSettingsFidTab.MAX_AMOUNT_TO_EARN_ONE_POINT,
     );
     this._amount_to_use_one_point = Number(
-      amount_to_use_one_point ?? ClassSettings.AMOUNT_TO_USE_ONE_POINT,
+      amount_to_use_one_point ?? ClassSettingsFidTab.AMOUNT_TO_USE_ONE_POINT,
     );
-    this._currency_to_earn_one_point = currency_to_earn_one_point ?? ClassSettings.DEFAULT_CURRENCY;
+    this._currency_to_earn_one_point = currency_to_earn_one_point ?? ClassSettingsFidTab.DEFAULT_CURRENCY;
     this._uids_products_prohibited_from_earning_points = normalizeProhibitedProductUids(
       uids_products_prohibited_from_earning_points,
     );
@@ -57,25 +57,23 @@ export class ClassSettings extends ClassFirestore {
   }
   set min_amount_to_earn_one_point(value) {
     this._min_amount_to_earn_one_point = Number(
-      value ?? ClassSettings.MIN_AMOUNT_TO_EARN_ONE_POINT,
+      value ?? ClassSettingsFidTab.MIN_AMOUNT_TO_EARN_ONE_POINT,
     );
-    this._touchLastEdit();
   }
   get max_amount_to_earn_one_point() {
     return this._max_amount_to_earn_one_point;
   }
   set max_amount_to_earn_one_point(value) {
     this._max_amount_to_earn_one_point = Number(
-      value ?? ClassSettings.MAX_AMOUNT_TO_EARN_ONE_POINT,
+      value ?? ClassSettingsFidTab.MAX_AMOUNT_TO_EARN_ONE_POINT,
     );
-    this._touchLastEdit();
   }
   get amount_to_use_one_point() {
     return this._amount_to_use_one_point;
   }
   set amount_to_use_one_point(value) {
     this._amount_to_use_one_point = Number(
-      value ?? ClassSettings.AMOUNT_TO_USE_ONE_POINT,
+      value ?? ClassSettingsFidTab.AMOUNT_TO_USE_ONE_POINT,
     );
     this._touchLastEdit();
   }
@@ -84,8 +82,7 @@ export class ClassSettings extends ClassFirestore {
     return this._currency_to_earn_one_point;
   }
   set currency_to_earn_one_point(value) {
-    this._currency_to_earn_one_point = value ?? ClassSettings.DEFAULT_CURRENCY;
-    this._touchLastEdit();
+    this._currency_to_earn_one_point = value ?? ClassSettingsFidTab.DEFAULT_CURRENCY;
   }
 
   get uids_products_prohibited_from_earning_points() {
@@ -97,23 +94,23 @@ export class ClassSettings extends ClassFirestore {
   }
 
   static makeInstance(uid, data = {}) {
-    return new ClassSettings({ uid, ...data });
+    return new ClassSettingsFidTab({ uid, ...data });
   }
 
-  static fromDefaults(uid = ClassSettings.DEFAULT_UID) {
-    return new ClassSettings({ uid });
+  static fromDefaults(uid = ClassSettingsFidTab.DEFAULT_UID) {
+    return new ClassSettingsFidTab({ uid });
   }
 
   static converter = {
     toFirestore(instance) {
-      if (instance instanceof ClassSettings) {
-        return ClassSettings.toJSON(instance);
+      if (instance instanceof ClassSettingsFidTab) {
+        return ClassSettingsFidTab.toJSON(instance);
       }
       return instance;
     },
     fromFirestore(snapshot, options) {
       const raw = snapshot.data(options) ?? {};
-      return ClassSettings.makeInstance(snapshot.id, raw);
+      return ClassSettingsFidTab.makeInstance(snapshot.id, raw);
     },
   };
 
@@ -121,15 +118,15 @@ export class ClassSettings extends ClassFirestore {
     return collection(firestore, this.COLLECTION).withConverter(this.converter);
   }
 
-  static docRef(id = ClassSettings.DEFAULT_UID) {
+  static docRef(id = ClassSettingsFidTab.DEFAULT_UID) {
     return doc(firestore, this.COLLECTION, id).withConverter(this.converter);
   }
 
   static async getOrCreateDefault() {
-    const existing = await ClassSettings.getFirestore(ClassSettings.DEFAULT_UID);
+    const existing = await ClassSettingsFidTab.getFirestore(ClassSettingsFidTab.DEFAULT_UID);
     if (existing) return existing;
 
-    const created = ClassSettings.fromDefaults();
+    const created = ClassSettingsFidTab.fromDefaults();
     await created.createFirestore();
     return created;
   }
@@ -141,7 +138,7 @@ export class ClassSettings extends ClassFirestore {
     }
 
     return onSnapshot(
-      ClassSettings.docRef(uid),
+      ClassSettingsFidTab.docRef(uid),
       (snapshot) => {
         onChange(snapshot.exists() ? snapshot.data() : null);
       },
@@ -149,5 +146,3 @@ export class ClassSettings extends ClassFirestore {
     );
   }
 }
-
-export { normalizeProhibitedProductUids };

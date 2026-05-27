@@ -35,10 +35,6 @@ export const adminTranslations = {
       navAria: 'Navigation principale',
       nav: { home: 'Accueil', companies: 'Établissements', products: 'Produits', brands: 'Marques', customers: 'Clients', loyalty: 'Fidélité' },
       signOut: 'Se déconnecter',
-      signOutConfirmTitle: 'Se déconnecter ?',
-      signOutConfirmMessage: 'Vous allez quitter votre session. Voulez-vous continuer ?',
-      signOutConfirm: 'Se déconnecter',
-      signOutCancel: 'Annuler',
       userFallback: 'Utilisateur',
       welcome: 'Bienvenue, {name}',
       accountTitle: 'Votre compte',
@@ -101,9 +97,7 @@ export const adminTranslations = {
       create: 'Créer un produit',
       createTitle: 'Nouveau produit',
       createIntro: 'Commencez par scanner ou saisir un code-barres.',
-      editIntro: 'Scannez ou modifiez le code-barres, puis complétez les informations du produit.',
       editTitle: 'Modifier le produit',
-      reset: 'Réinitialiser',
       viewTitle: 'Détail du produit',
       backToList: 'Retour à la liste',
       backToView: 'Retour au détail',
@@ -370,10 +364,6 @@ export const adminTranslations = {
       navAria: 'Main navigation',
       nav: { home: 'Home', companies: 'Stores', products: 'Products', brands: 'Brands', customers: 'Customers', loyalty: 'Loyalty' },
       signOut: 'Sign out',
-      signOutConfirmTitle: 'Sign out?',
-      signOutConfirmMessage: 'You are about to leave your session. Do you want to continue?',
-      signOutConfirm: 'Sign out',
-      signOutCancel: 'Cancel',
       userFallback: 'User',
       welcome: 'Welcome, {name}',
       accountTitle: 'Your account',
@@ -436,9 +426,7 @@ export const adminTranslations = {
       create: 'Create product',
       createTitle: 'New product',
       createIntro: 'Start by scanning or entering a barcode.',
-      editIntro: 'Scan or update the barcode, then complete the product details.',
       editTitle: 'Edit product',
-      reset: 'Reset',
       viewTitle: 'Product details',
       backToList: 'Back to list',
       backToView: 'Back to details',
@@ -668,6 +656,722 @@ export const adminTranslations = {
         invalidCurrency: 'Select a currency.',
       },
     },
+  },
+  de: {
+    "meta": {
+      "titleSuffix": "Administration",
+      "description": "FidTab-Verwaltungsbereich."
+    },
+    "login": {
+      "metaTitle": "Anmelden",
+      "title": "Admin",
+      "titleEm": "Bereich",
+      "sub": "Melden Sie sich an, um auf das {name}-Dashboard zuzugreifen.",
+      "email": "E-Mail-Adresse",
+      "password": "Passwort",
+      "submit": "Anmelden",
+      "submitting": "Anmeldung…",
+      "showPassword": "Passwort anzeigen",
+      "hidePassword": "Passwort ausblenden",
+      "errors": {
+        "invalidEmail": "Ungültige E-Mail-Adresse.",
+        "required": "Dieses Feld ist erforderlich.",
+        "invalidCredential": "E-Mail oder Passwort falsch.",
+        "userDisabled": "Dieses Konto wurde deaktiviert.",
+        "tooManyRequests": "Zu viele Versuche. Bitte später erneut versuchen.",
+        "network": "Netzwerkfehler. Verbindung prüfen.",
+        "default": "Ein Fehler ist aufgetreten. Bitte erneut versuchen."
+      }
+    },
+    "theme": {
+      "label": "Design",
+      "options": {
+        "system": "System",
+        "light": "Hell",
+        "dark": "Dunkel"
+      }
+    },
+    "dashboard": {
+      "metaTitle": "Start",
+      "navAria": "Hauptnavigation",
+      "nav": {
+        "home": "Start",
+        "companies": "Geschäfte",
+        "products": "Produkte",
+        "brands": "Marken",
+        "customers": "Kunden",
+        "loyalty": "Treue"
+      },
+      "signOut": "Abmelden",
+      "userFallback": "Benutzer",
+      "welcome": "Willkommen, {name}",
+      "accountTitle": "Ihr Konto",
+      "fields": {
+        "email": "E-Mail",
+        "role": "Rolle",
+        "status": "Status"
+      },
+      "empty": "—",
+      "statusLabels": {
+        "first_connection": "Complete your first sign-in",
+        "complete_profile": "Complete your profile",
+        "active": "Aktiv",
+        "inactive": "Inaktiv",
+        "unknown": "Unbekannter Status"
+      }
+    },
+    "nav": {
+      "openMenu": "Menü öffnen",
+      "closeMenu": "Menü schließen"
+    },
+    "companies": {
+      "metaTitle": "Geschäfte",
+      "title": "Geschäfte",
+      "sub": "{count} store(s)",
+      "create": "Geschäft anlegen",
+      "createTitle": "Neues Geschäft",
+      "editTitle": "Geschäft bearbeiten",
+      "viewTitle": "Geschäftsdetails",
+      "backToList": "Zurück zur Liste",
+      "backToView": "Zurück zum Detail",
+      "save": "Speichern",
+      "saving": "Speichern…",
+      "loading": "Laden…",
+      "empty": "Noch keine Geschäfte.",
+      "searchPlaceholder": "Nach Name, Tag oder Stadt suchen…",
+      "columns": {
+        "name": "Name",
+        "tag": "Tag",
+        "city": "Stadt",
+        "fidtabId": "FidTab ID",
+        "actions": "Aktionen"
+      },
+      "actions": {
+        "view": "Ansehen",
+        "edit": "Bearbeiten"
+      },
+      "fields": {
+        "fidtabId": "FidTab ID",
+        "name": "Name",
+        "tag": "Tag / tagline",
+        "logo": "Logo",
+        "emailContact": "Contact email",
+        "phone": "Phone",
+        "addressStreet": "Street",
+        "addressZip": "ZIP",
+        "addressCity": "Stadt",
+        "addressCountry": "Country (code)"
+      },
+      "errors": {
+        "notFound": "Store not found.",
+        "saveFailed": "Could not save the store. Please try again.",
+        "requiredName": "Name is required."
+      }
+    },
+    "products": {
+      "metaTitle": "Produkte",
+      "title": "Produkte",
+      "sub": "{count} product(s)",
+      "create": "Create product",
+      "createTitle": "New product",
+      "createIntro": "Start by scanning or entering a barcode.",
+      "editTitle": "Bearbeiten product",
+      "viewTitle": "Product details",
+      "backToList": "Zurück zur Liste",
+      "backToView": "Zurück zum Detail",
+      "save": "Speichern",
+      "saving": "Speichern…",
+      "loading": "Laden…",
+      "empty": "No products yet.",
+      "searchPlaceholder": "Search by name or barcode…",
+      "columns": {
+        "name": "Name",
+        "fidtabId": "FidTab ID",
+        "category": "Category",
+        "price": "Price",
+        "stock": "Stock",
+        "status": "Status",
+        "actions": "Aktionen"
+      },
+      "actions": {
+        "view": "Ansehen",
+        "edit": "Bearbeiten"
+      },
+      "fields": {
+        "fidtabId": "FidTab ID",
+        "name": "Name",
+        "shortDescription": "Short description",
+        "description": "Description",
+        "price": "Sale price (CHF)",
+        "oldPrice": "Previous price (CHF)",
+        "buyPrice": "Purchase price (CHF)",
+        "stock": "Stock",
+        "quantity": "Quantity",
+        "unit": "Unit",
+        "category": "Category",
+        "status": "Status",
+        "barCode": "Barcode",
+        "isDeliverable": "Delivery available",
+        "isPromo": "On promotion"
+      },
+      "barcode": {
+        "hint": "EAN, UPC or other product code. Scan with the camera or type the number.",
+        "placeholder": "Scan or enter barcode…",
+        "scan": "Scan",
+        "stopScan": "Stop",
+        "checking": "Checking barcode…",
+        "cameraError": "Could not access the camera."
+      },
+      "errors": {
+        "notFound": "Product not found.",
+        "saveFailed": "Could not save the product. Please try again.",
+        "loadFailed": "Could not load the product.",
+        "requiredName": "Name is required.",
+        "invalidPrice": "Enter a valid price (≥ 0).",
+        "barCodeExists": "A product already exists with this barcode ({name} · {uid}).",
+        "viewExistingProduct": "Ansehen existing product"
+      },
+      "categories": {
+        "food_and_groceries": "Food & groceries",
+        "household": "Household",
+        "tobacco_and_accessories": "Tobacco & accessories",
+        "personal_care": "Personal care",
+        "baby_products": "Baby products",
+        "pet_products": "Pet products",
+        "office_and_stationery": "Office & stationery",
+        "electronics_and_accessories": "Electronics & accessories",
+        "beauty_devices": "Beauty devices",
+        "services": "Services",
+        "unknown": "Uncategorized"
+      },
+      "statuses": {
+        "available": "Available",
+        "unavailable": "Unavailable",
+        "out_of_stock": "Out of stock",
+        "low_stock": "Low stock",
+        "unknown": "Unknown"
+      },
+      "units": {
+        "piece": "Piece",
+        "kg": "Kilogram",
+        "l": "Litre",
+        "cl": "Centilitre",
+        "pack": "Pack",
+        "unknown": "—"
+      }
+    },
+    "brands": {
+      "metaTitle": "Marken",
+      "title": "Marken",
+      "sub": "{count} brand(s)",
+      "create": "Create brand",
+      "createTitle": "New brand",
+      "editTitle": "Bearbeiten brand",
+      "viewTitle": "Brand details",
+      "backToList": "Zurück zur Liste",
+      "backToView": "Zurück zum Detail",
+      "save": "Speichern",
+      "saving": "Speichern…",
+      "loading": "Laden…",
+      "empty": "No brands yet.",
+      "searchPlaceholder": "Search by name or FidTab ID…",
+      "columns": {
+        "name": "Name",
+        "categories": "Categories",
+        "fidtabId": "FidTab ID",
+        "actions": "Aktionen"
+      },
+      "actions": {
+        "view": "Ansehen",
+        "edit": "Bearbeiten"
+      },
+      "fields": {
+        "name": "Name",
+        "uidFidtabBrand": "FidTab ID",
+        "photo": "Photo",
+        "addPhoto": "Add photo",
+        "changePhoto": "Change photo",
+        "removePhoto": "Remove photo",
+        "noPhoto": "No photo",
+        "uploadingPhoto": "Uploading…",
+        "photoUploadError": "Could not upload the photo.",
+        "photoRemoveError": "Could not remove the photo.",
+        "openPreview": "Open preview",
+        "closePreview": "Close preview",
+        "categories": "Categories"
+      },
+      "errors": {
+        "notFound": "Brand not found.",
+        "saveFailed": "Could not save the brand. Please try again.",
+        "loadFailed": "Could not load the brand.",
+        "requiredName": "Name is required."
+      }
+    },
+    "customers": {
+      "metaTitle": "Kunden",
+      "title": "Kunden",
+      "sub": "{count} customer(s)",
+      "create": "Create customer",
+      "createTitle": "New customer",
+      "editTitle": "Bearbeiten customer",
+      "viewTitle": "Customer details",
+      "backToList": "Zurück zur Liste",
+      "backToView": "Zurück zum Detail",
+      "save": "Speichern",
+      "saving": "Speichern…",
+      "loading": "Laden…",
+      "empty": "No customers yet.",
+      "searchPlaceholder": "Search by name, email or phone…",
+      "columns": {
+        "name": "Name",
+        "email": "E-Mail",
+        "phone": "Phone",
+        "company": "Store",
+        "points": "Points",
+        "status": "Status",
+        "fidtabId": "FidTab ID",
+        "actions": "Aktionen"
+      },
+      "actions": {
+        "view": "Ansehen",
+        "edit": "Bearbeiten"
+      },
+      "fields": {
+        "fidtabId": "FidTab ID",
+        "displayName": "Display name",
+        "email": "E-Mail",
+        "phone": "Phone",
+        "uidCompany": "Store (uid)",
+        "status": "Status",
+        "gender": "Gender",
+        "countryCode": "Country (code)",
+        "loyaltyPoints": "Treue points",
+        "loyaltyAmount": "Lifetime amount (CHF)",
+        "loyaltyTier": "Treue tier"
+      },
+      "statuses": {
+        "first_connection": "First sign-in",
+        "complete_profile": "Incomplete profile",
+        "active": "Aktiv",
+        "inactive": "Inaktiv",
+        "unknown": "Unknown"
+      },
+      "genders": {
+        "female": "Female",
+        "male": "Male",
+        "other": "Other",
+        "unknown": "Not specified"
+      },
+      "loyaltyTiers": {
+        "normal": "Standard",
+        "silver": "Silver",
+        "gold": "Gold",
+        "platinum": "Platinum"
+      },
+      "errors": {
+        "notFound": "Customer not found.",
+        "saveFailed": "Could not save the customer. Please try again.",
+        "requiredIdentity": "Enter a name or email address."
+      }
+    },
+    "loyalty": {
+      "metaTitle": "Treue card",
+      "title": "Treue card",
+      "subtitle": "Global FidTab settings applied to partner stores.",
+      "loading": "Laden…",
+      "save": "Speichern",
+      "saving": "Speichern…",
+      "reset": "Reset",
+      "success": "Settings saved.",
+      "summaryEarn": "Earn: between {min} and {max} {currency} spent = 1 point (set per store).",
+      "summaryUse": "Redeem: 1 point = {amount} {currency}.",
+      "sections": {
+        "settings": "Treue settings",
+        "prohibited": "Ausgeschlossene Produkte"
+      },
+      "settingsIntro": "Set point bounds and value for the entire FidTab network.",
+      "prohibitedIntro": "These products never earn points, regardless of the store.",
+      "fields": {
+        "minAmountToEarn": "Minimum spend for 1 point",
+        "minAmountToEarnHint": "Lower bound stores must respect when awarding points.",
+        "maxAmountToEarn": "Maximum spend for 1 point",
+        "maxAmountToEarnHint": "Upper bound stores must respect when awarding points.",
+        "amountToUse": "Point value",
+        "amountToUseHint": "Amount deducted or equivalent when redeeming one point.",
+        "currency": "Currency",
+        "prohibitedProductsSelect": "Add a product…",
+        "prohibitedProductsLoading": "Loading products…",
+        "prohibitedProductsEmpty": "No products available",
+        "prohibitedProductsNone": "No excluded products yet.",
+        "prohibitedProductsRemove": "Remove from list"
+      },
+      "errors": {
+        "saveFailed": "Could not save settings. Please try again.",
+        "invalidMin": "Enter a valid minimum amount (> 0).",
+        "invalidMax": "Enter a valid maximum amount (> 0).",
+        "minGreaterThanMax": "Maximum must be greater than or equal to minimum.",
+        "invalidUse": "Enter a valid point value (> 0).",
+        "invalidCurrency": "Select a currency."
+      }
+    }
+  },
+  it: {
+    "meta": {
+      "titleSuffix": "Amministrazione",
+      "description": "Portale di amministrazione FidTab."
+    },
+    "login": {
+      "metaTitle": "Accedi",
+      "title": "Area",
+      "titleEm": "admin",
+      "sub": "Accedi per entrare nella dashboard {name}.",
+      "email": "Indirizzo e-mail",
+      "password": "Password",
+      "submit": "Accedi",
+      "submitting": "Accesso…",
+      "showPassword": "Mostra password",
+      "hidePassword": "Nascondi password",
+      "errors": {
+        "invalidEmail": "Indirizzo e-mail non valido.",
+        "required": "Campo obbligatorio.",
+        "invalidCredential": "E-mail o password errati.",
+        "userDisabled": "Account disattivato.",
+        "tooManyRequests": "Troppi tentativi. Riprova più tardi.",
+        "network": "Errore di rete. Controlla la connessione.",
+        "default": "Si è verificato un errore. Riprova."
+      }
+    },
+    "theme": {
+      "label": "Tema",
+      "options": {
+        "system": "Sistema",
+        "light": "Chiaro",
+        "dark": "Scuro"
+      }
+    },
+    "dashboard": {
+      "metaTitle": "Home",
+      "navAria": "Navigazione principale",
+      "nav": {
+        "home": "Home",
+        "companies": "Esercizi",
+        "products": "Prodotti",
+        "brands": "Marchi",
+        "customers": "Clienti",
+        "loyalty": "Fedeltà"
+      },
+      "signOut": "Esci",
+      "userFallback": "Utente",
+      "welcome": "Benvenuto, {name}",
+      "accountTitle": "Il tuo account",
+      "fields": {
+        "email": "E-mail",
+        "role": "Ruolo",
+        "status": "Stato"
+      },
+      "empty": "—",
+      "statusLabels": {
+        "first_connection": "Complete your first sign-in",
+        "complete_profile": "Complete your profile",
+        "active": "Active",
+        "inactive": "Inactive",
+        "unknown": "Unknown status"
+      }
+    },
+    "nav": {
+      "openMenu": "Apri menu",
+      "closeMenu": "Chiudi menu"
+    },
+    "companies": {
+      "metaTitle": "Esercizi",
+      "title": "Esercizi",
+      "sub": "{count} store(s)",
+      "create": "Crea esercizio",
+      "createTitle": "Nuovo esercizio",
+      "editTitle": "Modifica esercizio",
+      "viewTitle": "Dettaglio esercizio",
+      "backToList": "Torna all'elenco",
+      "backToView": "Torna al dettaglio",
+      "save": "Salva",
+      "saving": "Salvataggio…",
+      "loading": "Caricamento…",
+      "empty": "Nessun esercizio al momento.",
+      "searchPlaceholder": "Cerca per nome, tag o città…",
+      "columns": {
+        "name": "Nome",
+        "tag": "Tag",
+        "city": "Città",
+        "fidtabId": "FidTab ID",
+        "actions": "Azioni"
+      },
+      "actions": {
+        "view": "Consulta",
+        "edit": "Modifica"
+      },
+      "fields": {
+        "fidtabId": "FidTab ID",
+        "name": "Nome",
+        "tag": "Tag / tagline",
+        "logo": "Logo",
+        "emailContact": "Contact email",
+        "phone": "Phone",
+        "addressStreet": "Street",
+        "addressZip": "ZIP",
+        "addressCity": "Città",
+        "addressCountry": "Country (code)"
+      },
+      "errors": {
+        "notFound": "Store not found.",
+        "saveFailed": "Could not save the store. Please try again.",
+        "requiredName": "Nome is required."
+      }
+    },
+    "products": {
+      "metaTitle": "Prodotti",
+      "title": "Prodotti",
+      "sub": "{count} product(s)",
+      "create": "Create product",
+      "createTitle": "New product",
+      "createIntro": "Start by scanning or entering a barcode.",
+      "editTitle": "Modifica product",
+      "viewTitle": "Product details",
+      "backToList": "Torna all'elenco",
+      "backToView": "Torna al dettaglio",
+      "save": "Salva",
+      "saving": "Salvataggio…",
+      "loading": "Caricamento…",
+      "empty": "No products yet.",
+      "searchPlaceholder": "Search by name or barcode…",
+      "columns": {
+        "name": "Nome",
+        "fidtabId": "FidTab ID",
+        "category": "Category",
+        "price": "Price",
+        "stock": "Stock",
+        "status": "Stato",
+        "actions": "Azioni"
+      },
+      "actions": {
+        "view": "Consulta",
+        "edit": "Modifica"
+      },
+      "fields": {
+        "fidtabId": "FidTab ID",
+        "name": "Nome",
+        "shortDescription": "Short description",
+        "description": "Description",
+        "price": "Sale price (CHF)",
+        "oldPrice": "Previous price (CHF)",
+        "buyPrice": "Purchase price (CHF)",
+        "stock": "Stock",
+        "quantity": "Quantity",
+        "unit": "Unit",
+        "category": "Category",
+        "status": "Stato",
+        "barCode": "Barcode",
+        "isDeliverable": "Delivery available",
+        "isPromo": "On promotion"
+      },
+      "barcode": {
+        "hint": "EAN, UPC or other product code. Scan with the camera or type the number.",
+        "placeholder": "Scan or enter barcode…",
+        "scan": "Scan",
+        "stopScan": "Stop",
+        "checking": "Checking barcode…",
+        "cameraError": "Could not access the camera."
+      },
+      "errors": {
+        "notFound": "Product not found.",
+        "saveFailed": "Could not save the product. Please try again.",
+        "loadFailed": "Could not load the product.",
+        "requiredName": "Nome is required.",
+        "invalidPrice": "Enter a valid price (≥ 0).",
+        "barCodeExists": "A product already exists with this barcode ({name} · {uid}).",
+        "viewExistingProduct": "Consulta existing product"
+      },
+      "categories": {
+        "food_and_groceries": "Food & groceries",
+        "household": "Household",
+        "tobacco_and_accessories": "Tobacco & accessories",
+        "personal_care": "Personal care",
+        "baby_products": "Baby products",
+        "pet_products": "Pet products",
+        "office_and_stationery": "Office & stationery",
+        "electronics_and_accessories": "Electronics & accessories",
+        "beauty_devices": "Beauty devices",
+        "services": "Services",
+        "unknown": "Uncategorized"
+      },
+      "statuses": {
+        "available": "Available",
+        "unavailable": "Unavailable",
+        "out_of_stock": "Out of stock",
+        "low_stock": "Low stock",
+        "unknown": "Unknown"
+      },
+      "units": {
+        "piece": "Piece",
+        "kg": "Kilogram",
+        "l": "Litre",
+        "cl": "Centilitre",
+        "pack": "Pack",
+        "unknown": "—"
+      }
+    },
+    "brands": {
+      "metaTitle": "Marchi",
+      "title": "Marchi",
+      "sub": "{count} brand(s)",
+      "create": "Create brand",
+      "createTitle": "New brand",
+      "editTitle": "Modifica brand",
+      "viewTitle": "Brand details",
+      "backToList": "Torna all'elenco",
+      "backToView": "Torna al dettaglio",
+      "save": "Salva",
+      "saving": "Salvataggio…",
+      "loading": "Caricamento…",
+      "empty": "No brands yet.",
+      "searchPlaceholder": "Search by name or FidTab ID…",
+      "columns": {
+        "name": "Nome",
+        "categories": "Categories",
+        "fidtabId": "FidTab ID",
+        "actions": "Azioni"
+      },
+      "actions": {
+        "view": "Consulta",
+        "edit": "Modifica"
+      },
+      "fields": {
+        "name": "Nome",
+        "uidFidtabBrand": "FidTab ID",
+        "photo": "Photo",
+        "addPhoto": "Add photo",
+        "changePhoto": "Change photo",
+        "removePhoto": "Remove photo",
+        "noPhoto": "No photo",
+        "uploadingPhoto": "Uploading…",
+        "photoUploadError": "Could not upload the photo.",
+        "photoRemoveError": "Could not remove the photo.",
+        "openPreview": "Open preview",
+        "closePreview": "Close preview",
+        "categories": "Categories"
+      },
+      "errors": {
+        "notFound": "Brand not found.",
+        "saveFailed": "Could not save the brand. Please try again.",
+        "loadFailed": "Could not load the brand.",
+        "requiredName": "Nome is required."
+      }
+    },
+    "customers": {
+      "metaTitle": "Clienti",
+      "title": "Clienti",
+      "sub": "{count} customer(s)",
+      "create": "Create customer",
+      "createTitle": "New customer",
+      "editTitle": "Modifica customer",
+      "viewTitle": "Customer details",
+      "backToList": "Torna all'elenco",
+      "backToView": "Torna al dettaglio",
+      "save": "Salva",
+      "saving": "Salvataggio…",
+      "loading": "Caricamento…",
+      "empty": "No customers yet.",
+      "searchPlaceholder": "Search by name, email or phone…",
+      "columns": {
+        "name": "Nome",
+        "email": "E-mail",
+        "phone": "Phone",
+        "company": "Store",
+        "points": "Points",
+        "status": "Stato",
+        "fidtabId": "FidTab ID",
+        "actions": "Azioni"
+      },
+      "actions": {
+        "view": "Consulta",
+        "edit": "Modifica"
+      },
+      "fields": {
+        "fidtabId": "FidTab ID",
+        "displayName": "Display name",
+        "email": "E-mail",
+        "phone": "Phone",
+        "uidCompany": "Store (uid)",
+        "status": "Stato",
+        "gender": "Gender",
+        "countryCode": "Country (code)",
+        "loyaltyPoints": "Fedeltà points",
+        "loyaltyAmount": "Lifetime amount (CHF)",
+        "loyaltyTier": "Fedeltà tier"
+      },
+      "statuses": {
+        "first_connection": "First sign-in",
+        "complete_profile": "Incomplete profile",
+        "active": "Active",
+        "inactive": "Inactive",
+        "unknown": "Unknown"
+      },
+      "genders": {
+        "female": "Female",
+        "male": "Male",
+        "other": "Other",
+        "unknown": "Not specified"
+      },
+      "loyaltyTiers": {
+        "normal": "Standard",
+        "silver": "Silver",
+        "gold": "Gold",
+        "platinum": "Platinum"
+      },
+      "errors": {
+        "notFound": "Customer not found.",
+        "saveFailed": "Could not save the customer. Please try again.",
+        "requiredIdentity": "Enter a name or email address."
+      }
+    },
+    "loyalty": {
+      "metaTitle": "Fedeltà card",
+      "title": "Fedeltà card",
+      "subtitle": "Global FidTab settings applied to partner stores.",
+      "loading": "Caricamento…",
+      "save": "Salva",
+      "saving": "Salvataggio…",
+      "reset": "Reset",
+      "success": "Settings saved.",
+      "summaryEarn": "Earn: between {min} and {max} {currency} spent = 1 point (set per store).",
+      "summaryUse": "Redeem: 1 point = {amount} {currency}.",
+      "sections": {
+        "settings": "Fedeltà settings",
+        "prohibited": "Prodotti esclusi"
+      },
+      "settingsIntro": "Set point bounds and value for the entire FidTab network.",
+      "prohibitedIntro": "These products never earn points, regardless of the store.",
+      "fields": {
+        "minAmountToEarn": "Minimum spend for 1 point",
+        "minAmountToEarnHint": "Lower bound stores must respect when awarding points.",
+        "maxAmountToEarn": "Maximum spend for 1 point",
+        "maxAmountToEarnHint": "Upper bound stores must respect when awarding points.",
+        "amountToUse": "Point value",
+        "amountToUseHint": "Amount deducted or equivalent when redeeming one point.",
+        "currency": "Currency",
+        "prohibitedProductsSelect": "Add a product…",
+        "prohibitedProductsLoading": "Loading products…",
+        "prohibitedProductsEmpty": "No products available",
+        "prohibitedProductsNone": "No excluded products yet.",
+        "prohibitedProductsRemove": "Remove from list"
+      },
+      "errors": {
+        "saveFailed": "Could not save settings. Please try again.",
+        "invalidMin": "Enter a valid minimum amount (> 0).",
+        "invalidMax": "Enter a valid maximum amount (> 0).",
+        "minGreaterThanMax": "Maximum must be greater than or equal to minimum.",
+        "invalidUse": "Enter a valid point value (> 0).",
+        "invalidCurrency": "Select a currency."
+      }
+    }
   },
 }
 

@@ -1,4 +1,4 @@
-export const LOCALES = ['fr', 'en']
+export const LOCALES = ['fr', 'en', 'de', 'it']
 export const defaultLocale = 'fr'
 
 export const RTL_LOCALES = []
@@ -6,22 +6,30 @@ export const RTL_LOCALES = []
 export const LOCALE_FLAGS = {
   fr: '🇫🇷',
   en: '🇬🇧',
+  de: '🇩🇪',
+  it: '🇮🇹',
 }
 
 const LANG = {
   fr: 'Français',
   en: 'Anglais',
+  de: 'Allemand',
+  it: 'Italien',
 }
 
 /** Noms des langues affichés dans la langue UI courante */
 export const LOCALE_NAMES = {
-  fr: { ...LANG, fr: 'Français', en: 'Anglais' },
-  en: { fr: 'French', en: 'English' },
+  fr: { ...LANG, fr: 'Français' },
+  en: { fr: 'French', en: 'English', de: 'German', it: 'Italian' },
+  de: { fr: 'Französisch', en: 'Englisch', de: 'Deutsch', it: 'Italienisch' },
+  it: { fr: 'Francese', en: 'Inglese', de: 'Tedesco', it: 'Italiano' },
 }
 
 export const INTL_LOCALE_MAP = {
   fr: 'fr-FR',
   en: 'en-GB',
+  de: 'de-DE',
+  it: 'it-IT',
 }
 
 export function isRtlLocale(locale) {
