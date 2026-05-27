@@ -1,6 +1,6 @@
 import { DM_Sans, Noto_Sans_Arabic, Syne } from 'next/font/google'
 import { WEBSITE_NAME } from '@/context/constants/constants_app'
-import { messages } from '@/i18n/messages'
+import { themeInitScript } from '@/lib/theme'
 import Providers from './providers'
 import './globals.css'
 
@@ -25,16 +25,17 @@ const notoArabic = Noto_Sans_Arabic({
   display: 'swap',
 })
 
-const defaultMeta = messages.fr.meta
-
 export const metadata = {
-  title: `${WEBSITE_NAME} — ${defaultMeta.titleSuffix}`,
-  description: defaultMeta.description,
+  title: `${WEBSITE_NAME} — Administration`,
+  description: 'Espace d\'administration FidTab.',
 }
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="fr" className={`${syne.variable} ${dmSans.variable} ${notoArabic.variable}`}>
+    <html lang="fr" suppressHydrationWarning className={`${syne.variable} ${dmSans.variable} ${notoArabic.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body>
         <Providers>{children}</Providers>
       </body>

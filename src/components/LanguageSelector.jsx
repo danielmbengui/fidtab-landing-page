@@ -3,20 +3,10 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useLanguage } from '@/context/LanguageProvider'
+import { getFloatingMenuPosition } from '@/lib/floatingMenuPosition'
 
 function getMenuPosition(triggerEl) {
-  if (!triggerEl) return null
-  const rect = triggerEl.getBoundingClientRect()
-  const top = rect.bottom + 8
-  const maxHeight = Math.min(360, window.innerHeight - top - 12)
-
-  return {
-    top,
-    minWidth: Math.max(rect.width, 220),
-    maxHeight: Math.max(160, maxHeight),
-    right: Math.max(8, window.innerWidth - rect.right),
-    left: 'auto',
-  }
+  return getFloatingMenuPosition(triggerEl, { minWidth: 220, maxHeight: 360 })
 }
 
 export default function LanguageSelector() {
@@ -90,9 +80,10 @@ export default function LanguageSelector() {
       aria-label="Language"
       style={{
         top: menuPosition.top,
-        right: menuPosition.right,
         left: menuPosition.left,
+        right: menuPosition.right,
         minWidth: menuPosition.minWidth,
+        maxWidth: menuPosition.maxWidth,
         maxHeight: menuPosition.maxHeight,
       }}
     >
