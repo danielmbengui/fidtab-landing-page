@@ -34,9 +34,12 @@ export default function ProductForm({
   errors = {},
   showBarCode = false,
   enableBarcodeInput = false,
+  barcodeIntro,
   onBarcodeChange,
   barcodeChecking = false,
   fieldsLocked = false,
+  onReset,
+  resetDisabled = false,
 }) {
   const { content: c } = useLanguage()
   const p = c.products
@@ -64,6 +67,7 @@ export default function ProductForm({
           onChange={onBarcodeChange}
           checking={barcodeChecking}
           disabled={submitting}
+          intro={barcodeIntro}
         />
       ) : null}
 
@@ -291,6 +295,16 @@ export default function ProductForm({
           >
             {submitting ? p.saving : (submitLabel ?? p.save)}
           </button>
+          {onReset ? (
+            <button
+              type="button"
+              className="btn-ghost"
+              onClick={onReset}
+              disabled={submitting || resetDisabled}
+            >
+              {p.reset}
+            </button>
+          ) : null}
         </div>
       ) : null}
 

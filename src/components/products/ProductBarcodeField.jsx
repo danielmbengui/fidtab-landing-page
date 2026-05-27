@@ -19,9 +19,11 @@ export default function ProductBarcodeField({
   onChange,
   disabled = false,
   checking = false,
+  intro,
 }) {
   const { content: c } = useLanguage()
   const b = c.products.barcode
+  const introText = intro ?? c.products.createIntro
   const readerId = useId().replace(/:/g, '')
   const scannerRef = useRef(null)
   const onChangeRef = useRef(onChange)
@@ -87,7 +89,7 @@ export default function ProductBarcodeField({
 
   return (
     <div className="products-barcode-field">
-      <p className="products-barcode-intro">{c.products.createIntro}</p>
+      <p className="products-barcode-intro">{introText}</p>
       <label className="login-field products-field" htmlFor="product-bar-code-input">
         <span>{c.products.fields.barCode}</span>
         <span className="loyalty-field-hint">{b.hint}</span>

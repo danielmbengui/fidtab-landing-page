@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import BrandLogo from '@/components/BrandLogo'
+import ConfirmDialog from '@/components/common/ConfirmDialog'
 import LanguageSelector from '@/components/LanguageSelector'
 import ThemeSelector from '@/components/ThemeSelector'
 import { useAuth } from '@/context/AuthProvider'
@@ -31,6 +32,7 @@ export default function DashboardSidebar() {
   const login = c.login
   const d = c.dashboard
   const [signingOut, setSigningOut] = useState(false)
+  const [signOutDialogOpen, setSignOutDialogOpen] = useState(false)
 
   const navItems = useMemo(
     () => [
@@ -44,13 +46,23 @@ export default function DashboardSidebar() {
     [d.nav.home, d.nav.companies, d.nav.products, d.nav.brands, d.nav.customers, d.nav.loyalty],
   )
 
-  async function handleSignOut() {
+  async function handleSignOutConfirm() {
     setSigningOut(true)
     try {
       await logout()
+      setSignOutDialogOpen(false)
     } finally {
       setSigningOut(false)
     }
+  }
+
+  function handleSignOutClick() {
+    setSignOutDialogOpen(true)
+  }
+
+  function handleSignOutCancel() {
+    if (signingOut) return
+    setSignOutDialogOpen(false)
   }
 
   const userLabel = getUserLabel(user, authUser, d.userFallback)
@@ -99,12 +111,23 @@ export default function DashboardSidebar() {
         <button
           type="button"
           className="btn-ghost dashboard-signout"
-          onClick={handleSignOut}
+          onClick={handleSignOutClick}
           disabled={signingOut}
         >
-          {signingOut ? login.submitting : d.signOut}
+          {d.signOut}
         </button>
       </div>
+
+      <ConfirmDialog
+        open={signOutDialogOpen}
+        title={d.signOutConfirmTitle}
+        message={d.signOutConfirmMessage}
+        confirmLabel={signingOut ? login.submitting : d.signOutConfirm}
+        cancelLabel={d.signOutCancel}
+        onConfirm={handleSignOutConfirm}
+        onCancel={handleSignOutCancel}
+        confirming={signingOut}
+      />
     </aside>
   )
 }
