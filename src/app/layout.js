@@ -32,9 +32,18 @@ export const metadata = {
   description: defaultMeta.description,
 }
 
+const themeInitScript = `(function(){try{var t=localStorage.getItem('fidtab-theme')||'system';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.style.colorScheme=d?'dark':'light'}catch(e){}})();`
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="fr" className={`${syne.variable} ${dmSans.variable} ${notoArabic.variable}`}>
+    <html
+      lang="fr"
+      className={`${syne.variable} ${dmSans.variable} ${notoArabic.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body>
         <Providers>{children}</Providers>
       </body>

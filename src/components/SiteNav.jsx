@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { useEffect } from 'react'
 import BrandLogo from '@/components/BrandLogo'
 import LanguageSelector from '@/components/LanguageSelector'
+import ThemeToggle from '@/components/ThemeToggle'
+import { COMPANY_URL } from '@/context/constants/constants_app'
 
 export default function SiteNav({
   c,
@@ -19,7 +21,7 @@ export default function SiteNav({
     { href: '/#fonctionnalites', sectionId: 'fonctionnalites', label: c.nav.features },
     { href: '/#fidelite', sectionId: 'fidelite', label: c.nav.loyalty },
     { href: '/#comment', sectionId: 'comment', label: c.nav.how },
-    { href: '/#tarifs', sectionId: 'tarifs', label: c.nav.pricing },
+    { href: '/#partenaires', sectionId: 'partenaires', label: c.nav.partners },
   ]
 
   useEffect(() => {
@@ -64,9 +66,19 @@ export default function SiteNav({
                 </li>
               ))}
               <li>
+                <a
+                  href={COMPANY_URL}
+                  className="nav-enterprise"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {c.nav.enterprise}
+                </a>
+              </li>
+              <li>
                 <Link
-                  href="/#demo"
-                  className={`nav-cta${isNavLinkActive('demo') ? ' active' : ''}`}
+                  href="/#app"
+                  className={`nav-cta${isNavLinkActive('app') ? ' active' : ''}`}
                 >
                   {c.nav.cta}
                 </Link>
@@ -74,6 +86,7 @@ export default function SiteNav({
             </ul>
           ) : null}
           <div className="nav-right">
+            <ThemeToggle />
             <LanguageSelector />
             {!demoPageActive ? (
               <button
@@ -101,13 +114,24 @@ export default function SiteNav({
               {link.label}
             </Link>
           ))}
+          <a
+            href={COMPANY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setMenuOpen(false)}
+          >
+            {c.nav.enterprise}
+          </a>
           <Link
-            href="/#demo"
-            className={isNavLinkActive('demo') ? 'active' : undefined}
+            href="/#app"
+            className={isNavLinkActive('app') ? 'active' : undefined}
             onClick={() => setMenuOpen(false)}
           >
             {c.nav.cta}
           </Link>
+          <div className="mobile-menu-theme">
+            <ThemeToggle />
+          </div>
         </div>
       ) : null}
     </>

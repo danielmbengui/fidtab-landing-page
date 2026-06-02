@@ -9,7 +9,19 @@ export class ClassCountry {
     static DEFAULT_PREFIXE = '+41';
     static DEFAULT_CURRENCY = "CHF";
     static CURRENCIES = ['CHF', 'USD', 'AOA', 'EUR'];
+    /** Devises proposées dans l’admin (étendre `APP_CURRENCIES` pour en activer d’autres). */
+    static APP_CURRENCIES = ['CHF'];
     static COUNTRIES = countriesData;
+
+    static getAppCurrencies() {
+        return [...ClassCountry.APP_CURRENCIES];
+    }
+
+    static resolveAppCurrency(code = ClassCountry.DEFAULT_CURRENCY) {
+        const normalized = String(code ?? "").trim().toUpperCase();
+        if (ClassCountry.APP_CURRENCIES.includes(normalized)) return normalized;
+        return ClassCountry.DEFAULT_CURRENCY;
+    }
 
     constructor({
         uid = "",
@@ -186,11 +198,13 @@ export class ClassCountry {
             continent: _continent,
         }) : null;
     }
-    static getCountriesByCode(codes = [],lang = DEFAULT_LOCALE) {
+    static getCountriesByCode(codes = [], lang = DEFAULT_LOCALE) {
         if (codes.length === 0) return [];
         const _countries = this.getAllCountries(lang);
         const _codes = codes.map(code => code.toUpperCase());
-        return _countries.filter(country => _codes.includes(country.code.toUpperCase())).map(country => this.getCountryByCode(country.code));
+        return _countries
+            .filter(country => _codes.includes(country.code.toUpperCase()))
+            .map(country => this.getCountryByCode(country.code, lang));
     }
     static getCountryByPrefixe(prefixe = "") {
         const _countries = ClassCountry.COUNTRIES;

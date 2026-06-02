@@ -1,5 +1,10 @@
 export const WEBSITE_NAME = 'FidTab'
-export const REQUEST_DEMO_PATH = '/request-demo'
+export const COMPANY_URL = 'https://www.company.fidtab.ch/'
+export const DOWNLOAD_APP_PATH = '/download'
+/** @deprecated Utiliser DOWNLOAD_APP_PATH */
+export const REQUEST_DEMO_PATH = DOWNLOAD_APP_PATH
+export const APP_STORE_URL = 'https://apps.apple.com/app/fidtab'
+export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.fidtab.app'
 export const LEGAL_NOTICE_PATH = '/legal-notice'
 export const TERMS_PATH = '/terms'
 export const PRIVACY_PATH = '/privacy'

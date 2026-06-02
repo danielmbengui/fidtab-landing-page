@@ -3,7 +3,7 @@ import { ClassFirestore } from "./ClassFirestore";
 export class ClassAddress {
     constructor(raw = {}) {
         const data = ClassAddress.normalizePayload(raw);
-
+        this._uid_city = data.uid_city ?? "";
         this._street = data.street ?? "";
         this._street_1 = data.street_1 ?? "";
         this._short_street = data.short_street ?? "";
@@ -13,7 +13,6 @@ export class ClassAddress {
         this._district = data.district ?? "";
         this._province = data.province ?? "";
         this._country_code = data.country_code ?? "";
-        this._full_address = data.full_address ?? "";
         this._public_transport_buses = ClassAddress.normalizePublicTransportBuses(
             data.public_transport_buses,
         );
@@ -76,6 +75,10 @@ export class ClassAddress {
         return [];
     }
 
+    get uid_city() {
+        return this._uid_city;
+    }
+
     get street() {
         return this._street;
     }
@@ -111,11 +114,6 @@ export class ClassAddress {
     get country_code() {
         return this._country_code;
     }
-
-    get full_address() {
-        return this._full_address;
-    }
-
     get public_transport_buses() {
         return this._public_transport_buses;
     }
@@ -128,6 +126,9 @@ export class ClassAddress {
         return this._position;
     }
 
+    set uid_city(value) {
+        this._uid_city = value;
+    }
     set street(value) {
         this._street = value;
     }
@@ -155,9 +156,6 @@ export class ClassAddress {
     set country_code(value) {
         this._country_code = value;
     }
-    set full_address(value) {
-        this._full_address = value;
-    }
     set public_transport_buses(value) {
         this._public_transport_buses = ClassAddress.normalizePublicTransportBuses(value);
     }
@@ -167,10 +165,14 @@ export class ClassAddress {
     set position(value) {
         this._position = ClassAddress.normalizePosition(value);
     }
+    get full_address() {
+        return `${this._street ? this._street : ''}, ${this.street_1}, ${this.city_name} ${this.zip_code} ${this.district} ${this.province} ${this.country_code}`;
+    }
 
     static toJSON(data = this) {
         const source = data instanceof ClassAddress ? data : new ClassAddress(data);
         const payload = {
+            uid_city: source.uid_city,
             street: source.street,
             street_1: source.street_1,
             short_street: source.short_street,
@@ -191,6 +193,32 @@ export class ClassAddress {
         }
 
         return ClassFirestore.omitUndefinedDeep(payload);
+    }
+
+    _createFullAddress(countryName="") {
+        var full_address = "";
+        if (this._street) {
+            full_address += this._street;
+        }
+        if (this._street_1) {
+            full_address += `, ${this._street_1}`;
+        }
+        if(this._district) {
+            full_address += `, ${this._district}`;
+        }
+        if (this._zip_code) {
+            full_address += `, ${this._zip_code}`;
+        }
+        if (this._province) {
+            full_address += ` ${this._province}`;
+        }
+        if (this._city_name) {
+            full_address += `, ${this._city_name}`;
+        }
+        if (countryName) {
+            full_address += ` - ${countryName}`;
+        }
+        return full_address;
     }
 
     static toFirestore(data = this) {

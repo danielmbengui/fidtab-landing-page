@@ -2,27 +2,20 @@ import {
   collection,
   collectionGroup,
   doc,
-  DocumentReference,
   getDoc,
   getDocs,
   limit,
   onSnapshot,
-  orderBy,
   query,
   setDoc,
-  startAfter,
-  Timestamp,
   where,
 } from "firebase/firestore";
 import { firestore } from "@/lib/firebaseConfig";
 import { ClassFirestore } from "./ClassFirestore";
-import { capitalizeFirstLetter } from "@/context/functions/functions_strings";
-import { defaultLocale } from "@/i18n/config";
 import {
   LOYALTY_CHF_PER_POINT,
   LOYALTY_POINTS_PER_CHF,
   LOYALTY_TIER,
-  LOYALTY_TIER_LABELS,
   LOYALTY_TIER_THRESHOLDS,
   calculateLoyaltyPointsFromAmount,
   getLoyaltyAmountFromPoints,
@@ -33,6 +26,11 @@ import {
   normalizeLoyaltyAmount,
   normalizeLoyaltyPoints,
 } from "@/lib/loyaltyUserStatics";
+import { capitalizeFirstLetter } from "@/context/functions/functions_strings";
+import { ClassLoyaltyItem } from "./ClassLoyalty";
+import { formatPhoneCompact, formatPhoneNumberInternational } from "@/context/functions/functions_phone";
+import { ClassCountry } from "./ClassCountry";
+import { defaultLocale } from "@/i18n/locales";
 /**
  * Modèle utilisateur Firestore — à faire évoluer (méthodes métier, getters, etc.).
  * Le provider mappe chaque snapshot vers `ClassUser.fromFirestore`.
@@ -63,15 +61,18 @@ export class ClassUser extends ClassFirestore {
    * Ex. `favorite_sport` → docs dans `SPORT`, `blocked_list` → `USERS`.
    */
   static TYPE = Object.freeze({
+    FIDTAB: 'fidtab', // fidtab
     COMPANY: 'company', // entreprise
     EXTERNAL: 'external', // externe
     UNKNOWN: 'unknown',
   });
   static ROLE = Object.freeze({
+    SYSTEM: 'system', // système
     ADMIN: 'admin', // administrateur
     EMPLOYEE: 'employee', // employé
-    CUSTOMER: 'customer', // client
-    UNKNOWN: 'unknown',
+    CUSTOMER: 'customer', // client,
+    GUEST: 'guest', // invité,
+    UNKNOWN: 'unknown', // inconnu,
   });
   static GENDER = Object.freeze({
     WOMAN: 'female',
@@ -86,19 +87,7 @@ export class ClassUser extends ClassFirestore {
     INACTIVE: 'inactive',
     UNKNOWN: 'unknown',
   });
-  static LOYALTY_TIER = LOYALTY_TIER;
-  static LOYALTY_TIER_THRESHOLDS = LOYALTY_TIER_THRESHOLDS;
-  static LOYALTY_CHF_PER_POINT = LOYALTY_CHF_PER_POINT;
-  static LOYALTY_POINTS_PER_CHF = LOYALTY_POINTS_PER_CHF;
-  static LOYALTY_TIER_LABELS = LOYALTY_TIER_LABELS;
-  static normalizeLoyaltyPoints = normalizeLoyaltyPoints;
-  static normalizeLoyaltyAmount = normalizeLoyaltyAmount;
-  static calculateLoyaltyPointsFromAmount = calculateLoyaltyPointsFromAmount;
-  static getLoyaltyAmountFromPoints = getLoyaltyAmountFromPoints;
-  static getLoyaltyTierFromAmount = getLoyaltyTierFromAmount;
-  static getLoyaltyTierFromPoints = getLoyaltyTierFromPoints;
-  static getLoyaltyLabelFromAmount = getLoyaltyLabelFromAmount;
-  static getLoyaltyLabelFromPoints = getLoyaltyLabelFromPoints;
+
 
   static normalizePreferedLanguage(value) {
     if (value == null || value === "") return defaultLocale;
@@ -145,26 +134,25 @@ export class ClassUser extends ClassFirestore {
 
   constructor({
     uid = "",
-    uid_company = "system",
-    uids_products_whishlist=[],
-    display_name="",
-    email="",
-    phone_number="",
-    photo_url="",
-    gender=ClassUser.GENDER.UNKNOWN,
-    birth=null,
-    country_code="",
-    role=ClassUser.ROLE.UNKNOWN,
-    status=ClassUser.STATUS.UNKNOWN,
-    is_verified=false,
-    prefered_language=defaultLocale,
+    uid_company = "",
+    display_name = "",
+    email = "",
+    phone_number = "",
+    photo_url = "",
+    gender = ClassUser.GENDER.UNKNOWN,
+    birth = null,
+    country_code = "",
+    type = ClassUser.TYPE.UNKNOWN,
+    role = ClassUser.ROLE.UNKNOWN,
+    status = ClassUser.STATUS.UNKNOWN,
+    is_verified = false,
+    prefered_language = defaultLocale,
     created_time = new Date(),
     last_edit_time = new Date(),
   } = {}) {
-    const _storage_url = `${ClassUser.COLLECTION}/${uid}/profile.jpg`;
+    const _storage_url = `${ClassUser.STORAGE_FOLDER}/${uid}/profile.jpg`;
     super(uid, created_time, last_edit_time, _storage_url);
     this._uid_company = uid_company;
-    this._uids_products_whishlist = uids_products_whishlist;
     this._display_name = display_name;
     this._email = email;
     this._phone_number = phone_number;
@@ -172,7 +160,7 @@ export class ClassUser extends ClassFirestore {
     this._gender = gender;
     this._birth = ClassFirestore._toJsDate(birth);
     this._country_code = country_code;
-    this._type = ClassUser.TYPE.UNKNOWN;
+    this._type = type;
     this._role = role;
     this._status = status;
     this._is_verified = is_verified;
@@ -183,12 +171,6 @@ export class ClassUser extends ClassFirestore {
   }
   set uid_company(value) {
     this._uid_company = value;
-  }
-  get uids_products_whishlist() {
-    return this._uids_products_whishlist;
-  }
-  set uids_products_whishlist(value) {
-    this._uids_products_whishlist = value;
   }
   get display_name() {
     return this._display_name;
@@ -275,23 +257,86 @@ export class ClassUser extends ClassFirestore {
     this._prefered_language = ClassUser.normalizePreferedLanguage(value);
   }
 
+  static getInitials(name) {
+    return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 3);
+  }
+
   /*
   clone() {
     return ClassUser.makeInstance(this._uid, this.toJSON());
 }
 */
 
+  static normalizeUserDocFromFirestore(data = {}) {
+    const out = ClassUser.normalizeDocRefArrayFieldsFromFirestore(data);
+    const countryCode = String(
+      out.country_code ?? out.country?.code ?? '',
+    ).trim().toUpperCase();
+    if (countryCode) {
+      out.country_code = countryCode;
+    }
+    return out;
+  }
+
+  static toJSON(data = this) {
+    const source =
+      data instanceof ClassUser
+        ? data
+        : ClassUser.makeInstance(data?.uid ?? '', data ?? {});
+
+    const cleaned = {
+      uid: source.uid,
+      uid_company: source.uid_company,
+      uid_club: source.uid_club,
+      uids_products_whishlist: source.uids_products_whishlist,
+      display_name: source.display_name,
+      email: source.email,
+      phone_number: source.phone_number,
+      photo_url: source.photo_url,
+      gender: source.gender,
+      birth: source.birth,
+      country_code: source.country_code,
+      type: source.type,
+      role: source.role,
+      status: source.status,
+      is_verified: source.is_verified,
+      prefered_language: source.prefered_language,
+      created_time: source.created_time,
+      last_edit_time: source.last_edit_time,
+    };
+
+    if (source.role === ClassUser.ROLE.CUSTOMER) {
+      cleaned.uids_companies_loyalties = source.uids_companies_loyalties;
+      cleaned.loyalty_uid = source.loyalty_uid;
+      cleaned.loyalty_tier = source.loyalty_tier;
+      cleaned.loyalty_points = source.loyalty_points;
+      cleaned.loyalty_amount = source.loyalty_amount;
+      if (Array.isArray(source.friends)) {
+        cleaned.friends = ClassFirestore.refArrayToIds(source.friends);
+      }
+    }
+
+    for (const field of ClassUser.FIELDS_TO_OMIT_FIREBASE) {
+      delete cleaned[field];
+    }
+
+    return ClassUser.omitUndefinedDeep(cleaned);
+  }
+
   static makeInstance(uid, data = {}) {
-    if(data.role === ClassUser.ROLE.ADMIN) {
+    if (data.type === ClassUser.TYPE.FIDTAB) {
+      return new ClassUserFidTab({ uid, ...data });
+    }
+    if (data.role === ClassUser.ROLE.ADMIN) {
       return new ClassUserAdmin({ uid, ...data });
     }
-    if(data.role === ClassUser.ROLE.CUSTOMER) {
+    if (data.role === ClassUser.ROLE.CUSTOMER) {
       return new ClassUserCustomer({ uid, ...data });
     }
-    if(data.type === ClassUser.TYPE.COMPANY) {
+    if (data.type === ClassUser.TYPE.COMPANY) {
       return new ClassUserCompany({ uid, ...data });
     }
-    if(data.type === ClassUser.TYPE.EXTERNAL) {
+    if (data.type === ClassUser.TYPE.EXTERNAL) {
       return new ClassUserExternal({ uid, ...data });
     }
     return new ClassUser({ uid, ...data });
@@ -300,6 +345,9 @@ export class ClassUser extends ClassFirestore {
   static converter = {
     toFirestore(instance) {
       if (instance instanceof ClassUser) {
+        if (instance.role === ClassUser.ROLE.CUSTOMER) {
+          return ClassUserCustomer.converter.toFirestore(instance);
+        }
         return ClassUser.omitUndefinedDeep(ClassUser.toJSON(instance));
       }
       return instance;
@@ -307,13 +355,10 @@ export class ClassUser extends ClassFirestore {
     fromFirestore(snapshot, options) {
       const raw = snapshot.data(options) ?? {};
       const uid = snapshot.id;
-      const data = ClassUser.normalizeDocRefArrayFieldsFromFirestore(raw);
-      //const country = ClassCountry.getCountryByCode(data.country?.code || data.country_code || "");
-      //const gender = ClassUser.formatGenderFromFirestore(data.gender);
-      //const scores = ClassUserScores._convertScoresFromFirestore({ ...data.scores, uid_user: uid });
-      //console.log("country class user", country);
-      //data.gender=gender;
-      //data.country = country;
+      const data = ClassUser.normalizeUserDocFromFirestore(raw);
+      if (data.role === ClassUser.ROLE.CUSTOMER) {
+        return ClassUserCustomer.converter.fromFirestore(snapshot, options);
+      }
       return ClassUser.makeInstance(uid, data);
     },
   };
@@ -331,7 +376,9 @@ export class ClassUser extends ClassFirestore {
     return snap.exists();
   }
   static async existsFirestoreByPhone(phone) {
-    const ownerUid = await ClassUser.findUidByPhone(phone);
+    const countryCode = ClassCountry.extractCodeCountryFromPhoneNumber(phone);
+    const _phone = formatPhoneCompact(formatPhoneNumberInternational(phone, countryCode));
+    const ownerUid = await ClassUser.findUidByPhone(_phone);
     return Boolean(ownerUid);
   }
   static async findUidByPhone(phone) {
@@ -401,7 +448,7 @@ export class ClassUser extends ClassFirestore {
   static subscribeFirestore(uid, onChange, onError) {
     if (!uid) {
       onChange(null);
-      return () => {};
+      return () => { };
     }
 
     return onSnapshot(
@@ -438,6 +485,30 @@ export class ClassUser extends ClassFirestore {
     return super.removeFirestore();
   }
 }
+export class ClassUserFidTab extends ClassUser {
+  static FIELDS_TO_OMIT_FIREBASE = [
+    ...ClassUser.FIELDS_TO_OMIT_FIREBASE,
+    //'storage_url',
+    //'is_verified',
+    //'scores',
+  ];
+  static TYPE = Object.freeze({
+    FIDTAB: 'fidtab', // fidtab
+  });
+  static ROLE = Object.freeze({
+    SYSTEM: 'system', // système
+  });
+
+  constructor(data = {}) {
+    super(data);
+    this._uid_company = "FidTab";
+    this._type = ClassUser.TYPE.FIDTAB;
+    this._role = ClassUser.ROLE.SYSTEM;
+  }
+  static makeInstance(uid, data = {}) {
+    return new ClassUserFidTab({ uid, ...data });
+  }
+}
 /**
  * Modèle utilisateur Firestore — à faire évoluer (méthodes métier, getters, etc.).
  * Le provider mappe chaque snapshot vers `ClassUser.fromFirestore`.
@@ -465,6 +536,7 @@ export class ClassUserCompany extends ClassUser {
     return new ClassUserCompany({ uid, ...data });
   }
 }
+
 export class ClassUserAdmin extends ClassUserCompany {
   static FIELDS_TO_OMIT_FIREBASE = [
     ...ClassUser.FIELDS_TO_OMIT_FIREBASE,
@@ -510,6 +582,20 @@ export class ClassUserExternal extends ClassUser {
   }
 }
 export class ClassUserCustomer extends ClassUserExternal {
+  static LOYALTY_TIER = LOYALTY_TIER;
+  static LOYALTY_TIER_THRESHOLDS = LOYALTY_TIER_THRESHOLDS;
+  static LOYALTY_CHF_PER_POINT = LOYALTY_CHF_PER_POINT;
+  static LOYALTY_POINTS_PER_CHF = LOYALTY_POINTS_PER_CHF;
+  static DISPLAY_NAME_MIN_LENGTH = 3;
+  static DISPLAY_NAME_MAX_LENGTH = 50;
+  static normalizeLoyaltyPoints = normalizeLoyaltyPoints;
+  static normalizeLoyaltyAmount = normalizeLoyaltyAmount;
+  static calculateLoyaltyPointsFromAmount = calculateLoyaltyPointsFromAmount;
+  static getLoyaltyAmountFromPoints = getLoyaltyAmountFromPoints;
+  static getLoyaltyTierFromAmount = getLoyaltyTierFromAmount;
+  static getLoyaltyTierFromPoints = getLoyaltyTierFromPoints;
+  static getLoyaltyLabelFromAmount = getLoyaltyLabelFromAmount;
+  static getLoyaltyLabelFromPoints = getLoyaltyLabelFromPoints;
   static FIELDS_TO_OMIT_FIREBASE = [
     ...ClassUserExternal.FIELDS_TO_OMIT_FIREBASE,
   ];
@@ -522,30 +608,39 @@ export class ClassUserCustomer extends ClassUserExternal {
     uids_companies_loyalties = [],
     uids_products_whishlist = [],
     loyalty_uid = "",
-    loyalty_tier = LOYALTY_TIER.NORMAL,
+    loyalty_tier = "",
     loyalty_points = 0,
     loyalty_amount = 0,
+    loyalties = [],
+    friends=[],
     ...rest
   } = {}) {
     super({
       uid,
       uids_products_whishlist,
+      type: ClassUser.TYPE.EXTERNAL,
       role: ClassUser.ROLE.CUSTOMER,
       ...rest,
     });
-    this._type = ClassUser.TYPE.EXTERNAL;
-    this._role = ClassUser.ROLE.CUSTOMER;
     this._uids_companies_loyalties = uids_companies_loyalties;
     this._loyalty_uid = loyalty_uid;
-    this._loyalty_tier = loyalty_tier;
     this._loyalty_points = normalizeLoyaltyPoints(loyalty_points);
     this._loyalty_amount = normalizeLoyaltyAmount(loyalty_amount);
+    this._loyalty_tier = getLoyaltyTierFromAmount(loyalty_amount);
+    this._loyalties = loyalties;
+    this._friends = friends;
   }
-  get uids_companies_loyalties() {
-    return this._uids_companies_loyalties;
+  get loyalties() {
+    return this._loyalties;
   }
-  set uids_companies_loyalties(value) {
-    this._uids_companies_loyalties = value;
+  set loyalties(value) {
+    this._loyalties = value;
+  }
+  get friends() {
+    return this._friends;
+  }
+  set friends(value) {
+    this._friends = value;
   }
   get uids_products_whishlist() {
     return this._uids_products_whishlist;
@@ -576,6 +671,7 @@ export class ClassUserCustomer extends ClassUserExternal {
   }
   set loyalty_amount(value) {
     this._loyalty_amount = normalizeLoyaltyAmount(value);
+    this._loyalty_tier = getLoyaltyTierFromAmount(this._loyalty_amount);
   }
   get loyaltyLabel() {
     if (this._loyalty_amount > 0) {
@@ -599,6 +695,113 @@ export class ClassUserCustomer extends ClassUserExternal {
   static makeInstance(uid, data = {}) {
     return new ClassUserCustomer({ uid, ...data });
   }
+
+  static normalizeUserDocFromFirestore(data = {}) {
+    const out = ClassUser.normalizeUserDocFromFirestore(data);
+    if (Array.isArray(out.friends)) {
+      out.friends = ClassFirestore.refArrayToIds(out.friends);
+    }
+    return out;
+  }
+
+  /** @param {unknown} value */
+  static normalizeDisplayName(value) {
+    return String(value ?? "").trim();
+  }
+
+  /**
+   * @param {unknown} value
+   * @returns {{ valid: boolean, value: string, errorKey: "required" | "tooShort" | "tooLong" | null }}
+   */
+  static validateDisplayName(value) {
+    const normalized = ClassUserCustomer.normalizeDisplayName(value);
+    if (!normalized.length) {
+      return { valid: false, value: normalized, errorKey: "required" };
+    }
+    if (normalized.length < ClassUserCustomer.DISPLAY_NAME_MIN_LENGTH) {
+      return { valid: false, value: normalized, errorKey: "tooShort" };
+    }
+    if (normalized.length > ClassUserCustomer.DISPLAY_NAME_MAX_LENGTH) {
+      return { valid: false, value: normalized, errorKey: "tooLong" };
+    }
+    return { valid: true, value: normalized, errorKey: null };
+  }
+
+  /**
+   * @param {unknown} value
+   * @returns {string}
+   */
+  updateDisplayName(value) {
+    const result = ClassUserCustomer.validateDisplayName(value);
+    if (!result.valid) {
+      const err = new Error(result.errorKey ?? "invalid");
+      /** @type {Error & { code?: string }} */ (err).code = result.errorKey ?? "invalid";
+      throw err;
+    }
+    this.update({ display_name: result.value });
+    return result.value;
+  }
+
+  static getLoyaltyUid(uidCompany, uidUser) {
+    if (!uidCompany || !uidUser) return null;
+    const raw = uidCompany.slice(0, 8).trim() + uidUser.slice(0, 8).trim();
+    const compact = raw.replace(/[\s-]+/g, '');
+    if (!compact) return '';
+    return compact.match(/.{1,4}/g)?.join('-') ?? compact;
+  }
+
+  /** Numéro carte fidélité : groupes de 4 caractères séparés par des tirets. */
+  static formatLoyaltyUid(value) {
+    const raw = String(value ?? '').trim();
+    if (!raw) return '';
+    const compact = raw.replace(/[\s-]+/g, '');
+    if (!compact) return '';
+    return compact.match(/.{1,4}/g)?.join('-') ?? compact;
+  }
+
+  get formattedLoyaltyUid() {
+    return ClassUserCustomer.formatLoyaltyUid(this._loyalty_uid);
+  }
+
+  get totalLoyaltyPoints() {
+    return this._loyalties.reduce((acc, loyalty) => acc + loyalty.loyalty_points, 0);
+  }
+  get totalLoyaltyAmount() {
+    return this._loyalties.reduce((acc, loyalty) => acc + loyalty.loyalty_amount, 0);
+  }
+  get totalLoyaltyTier() {
+    const totalAmount = this.totalLoyaltyAmount;
+    return ClassLoyaltyItem._get_loyalty_tier_from_amount(totalAmount);
+  }
+
+  addLoyalty(loyalty) {
+    if (!loyalty || typeof loyalty !== 'object') return;
+    if (this._loyalties.some(l => l.uid_company === loyalty.uid_company)) return;
+    const _loyalty = ClassLoyaltyItem.makeInstance(loyalty);
+    this._loyalties.push(_loyalty);
+    return this;
+  }
+  removeLoyalty(loyalty) {
+    this._loyalties = this._loyalties.filter(l => l.uid_company !== loyalty.uid_company);
+  }
+
+  static converter = {
+    toFirestore(instance) {
+      if (instance instanceof ClassUserCustomer) {
+        const payload = ClassUserCustomer.omitUndefinedDeep(ClassUserCustomer.toJSON(instance));
+        payload.loyalties = instance.loyalties.map(loyalty => ClassLoyaltyItem.toJSON(loyalty));
+        return payload;
+      }
+      return instance;
+    },
+    fromFirestore(snapshot, options) {
+      const raw = snapshot.data(options) ?? {};
+      const uid = snapshot.id;
+      const data = ClassUserCustomer.normalizeUserDocFromFirestore(raw);
+      data.loyalties = (raw.loyalties ?? []).map((loyalty) => ClassLoyaltyItem.makeInstance(loyalty));
+      return ClassUserCustomer.makeInstance(uid, data);
+    },
+  };
 }
 /**
  * Modèle utilisateur Firestore — à faire évoluer (méthodes métier, getters, etc.).
@@ -739,14 +942,14 @@ export class ClassFcmToken extends ClassFirestore {
     await setDoc(ref, this, { merge: true });
     return this.constructor.makeInstance(this._uid, ClassFcmToken.toJSON(this));
   }
-    // ── Update ───────────────────────────────────────────────
-    async updateFirestore() {
-      super.updateFirestore();
-    }
-    // ── Remove ───────────────────────────────────────────────
-    async removeFirestore() {
-      return super.removeFirestore();
-    }
+  // ── Update ───────────────────────────────────────────────
+  async updateFirestore() {
+    super.updateFirestore();
+  }
+  // ── Remove ───────────────────────────────────────────────
+  async removeFirestore() {
+    return super.removeFirestore();
+  }
 
   static async setFirestore(uidUser, uidToken, payload = {}, options = { merge: true }) {
     if (!this.COLLECTION || !uidUser || !uidToken) return null;
@@ -762,5 +965,4 @@ export class ClassFcmToken extends ClassFirestore {
       return null;
     }
   }
-
 }

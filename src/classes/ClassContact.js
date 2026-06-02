@@ -34,7 +34,6 @@ export class ClassContact {
         twitter_url: "",
         youtube_url: "",
     };
-
     static SOCIAL_KEYS = Object.freeze(Object.keys(ClassContact.SOCIALS));
 
     constructor(raw = {}) {

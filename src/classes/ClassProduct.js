@@ -40,10 +40,21 @@ export class ClassProduct extends ClassFirestore {
     });
     static UNIT = Object.freeze({
         PIECE: "piece",
-        KG: "kg",
-        L: "l",
-        CL: "cl",
-        PACK: "pack",
+        MG: "mg", //miligramme
+        G: "g", //gramme
+        KG: "kg", //kilogramme
+        L: "l", //litre
+        CL: "cl", //centilitre
+        DL: "dl", //decilitre
+        ML: "ml", //millilitre
+        PACK: "pack", //paquet
+        BOX: "box", //boîte, carton
+        BAG: "bag", //sac, sacoche
+        BOTTLE: "bottle", //bouteille
+        CAN: "can", //canette
+        JAR: "jar", //pot
+        POUCH: "pouch", //sachet
+        SACHET: "sachet", //sachet
         UNKNOWN: "unknown",
     });
     static TAGS = Object.freeze({
@@ -73,33 +84,32 @@ export class ClassProduct extends ClassFirestore {
         FEATURED: "featured",
         UNKNOWN: "unknown",
     });
+
+    static buildStoragePath(uid = "") {
+        const id = String(uid ?? "").trim() || "draft";
+        return `${ClassProduct.STORAGE_FOLDER}/${id}/product.jpg`;
+    }
+
     constructor({
         uid = "",
         uid_company = "system",
         uid_fidtab_product = "",
         uid_brand = "",
-        uids_reviews=[],
-        bar_code_number="",
+        uids_reviews = [],
+        bar_code_number = "",
         name = "",
         photo_url = "",
         description = "",
         short_description = "",
         price = 0,
         old_price = 0,
-        buy_price=0,
+        buy_price = 0,
         unit = ClassProduct.UNIT.PIECE,
+        unit_value = 0,
         quantity = 0,
         stock = 0,
         origin_code_country = "",
         badge = ClassProduct.BADGES.UNKNOWN,
-        is_deliverable = false,
-        is_trending = false,
-        is_favorite = false,
-        is_to_discover = false,
-        is_recommended = false,
-        is_to_recommended,
-        is_promo = false,
-        is_discount=false,
         rating = 0,
         reviews = [],
         tags = [],
@@ -108,15 +118,16 @@ export class ClassProduct extends ClassFirestore {
         type = ClassProduct.TYPE.UNKNOWN.value,
         status = ClassProduct.STATUS.UNKNOWN,
         storage_url = "",
+        excluded_earning_points = false,
         created_time = new Date(),
         last_edit_time = new Date(),
     }) {
-        const _storage_url = `${ClassProduct.COLLECTION}/${uid}/product.jpg`;
+        const _storage_url = ClassProduct.buildStoragePath(uid);
         super(uid, created_time, last_edit_time, storage_url || _storage_url);
         this._uid_company = uid_company;
         this._uid_fidtab_product = String(uid_fidtab_product ?? "");
         this._uid_brand = uid_brand;
-        this._uids_reviews=uids_reviews;
+        this._uids_reviews = uids_reviews;
         this._bar_code_number = bar_code_number;
         this._name = name;
         this._photo_url = photo_url;
@@ -126,19 +137,11 @@ export class ClassProduct extends ClassFirestore {
         this._old_price = old_price;
         this._buy_price = buy_price;
         this._unit = unit;
+        this._unit_value = unit_value;
         this._quantity = quantity;
         this._stock = stock;
         this._origin_code_country = origin_code_country;
         this._badge = badge;
-        this._is_deliverable = is_deliverable;
-        this._is_trending = is_trending;
-        this._is_favorite = is_favorite;
-        this._is_to_discover = is_to_discover;
-        this._is_recommended = Boolean(
-            is_recommended ?? is_to_recommended ?? false,
-        );
-        this._is_promo = is_promo;
-        this._is_discount = is_discount;
         this._rating = rating;
         this._reviews = reviews;
         this._tags = tags;
@@ -146,6 +149,7 @@ export class ClassProduct extends ClassFirestore {
         this._sub_category = sub_category;
         this._type = type;
         this._status = status;
+        this._excluded_earning_points = excluded_earning_points;
     }
     get uid_company() {
         return this._uid_company;
@@ -225,6 +229,12 @@ export class ClassProduct extends ClassFirestore {
     set unit(value) {
         this._unit = value;
     }
+    get unit_value() {
+        return this._unit_value;
+    }
+    set unit_value(value) {
+        this._unit_value = value;
+    }
     get quantity() {
         return this._quantity;
     }
@@ -249,55 +259,7 @@ export class ClassProduct extends ClassFirestore {
     set badge(value) {
         this._badge = value;
     }
-    get is_deliverable() {
-        return this._is_deliverable;
-    }
-    set is_deliverable(value) {
-        this._is_deliverable = value;
-    }
-    get is_trending() {
-        return this._is_trending;
-    }
-    set is_trending(value) {
-        this._is_trending = value;
-    }
-    get is_favorite() {
-        return this._is_favorite;
-    }
-    set is_favorite(value) {
-        this._is_favorite = value;
-    }
-    get is_to_discover() {
-        return this._is_to_discover;
-    }
-    set is_to_discover(value) {
-        this._is_to_discover = value;
-    }
-    get is_recommended() {
-        return this._is_recommended;
-    }
-    set is_recommended(value) {
-        this._is_recommended = value;
-    }
-    /** @deprecated Utiliser is_recommended */
-    get is_to_recommended() {
-        return this._is_recommended;
-    }
-    set is_to_recommended(value) {
-        this._is_recommended = value;
-    }
-    get is_promo() {
-        return this._is_promo;
-    }
-    set is_promo(value) {
-        this._is_promo = value;
-    }
-    get is_discount() {
-        return this._is_discount;
-    }
-    set is_discount(value) {
-        this._is_discount = value;
-    }
+
     get rating() {
         return this._rating;
     }
@@ -340,6 +302,12 @@ export class ClassProduct extends ClassFirestore {
     set status(value) {
         this._status = value;
     }
+    get excluded_earning_points() {
+        return this._excluded_earning_points;
+    }
+    set excluded_earning_points(value) {
+        this._excluded_earning_points = value;
+    }
     static randomBarCodeSegment(length = 4) {
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         let result = "";
@@ -361,6 +329,14 @@ export class ClassProduct extends ClassFirestore {
         return normalized;
     }
 
+    static normalizeTaxonomyValue(value) {
+        if (typeof value === "string") return value.trim();
+        if (value && typeof value === "object" && value.value) {
+            return String(value.value).trim();
+        }
+        return "";
+    }
+
     static createBarCodeNumber(category, sub_category, type, uid) {
         const prefix = (value) => String(value ?? "").slice(0, 4).toUpperCase();
         const subCategory = ClassProduct.resolveBarCodeTaxonomySegment(sub_category);
@@ -369,34 +345,39 @@ export class ClassProduct extends ClassFirestore {
     }
 
     static makeInstance(uid, data = {}) {
-        if (data.category === ClassProduct.CATEGORY.FOOD_AND_GROCERIES) {
+        const subCategory = ClassProduct.normalizeTaxonomyValue(data.sub_category);
+        if (subCategory === ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL.value) {
+            return new ClassProductAlcohol({ uid, ...data });
+        }
+        const category = ClassProduct.normalizeTaxonomyValue(data.category);
+        if (category === ClassProduct.CATEGORY.FOOD_AND_GROCERIES) {
             return new ClassProductFoodAndGroceries({ uid, ...data });
         }
-        if (data.category === ClassProduct.CATEGORY.HOUSEHOLD) {
+        if (category === ClassProduct.CATEGORY.HOUSEHOLD) {
             return new ClassProductHousehold({ uid, ...data });
         }
-        if (data.category === ClassProduct.CATEGORY.TOBACCO_AND_ACCESSORIES) {
+        if (category === ClassProduct.CATEGORY.TOBACCO_AND_ACCESSORIES) {
             return new ClassProductTobaccoAndAccessories({ uid, ...data });
         }
-        if (data.category === ClassProduct.CATEGORY.PERSONAL_CARE) {
+        if (category === ClassProduct.CATEGORY.PERSONAL_CARE) {
             return new ClassProductPersonalCare({ uid, ...data });
         }
-        if (data.category === ClassProduct.CATEGORY.BABY_PRODUCTS) {
+        if (category === ClassProduct.CATEGORY.BABY_PRODUCTS) {
             return new ClassProductBabyProducts({ uid, ...data });
         }
-        if (data.category === ClassProduct.CATEGORY.PET_PRODUCTS) {
+        if (category === ClassProduct.CATEGORY.PET_PRODUCTS) {
             return new ClassProductPetProducts({ uid, ...data });
         }
-        if (data.category === ClassProduct.CATEGORY.OFFICE_AND_STATIONERY) {
+        if (category === ClassProduct.CATEGORY.OFFICE_AND_STATIONERY) {
             return new ClassProductOfficeAndStationery({ uid, ...data });
         }
-        if (data.category === ClassProduct.CATEGORY.ELECTRONICS_AND_ACCESSORIES) {
+        if (category === ClassProduct.CATEGORY.ELECTRONICS_AND_ACCESSORIES) {
             return new ClassProductElectronicsAndAccessories({ uid, ...data });
         }
-        if (data.category === ClassProduct.CATEGORY.BEAUTY_DEVICES) {
+        if (category === ClassProduct.CATEGORY.BEAUTY_DEVICES) {
             return new ClassProductBeautyDevices({ uid, ...data });
         }
-        if (data.category === ClassProduct.CATEGORY.SERVICES) {
+        if (category === ClassProduct.CATEGORY.SERVICES) {
             return new ClassProductServices({ uid, ...data });
         }
         return new ClassProduct({ uid, ...data });
@@ -435,7 +416,7 @@ export class ClassProduct extends ClassFirestore {
         if (!this._uid) {
             const newRef = doc(this.constructor.colRef());
             this._uid = newRef.id;
-            this._storage_url = `${ClassProduct.COLLECTION}/${newRef.id}/product.jpg`;
+            this._storage_url = ClassProduct.buildStoragePath(newRef.id);
         }
         if (!String(this._bar_code_number ?? "").trim()) {
             this._bar_code_number = ClassProduct.createBarCodeNumber(
@@ -456,6 +437,9 @@ export class ClassProductFoodAndGroceries extends ClassProduct {
         //'description',
         //'slogan',
     ];
+    static CATEGORY = Object.freeze({
+        FOOD_AND_GROCERIES: "food_and_groceries",
+    });
     static SUB_CATEGORY = Object.freeze({
         STAPLES: { category: ClassProduct.CATEGORY.FOOD_AND_GROCERIES, value: "staples", },
         FRUITS_AND_VEGETABLES: { category: ClassProduct.CATEGORY.FOOD_AND_GROCERIES, value: "fruits_and_vegetables", },
@@ -621,6 +605,70 @@ export class ClassProductFoodAndGroceries extends ClassProduct {
         },
     };
 }
+export class ClassProductAlcohol extends ClassProductFoodAndGroceries {
+    ///static STORAGE_FOLDER = "products/food_and_groceries/alcohol";
+    static FIELDS_TO_OMIT_FIREBASE = [
+        ...ClassProductFoodAndGroceries.FIELDS_TO_OMIT_FIREBASE,
+        // 'translate',
+        //'description',
+        //'slogan',
+    ];
+    static SUB_CATEGORY = Object.freeze({
+        ALCOHOL: { category: ClassProduct.CATEGORY.FOOD_AND_GROCERIES, value: "alcohol", },
+    });
+    static TYPE = Object.freeze({
+        BEER: { sub_category: ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL, value: "beer", },
+        WINE: { sub_category: ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL, value: "wine", },
+        SPIRITS: { sub_category: ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL, value: "spirits", },
+        LIQUOR: { sub_category: ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL, value: "liquor", },
+        RUM: { sub_category: ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL, value: "rum", },
+        VODKA: { sub_category: ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL, value: "vodka", },
+        WHISKEY: { sub_category: ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL, value: "whiskey", },
+        TEQUILA: { sub_category: ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL, value: "tequila", },
+        GIN: { sub_category: ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL, value: "gin", },
+        BRANDY: { sub_category: ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL, value: "brandy", },
+        PORTO: { sub_category: ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL, value: "porto", },
+        SAKE: { sub_category: ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL, value: "sake", },
+    });
+    constructor(data = {}) {
+        const _storage_url = `${ClassProductAlcohol.STORAGE_FOLDER}/${data.uid}/product.jpg`;
+        super({
+            ...data,
+            storage_url: _storage_url,
+            category: ClassProductFoodAndGroceries.CATEGORY.FOOD_AND_GROCERIES,
+            sub_category: ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL.value,
+            excluded_earning_points: true,
+        });
+       // this._storage_url = _storage_url;
+        //this._category = ClassProductFoodAndGroceries.CATEGORY.FOOD_AND_GROCERIES;
+        //this._sub_category = ClassProductFoodAndGroceries.SUB_CATEGORY.ALCOHOL;
+        //this._excluded_earning_points = true;
+    }
+    static makeInstance(uid, data = {}) {
+        return new ClassProductAlcohol({ uid, ...data });
+    }
+    // ── Converter Firestore ──────────────────────────────────
+    static converter = {
+        toFirestore(instance) {
+            if (instance instanceof ClassProductAlcohol) {
+                return ClassProductAlcohol.toJSON(instance);
+            }
+            return instance;
+        },
+        fromFirestore(snapshot, options) {
+            const raw = snapshot.data(options) ?? {};
+            const uid = snapshot.id;
+            const data = raw;
+            //const country = ClassCountry.getCountryByCode(data.country?.code || data.country_code || "");
+            //const gender = ClassUser.formatGenderFromFirestore(data.gender);
+            //const scores = ClassUserScores._convertScoresFromFirestore({ ...data.scores, uid_user: uid });
+            //console.log("country class user", country);
+            //data.gender=gender;
+            //data.country = country;
+            return ClassProductAlcohol.makeInstance(uid, data);
+        },
+    };
+}
 export class ClassProductHousehold extends ClassProduct {
     static STORAGE_FOLDER = "products/household";
     static FIELDS_TO_OMIT_FIREBASE = [
@@ -704,6 +752,7 @@ export class ClassProductTobaccoAndAccessories extends ClassProduct {
         super(data);
         this._storage_url = _storage_url;
         this._category = ClassProductTobaccoAndAccessories.CATEGORY.TOBACCO_AND_ACCESSORIES;
+        this._excluded_earning_points = true;
     }
     static makeInstance(uid, data = {}) {
         return new ClassProductTobaccoAndAccessories({ uid, ...data });
@@ -1063,6 +1112,7 @@ export class ClassProductServices extends ClassProduct {
         super(data);
         this._storage_url = _storage_url;
         this._category = ClassProductServices.CATEGORY.SERVICES;
+        this._excluded_earning_points = true;
     }
     static makeInstance(uid, data = {}) {
         return new ClassProductServices({ uid, ...data });
@@ -1072,7 +1122,7 @@ export class ClassProductServices extends ClassProduct {
         toFirestore(instance) {
             if (instance instanceof ClassProductServices) {
                 return ClassProductServices.toJSON(instance);
-            } 
+            }
             return instance;
         },
         fromFirestore(snapshot, options) {

@@ -1,113 +1,57 @@
-import { collection, doc, deleteDoc, getDoc, getDocs, onSnapshot, query, setDoc } from "firebase/firestore";
+import { collection, collectionGroup, doc, deleteDoc, getDoc, getDocs, onSnapshot, query, setDoc } from "firebase/firestore";
 import { firestore } from "@/lib/firebaseConfig";
 import { ClassFirestore } from "./ClassFirestore";
-import { ClassAddress } from "./ClassAddress";
 import { ClassContact } from "./ClassContact";
-import {
-  ClassOpeningHours,
-  OPENING_HOURS_WEEKDAYS,
-} from "./ClassOpeningHours";
 import { ClassProduct } from "./ClassProduct";
 import { ClassBrand } from "./ClassBrand";
+import { LOCALES } from "@/i18n/locales";
 
-function normalizeBusLines(value) {
-  return ClassAddress.normalizePublicTransportBuses(value);
-}
+function migrateLegacySocials(payload = {}) {
+  const socials = { ...ClassContact.SOCIALS };
 
-function contactFromLegacyFields(payload) {
-  const emails = [];
-  if (payload.email_contact) {
-    emails.push({ type: ClassContact.TYPE_EMAIL.CONTACT, value: payload.email_contact });
-  }
-  if (payload.email_orders) {
-    emails.push({ type: ClassContact.TYPE_EMAIL.ORDERS, value: payload.email_orders });
-  }
-
-  const phones = [];
-  if (payload.phone) {
-    phones.push({
-      type: payload.phone_label || ClassContact.TYPE_PHONE.SHOP,
-      value: payload.phone,
-    });
+  const contact = payload.contact;
+  if (contact && typeof contact === "object" && !(contact instanceof ClassContact)) {
+    const legacySocials = contact.socials ?? contact;
+    if (legacySocials && typeof legacySocials === "object") {
+      for (const key of ClassContact.SOCIAL_KEYS) {
+        if (legacySocials[key] !== undefined && legacySocials[key] !== "") {
+          socials[key] = legacySocials[key];
+        }
+      }
+    }
   }
 
-  if (!emails.length && !phones.length) return null;
-  return new ClassContact({ emails, phones });
-}
-
-function addressFromLegacyFields(payload) {
-  if (!payload.address_street && !payload.address_city && !payload.address_zip) {
-    return null;
+  if (payload.socials != null && typeof payload.socials === "object") {
+    for (const key of ClassContact.SOCIAL_KEYS) {
+      if (payload.socials[key] !== undefined) {
+        socials[key] = payload.socials[key];
+      }
+    }
   }
 
-  return new ClassAddress({
-    street: payload.address_street ?? "",
-    zip_code: payload.address_zip ?? "",
-    city_name: payload.address_city ?? "",
-    country_code: payload.address_country ?? "",
-    public_transport_buses: normalizeBusLines(payload.public_transport_buses),
-  });
-}
+  if (payload.map_embed_url && !socials.google_maps_embed_url) {
+    socials.google_maps_embed_url = payload.map_embed_url;
+  }
+  if (payload.map_link && !socials.google_maps_url) {
+    socials.google_maps_url = payload.map_link;
+  }
 
-function hydrateAddress(value) {
-  if (value instanceof ClassAddress) return value;
-  if (value && typeof value === "object") return new ClassAddress(value);
-  return ClassCompany.createDefaultAddress();
-}
-
-function hydrateContact(value) {
-  if (value instanceof ClassContact) return value;
-  if (value && typeof value === "object") return ClassContact.fromFirestore(value);
-  return ClassCompany.createDefaultContact();
-}
-
-function hydrateOpeningHours(value) {
-  if (value instanceof ClassOpeningHours) return value;
-  return ClassOpeningHours.fromFirestore(value ?? {});
+  return ClassContact._normalizeSocials(socials);
 }
 
 function migrateLegacyPayload(payload) {
   const out = { ...payload };
 
-  if (!out.address) {
-    out.address = addressFromLegacyFields(out);
-  }
-
-  if (!out.contact) {
-    out.contact = contactFromLegacyFields(out);
-  }
-
-  if (out.contact && typeof out.contact === "object" && !(out.contact instanceof ClassContact)) {
-    const socials = { ...ClassContact.SOCIALS };
-    for (const key of ClassContact.SOCIAL_KEYS) {
-      if (out.contact[key] !== undefined) {
-        socials[key] = out.contact[key];
-      }
-    }
-    if (out.contact.socials != null && typeof out.contact.socials === "object") {
-      for (const key of ClassContact.SOCIAL_KEYS) {
-        if (out.contact.socials[key] !== undefined) {
-          socials[key] = out.contact.socials[key];
-        }
-      }
-    }
-    if (out.map_embed_url && !socials.google_maps_embed_url) {
-      socials.google_maps_embed_url = out.map_embed_url;
-    }
-    if (out.map_link && !socials.google_maps_url) {
-      socials.google_maps_url = out.map_link;
-    }
-    out.contact = { ...out.contact, socials };
-  }
+  out.socials = migrateLegacySocials(out);
 
   if (out.tagline && !out.tag) {
     out.tag = out.tagline;
   }
 
-  if (Array.isArray(out.opening_hours)) {
-    delete out.opening_hours;
-  }
-
+  delete out.address;
+  delete out.contact;
+  delete out.opening_hours;
+  delete out.uid_club;
   delete out.address_street;
   delete out.address_zip;
   delete out.address_city;
@@ -133,25 +77,16 @@ export class ClassCompany extends ClassFirestore {
   static CURRENCY_TO_EARN_ONE_POINT = "CHF";
   static UIDS_PRIDUCTS_PROHIBITED_FROM_EARNING_POINTS = [];
 
-  static createDefaultAddress() {
-    return new ClassAddress({ country_code: "CH" });
-  }
-
-  static createDefaultContact() {
-    return new ClassContact({});
-  }
-
-  static createDefaultOpeningHours() {
-    return new ClassOpeningHours({});
+  static createDefaultSocials() {
+    return new ClassContact({}).socials;
   }
 
   constructor({
     uid = ClassCompany.DEFAULT_UID,
     name = "",
-    tag = "",
-    address = ClassCompany.createDefaultAddress(),
-    contact = ClassCompany.createDefaultContact(),
-    opening_hours = ClassCompany.createDefaultOpeningHours(),
+    tag="",
+    banners=[],
+    socials = ClassCompany.createDefaultSocials(),
     logo_url = "",
     settings = null,
     created_time = new Date(),
@@ -161,9 +96,8 @@ export class ClassCompany extends ClassFirestore {
     super(uid, created_time, last_edit_time, storagePath);
     this._name = String(name ?? "").trim();
     this._tag = String(tag ?? "").trim();
-    this._address = hydrateAddress(address);
-    this._contact = hydrateContact(contact);
-    this._opening_hours = hydrateOpeningHours(opening_hours);
+    this._banners = normalizeCompanyBanners(banners);
+    this._socials = ClassContact._normalizeSocials(socials);
     this._logo_url = String(logo_url ?? "").trim();
     this._settings = settings ? new ClassCompagnySettings(settings) : null;
   }
@@ -175,7 +109,6 @@ export class ClassCompany extends ClassFirestore {
     this._name = String(value ?? "").trim();
     this._touchLastEdit();
   }
-
   get tag() {
     return this._tag;
   }
@@ -183,28 +116,11 @@ export class ClassCompany extends ClassFirestore {
     this._tag = String(value ?? "").trim();
     this._touchLastEdit();
   }
-
-  get address() {
-    return this._address;
+  get banners() {
+    return this._banners;
   }
-  set address(value) {
-    this._address = hydrateAddress(value);
-    this._touchLastEdit();
-  }
-
-  get contact() {
-    return this._contact;
-  }
-  set contact(value) {
-    this._contact = hydrateContact(value);
-    this._touchLastEdit();
-  }
-
-  get opening_hours() {
-    return this._opening_hours;
-  }
-  set opening_hours(value) {
-    this._opening_hours = hydrateOpeningHours(value);
+  set banners(value) {
+    this._banners = normalizeCompanyBanners(value);
     this._touchLastEdit();
   }
 
@@ -213,6 +129,14 @@ export class ClassCompany extends ClassFirestore {
   }
   set logo_url(value) {
     this._logo_url = String(value ?? "").trim();
+    this._touchLastEdit();
+  }
+
+  get socials() {
+    return this._socials;
+  }
+  set socials(value) {
+    this._socials = ClassContact._normalizeSocials(value);
     this._touchLastEdit();
   }
 
@@ -234,9 +158,8 @@ export class ClassCompany extends ClassFirestore {
       uid: source.uid,
       name: source.name,
       tag: source.tag,
-      address: ClassAddress.toFirestore(source.address),
-      contact: ClassContact.toFirestore(source.contact),
-      opening_hours: ClassOpeningHours.toFirestore(source.opening_hours),
+      banners: normalizeCompanyBanners(source.banners),
+      socials: ClassContact._normalizeSocials(source.socials),
       logo_url: source.logo_url,
       settings: source.settings ? source.settings.toJSON() : null,
       created_time: source.created_time,
@@ -332,6 +255,28 @@ export class ClassCompany extends ClassFirestore {
   }
 }
 
+function normalizeCompanyBannerItem(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+
+  const banner = {
+    enabled: value.enabled !== false,
+  };
+  for (const locale of LOCALES) {
+    banner[locale] = String(value[locale] ?? "").trim();
+  }
+
+  return LOCALES.some((locale) => banner[locale]) ? banner : null;
+}
+
+function normalizeCompanyBanners(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => normalizeCompanyBannerItem(item))
+    .filter(Boolean);
+}
+
 function normalizeProhibitedProductUids(value) {
   if (Array.isArray(value)) {
     return value.map((uid) => String(uid ?? "").trim()).filter(Boolean);
@@ -347,20 +292,32 @@ function normalizeProhibitedProductUids(value) {
 
 export class ClassCompagnySettings {
   static AMOUNT_TO_EARN_ONE_POINT = 75;
+  static MIN_AMOUNT_TO_EARN_ONE_POINT = 75;
+  static MAX_AMOUNT_TO_EARN_ONE_POINT = 75;
   static AMOUNT_TO_USE_ONE_POINT = 1;
   static CURRENCY_TO_EARN_ONE_POINT = "CHF";
   static UIDS_PRIDUCTS_PROHIBITED_FROM_EARNING_POINTS = [];
   constructor({
     amount_to_earn_one_point = ClassCompagnySettings.AMOUNT_TO_EARN_ONE_POINT,
+    min_amount_to_earn_one_point,
+    max_amount_to_earn_one_point,
     amount_to_use_one_point = ClassCompagnySettings.AMOUNT_TO_USE_ONE_POINT,
     currency_to_earn_one_point = ClassCompagnySettings.CURRENCY_TO_EARN_ONE_POINT,
     uids_products_prohibited_from_earning_points = ClassCompagnySettings.UIDS_PRIDUCTS_PROHIBITED_FROM_EARNING_POINTS,
+    has_fidtab_website=false,
     show_banner_promotion = false,
     last_edit_time = new Date(),
   }) {
-    this._amount_to_earn_one_point = Number(
+    const legacyAmount = Number(
       amount_to_earn_one_point ?? ClassCompagnySettings.AMOUNT_TO_EARN_ONE_POINT,
-    );
+    )
+    this._amount_to_earn_one_point = legacyAmount
+    this._min_amount_to_earn_one_point = Number(
+      min_amount_to_earn_one_point ?? legacyAmount,
+    )
+    this._max_amount_to_earn_one_point = Number(
+      max_amount_to_earn_one_point ?? legacyAmount,
+    )
     this._amount_to_use_one_point = Number(
       amount_to_use_one_point ?? ClassCompagnySettings.AMOUNT_TO_USE_ONE_POINT,
     );
@@ -370,11 +327,18 @@ export class ClassCompagnySettings {
     this._uids_products_prohibited_from_earning_points = normalizeProhibitedProductUids(
       uids_products_prohibited_from_earning_points,
     );
+    this._has_fidtab_website = Boolean(has_fidtab_website);
     this._show_banner_promotion = show_banner_promotion;
     this._last_edit_time = ClassFirestore._toJsDate(last_edit_time);
   }
   get amount_to_earn_one_point() {
     return this._amount_to_earn_one_point;
+  }
+  get min_amount_to_earn_one_point() {
+    return this._min_amount_to_earn_one_point;
+  }
+  get max_amount_to_earn_one_point() {
+    return this._max_amount_to_earn_one_point;
   }
   get amount_to_use_one_point() {
     return this._amount_to_use_one_point;
@@ -385,6 +349,9 @@ export class ClassCompagnySettings {
   get uids_products_prohibited_from_earning_points() {
     return this._uids_products_prohibited_from_earning_points;
   }
+  get has_fidtab_website() {
+    return this._has_fidtab_website;
+  }
   get show_banner_promotion() {
     return this._show_banner_promotion;
   }
@@ -393,6 +360,16 @@ export class ClassCompagnySettings {
   }
   set amount_to_earn_one_point(value) {
     this._amount_to_earn_one_point = Number(value ?? ClassCompagnySettings.AMOUNT_TO_EARN_ONE_POINT);
+  }
+  set min_amount_to_earn_one_point(value) {
+    this._min_amount_to_earn_one_point = Number(
+      value ?? ClassCompagnySettings.MIN_AMOUNT_TO_EARN_ONE_POINT,
+    );
+  }
+  set max_amount_to_earn_one_point(value) {
+    this._max_amount_to_earn_one_point = Number(
+      value ?? ClassCompagnySettings.MAX_AMOUNT_TO_EARN_ONE_POINT,
+    );
   }
   set amount_to_use_one_point(value) {
     this._amount_to_use_one_point = Number(value ?? ClassCompagnySettings.AMOUNT_TO_USE_ONE_POINT);
@@ -403,6 +380,9 @@ export class ClassCompagnySettings {
   set uids_products_prohibited_from_earning_points(value) {
     this._uids_products_prohibited_from_earning_points = normalizeProhibitedProductUids(value);
   }
+  set has_fidtab_website(value) {
+    this._has_fidtab_website = Boolean(value);
+  }
   set show_banner_promotion(value) {
     this._show_banner_promotion = value;
   }
@@ -411,20 +391,26 @@ export class ClassCompagnySettings {
   }
   toJSON() {
     return {
-      amount_to_earn_one_point: this._amount_to_earn_one_point,
+      amount_to_earn_one_point: this._min_amount_to_earn_one_point,
+      min_amount_to_earn_one_point: this._min_amount_to_earn_one_point,
+      max_amount_to_earn_one_point: this._max_amount_to_earn_one_point,
       amount_to_use_one_point: this._amount_to_use_one_point,
       currency_to_earn_one_point: this._currency_to_earn_one_point,
       uids_products_prohibited_from_earning_points: this._uids_products_prohibited_from_earning_points,
+      has_fidtab_website: this._has_fidtab_website,
       show_banner_promotion: this._show_banner_promotion,
       last_edit_time: this._last_edit_time,
     };
   }
   toFirestore() {
     return {
-      amount_to_earn_one_point: this._amount_to_earn_one_point,
+      amount_to_earn_one_point: this._min_amount_to_earn_one_point,
+      min_amount_to_earn_one_point: this._min_amount_to_earn_one_point,
+      max_amount_to_earn_one_point: this._max_amount_to_earn_one_point,
       amount_to_use_one_point: this._amount_to_use_one_point,
       currency_to_earn_one_point: this._currency_to_earn_one_point,
       uids_products_prohibited_from_earning_points: this._uids_products_prohibited_from_earning_points,
+      has_fidtab_website: this._has_fidtab_website,
       show_banner_promotion: this._show_banner_promotion,
       last_edit_time: this._last_edit_time,
     };
@@ -487,6 +473,10 @@ export class ClassCompanyProduct extends ClassProduct {
       firestore,
       `${ClassCompany.COLLECTION}/${uidCompany}/${this.COLLECTION}`,
     ).withConverter(this.converter);
+  }
+
+  static colGroupRef() {
+    return collectionGroup(firestore, this.COLLECTION).withConverter(this.converter);
   }
 
   static docRef(uidCompany, id) {
@@ -673,5 +663,3 @@ export class ClassCompanyBrand extends ClassBrand {
     }
   }
 }
-
-export { OPENING_HOURS_WEEKDAYS };

@@ -1,25 +1,15 @@
+import { getCountFromServer, query, where } from 'firebase/firestore'
+import { ClassAddress } from '@/classes/ClassAddress'
 import { ClassCompany } from '@/classes/ClassCompany'
-import { VAAKAI_STORE_PARTNER } from '@/config/partnerData'
-
-const GENEVA_CITY_CODES = new Set(['GE'])
-const GENEVA_CITY_NAMES = ['genève', 'geneve', 'geneva', 'meyrin', 'carouge', 'vernier', 'lancy']
+import { ClassSale } from '@/classes/ClassSale'
+import { ClassShop } from '@/classes/ClassShop'
+import { ClassUser } from '@/classes/ClassUser'
 
 const STORE_CLS = ['sc-vaakai', 'sc-amber', 'sc-blue']
 
-/** Couvertures des données test — libres, sans contrainte éditoriale. */
-export const STORE_COVER_IMAGES = {
-  vaakai:
-    'https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?w=600&q=80&auto=format&fit=crop',
-  tabacRhein:
-    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80&auto=format&fit=crop',
-  swissTabac:
-    'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80&auto=format&fit=crop',
-}
-
 /**
- * Couvertures partenaires Firestore (ClassCompany) — boutiques et commerces uniquement.
- * Sans alcool, cigarettes, cigares, vape ni jeux d'argent visibles.
- * IDs Unsplash exclusifs : ne pas réutiliser ceux de `src/config/visuals.js` ni `STORE_COVER_IMAGES`.
+ * Couvertures partenaires — boutiques et commerces uniquement.
+ * IDs Unsplash exclusifs : ne pas réutiliser ceux de `src/config/visuals.js`.
  */
 const PARTNER_TABAC_COVER_IMAGES = [
   'https://images.unsplash.com/photo-1757839158791-ff236648c9cb?w=600&q=80&auto=format&fit=crop',
@@ -28,71 +18,58 @@ const PARTNER_TABAC_COVER_IMAGES = [
   'https://images.unsplash.com/photo-1754831217433-194c3846e9cb?w=600&q=80&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1746723386880-ca68b5f4b22d?w=600&q=80&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=600&q=80&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?w=600&q=80&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80&auto=format&fit=crop',
 ]
 
-function getPartnerTabacCoverImage(index = 0) {
-  return PARTNER_TABAC_COVER_IMAGES[index % PARTNER_TABAC_COVER_IMAGES.length]
+function hashString(value) {
+  let hash = 0
+  const text = String(value ?? '')
+  for (let i = 0; i < text.length; i += 1) {
+    hash = (hash << 5) - hash + text.charCodeAt(i)
+    hash |= 0
+  }
+  return Math.abs(hash)
 }
 
-/** Exemples genevois — stats et libellés fictifs */
-export const GENEVA_FALLBACK_STORES = [
-  {
-    key: 'fallback-tabac-rhein',
-    source: 'fallback',
-    cls: 'sc-amber',
-    name: 'Tabac Rhein',
-    tag: 'Cigares · Genève centre',
-    addr: 'Rue du Mont-Blanc 3, 1201 Genève',
-    coverImage: STORE_COVER_IMAGES.tabacRhein,
-    showStats: true,
-    clients: '520',
-    orders: '1.1k',
-  },
-  {
-    key: 'fallback-swiss-tabac',
-    source: 'fallback',
-    cls: 'sc-blue',
-    name: 'Swiss Tabac',
-    tag: 'Tabac · Épicerie',
-    addr: 'Rue de Berne 46, 1201 Genève',
-    coverImage: STORE_COVER_IMAGES.swissTabac,
-    showStats: true,
-    clients: '430',
-    orders: '960',
-  },
-]
-
-function normalizeText(value) {
-  return String(value ?? '')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/\p{M}/gu, '')
+export function getShopCoverImage(shopKey) {
+  const index = hashString(shopKey) % PARTNER_TABAC_COVER_IMAGES.length
+  return PARTNER_TABAC_COVER_IMAGES[index]
 }
 
-/** Donnée partenaire connue (snapshot Firestore) — toujours disponible hors ligne. */
-export function getSeedPartnerCompanies() {
-  return [
-    {
-      uid: VAAKAI_STORE_PARTNER.uid,
-      name: VAAKAI_STORE_PARTNER.name,
-      tag: VAAKAI_STORE_PARTNER.tag,
-      logo_url: VAAKAI_STORE_PARTNER.logoUrl,
-      address: {
-        street: 'Chemin Terroux 5C',
-        zip_code: '1216',
-        city_name: 'Genève',
-        city_code: 'GE',
-        province: 'Meyrin',
-        country_code: 'CH',
-        full_address: VAAKAI_STORE_PARTNER.address,
-      },
-      contact: {
-        socials: {
-          website_url: VAAKAI_STORE_PARTNER.websiteUrl,
-        },
-      },
-    },
-  ]
+export function formatStoreStat(value) {
+  const n = Number(value) || 0
+  if (n >= 1_000_000) {
+    const m = n / 1_000_000
+    return m >= 10 ? `${Math.round(m)}M` : `${m.toFixed(1).replace(/\.0$/, '')}M`
+  }
+  if (n >= 1000) {
+    const k = n / 1000
+    return k >= 10 ? `${Math.round(k)}k` : `${k.toFixed(1).replace(/\.0$/, '')}k`
+  }
+  return String(n)
+}
+
+/** Normalise une instance ClassShop ou un objet brut via ClassShop.toJSON. */
+export function normalizeShopRecord(shop) {
+  if (!shop) return null
+
+  try {
+    if (shop instanceof ClassShop) {
+      return ClassShop.toJSON(shop)
+    }
+
+    if (typeof shop === 'object') {
+      return ClassShop.toJSON(
+        ClassShop.makeInstance(shop.uid ?? shop.id ?? '', shop),
+      )
+    }
+  } catch (error) {
+    console.error('normalizeShopRecord', error)
+  }
+
+  return null
 }
 
 /** Normalise une instance ClassCompany ou un objet brut via ClassCompany.toJSON. */
@@ -116,25 +93,18 @@ export function normalizeCompanyRecord(company) {
   return null
 }
 
-export function isGenevaCompany(company) {
-  const address = company?.address ?? {}
-  const city = normalizeText(address.city_name)
-  const province = normalizeText(address.province)
-  const district = normalizeText(address.district)
-  const zip = String(address.zip_code ?? '').trim()
-  const code = String(address.city_code ?? '').toUpperCase()
-
-  if (GENEVA_CITY_CODES.has(code)) return true
-  if (zip.startsWith('12')) return true
-
-  return GENEVA_CITY_NAMES.some(
-    (name) => city.includes(name) || province.includes(name) || district.includes(name),
-  )
-}
-
-export function formatCompanyAddress(company) {
-  const address = company?.address ?? {}
+export function formatShopAddress(shop) {
+  const address = shop?.address ?? {}
   if (address.full_address) return address.full_address
+
+  try {
+    const instance =
+      address instanceof ClassAddress ? address : new ClassAddress(address)
+    const formatted = instance.full_address
+    if (formatted) return formatted
+  } catch {
+    // fallback below
+  }
 
   const locality = [address.zip_code, address.city_name].filter(Boolean).join(' ')
   const parts = [address.street, locality].filter(Boolean)
@@ -149,62 +119,130 @@ export function formatCompanyAddress(company) {
 }
 
 export function getCompanyWebsite(company) {
-  return String(company?.contact?.socials?.website_url ?? '').trim()
+  return String(
+    company?.contact?.socials?.website_url ??
+      company?.socials?.website_url ??
+      '',
+  ).trim()
 }
 
-export function companyToStoreCard(company, index = 0) {
-  const record = normalizeCompanyRecord(company)
+export function getShopWebsite(shop, company) {
+  const fromShop = String(shop?.contact?.socials?.website_url ?? '').trim()
+  if (fromShop) return fromShop
+  return getCompanyWebsite(company)
+}
+
+export async function countCustomersForCompany(uidCompany) {
+  const normalizedCompany = String(uidCompany ?? '').trim()
+  if (!normalizedCompany) return 0
+
+  try {
+    const snap = await getCountFromServer(
+      query(
+        ClassUser.colRef(),
+        where('uids_companies_loyalties', 'array-contains', normalizedCompany),
+      ),
+    )
+    return snap.data().count
+  } catch (error) {
+    console.error('countCustomersForCompany', error)
+    return 0
+  }
+}
+
+export async function countSalesForShop(uidCompany, uidShop) {
+  const normalizedCompany = String(uidCompany ?? '').trim()
+  const normalizedShop = String(uidShop ?? '').trim()
+  if (!normalizedCompany || !normalizedShop) return 0
+
+  try {
+    const snap = await getCountFromServer(
+      query(ClassSale.colRef(normalizedCompany, normalizedShop)),
+    )
+    return snap.data().count
+  } catch (error) {
+    console.error('countSalesForShop', error)
+    return 0
+  }
+}
+
+export async function fetchStatsForShops(shops = []) {
+  const companyUids = [
+    ...new Set(
+      shops.map((shop) => String(shop.uid_company ?? '').trim()).filter(Boolean),
+    ),
+  ]
+
+  const clientCounts = {}
+  await Promise.all(
+    companyUids.map(async (uidCompany) => {
+      clientCounts[uidCompany] = await countCustomersForCompany(uidCompany)
+    }),
+  )
+
+  const statsByShopKey = {}
+  await Promise.all(
+    shops.map(async (shop) => {
+      const uidCompany = String(shop.uid_company ?? '').trim()
+      const uidShop = String(shop.uid ?? '').trim()
+      if (!uidCompany || !uidShop) return
+
+      const key = `${uidCompany}:${uidShop}`
+      const orders = await countSalesForShop(uidCompany, uidShop)
+      statsByShopKey[key] = {
+        clients: clientCounts[uidCompany] ?? 0,
+        orders,
+      }
+    }),
+  )
+
+  return statsByShopKey
+}
+
+export function shopToStoreCard(shop, company, index = 0, stats = {}) {
+  const record = normalizeShopRecord(shop)
   if (!record) return null
 
-  const website = getCompanyWebsite(record)
-  const logoUrl = String(record.logo_url ?? '').trim()
+  const uidCompany = String(record.uid_company ?? company?.uid ?? '').trim()
+  const shopKey = `${uidCompany}:${record.uid}`
   const name = String(record.name ?? '').trim()
+  if (!name) return null
+
+  const companyRecord = company ? normalizeCompanyRecord(company) : null
+  const website = getShopWebsite(record, companyRecord)
+  const logoUrl = String(companyRecord?.logo_url ?? '').trim()
 
   return {
-    key: record.uid || `company-${name}`,
+    key: shopKey,
     source: 'firestore',
     cls: STORE_CLS[index % STORE_CLS.length],
     logoUrl: logoUrl || undefined,
+    companyName: String(companyRecord?.name ?? '').trim(),
     name,
-    tag: String(record.tag ?? '').trim(),
-    addr: formatCompanyAddress(record),
+    tag: String(record.tag ?? companyRecord?.tag ?? '').trim(),
+    addr: formatShopAddress(record),
+    openingHours: record.opening_hours ?? null,
     url: website,
     online: Boolean(website),
-    coverImage: getPartnerTabacCoverImage(index),
-    showStats: false,
+    coverImage: getShopCoverImage(shopKey),
+    showStats: true,
+    clients: formatStoreStat(stats.clients ?? 0),
+    orders: formatStoreStat(stats.orders ?? 0),
   }
 }
 
-function mergeCompanyRecords(liveCompanies = []) {
-  const byUid = new Map()
-
-  for (const seed of getSeedPartnerCompanies()) {
-    byUid.set(seed.uid, seed)
-  }
-
-  for (const company of liveCompanies) {
-    const record = normalizeCompanyRecord(company)
-    if (!record?.uid) continue
-    byUid.set(record.uid, record)
-  }
-
-  return [...byUid.values()]
-}
-
-export function buildStoreShowcase(companies = [], max = 3) {
-  const merged = mergeCompanyRecords(companies)
-  const genevaCompanies = merged.filter(isGenevaCompany)
-  const fromFirestore = genevaCompanies
-    .map((company, index) => companyToStoreCard(company, index))
+export function buildStoreShowcaseFromShops(
+  shops = [],
+  companyMap = new Map(),
+  statsByShopKey = {},
+) {
+  return shops
+    .map((shop, index) => {
+      const uidCompany = String(shop.uid_company ?? '').trim()
+      const company = companyMap.get(uidCompany)
+      const key = `${uidCompany}:${shop.uid}`
+      return shopToStoreCard(shop, company, index, statsByShopKey[key] ?? {})
+    })
     .filter(Boolean)
-
-  const usedNames = new Set(
-    fromFirestore.map((store) => normalizeText(store.name)).filter(Boolean),
-  )
-
-  const fallbacks = GENEVA_FALLBACK_STORES.filter(
-    (store) => !usedNames.has(normalizeText(store.name)),
-  )
-
-  return [...fromFirestore, ...fallbacks].slice(0, max)
+    .sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }))
 }

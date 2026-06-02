@@ -4,31 +4,31 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import AppPhoneMockup from '@/components/AppPhoneMockup'
+import HeroSidePhone from '@/components/HeroSidePhone'
 import PartnerMarquee from '@/components/PartnerMarquee'
 import SiteFooter from '@/components/SiteFooter'
 import SiteNav from '@/components/SiteNav'
 import { useLanguage } from '@/context/LanguageProvider'
-import { REQUEST_DEMO_PATH, WEBSITE_NAME } from '@/context/constants/constants_app'
-import { ClassCountry } from '@/classes/ClassCountry'
+import { COMPANY_URL, CONTACT_PATH, DOWNLOAD_APP_PATH, WEBSITE_NAME } from '@/context/constants/constants_app'
 import { FEATURE_LAYOUT, IMAGES } from '@/config/visuals'
+import { getShopOpeningHoursToday } from '@/lib/openingHoursDisplay'
 import { AnimatedCounter, useParallax, useScrollReveal } from '@/hooks/useAnimations'
 import { useLoyaltyCards } from '@/hooks/useLoyaltyCards'
 import { useStoreShowcase } from '@/hooks/useStoreShowcase'
 
-const NAV_SECTIONS = ['fonctionnalites', 'fidelite', 'comment', 'tarifs', 'demo']
+const NAV_SECTIONS = ['fonctionnalites', 'fidelite', 'comment', 'partenaires', 'app']
 
 export default function Home() {
-  const { content: c, t } = useLanguage()
+  const { content: c, t, locale } = useLanguage()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeCard, setActiveCard] = useState(0)
   const [activeSection, setActiveSection] = useState('')
-  const [billingPeriod, setBillingPeriod] = useState('monthly')
 
   useScrollReveal(c)
   useParallax()
   const { cards: loyaltyCards } = useLoyaltyCards(c.cards)
-  const { stores: storeCards } = useStoreShowcase(3)
+  const { stores: storeCards } = useStoreShowcase()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -96,7 +96,6 @@ export default function Home() {
   }, [c])
 
   const card = loyaltyCards[activeCard] ?? loyaltyCards[0]
-  const isAnnualBilling = billingPeriod === 'annual'
 
   return (
     <div className="page-wrap">
@@ -133,7 +132,7 @@ export default function Home() {
               </h1>
               <p className="hero-sub">{c.hero.sub}</p>
               <div className="hero-ctas">
-                <Link href={REQUEST_DEMO_PATH} className="btn-primary">
+                <Link href={DOWNLOAD_APP_PATH} className="btn-primary">
                   {c.hero.ctaPrimary}
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -151,20 +150,17 @@ export default function Home() {
                   </div>
                 ))}
               </div>
+              <p className="hero-enterprise reveal reveal-delay-4">
+                {c.hero.enterpriseText}{' '}
+                <a href={COMPANY_URL} target="_blank" rel="noopener noreferrer">
+                  {c.hero.enterpriseLink}
+                </a>
+              </p>
             </div>
 
             <div className="hero-visual">
               <div className="hero-visual-stage">
-                <div className="hero-flank-photo left" data-parallax="0.08">
-                  <Image
-                    src={IMAGES.hero.shop}
-                    alt={c.cardSubs.presse}
-                    fill
-                    sizes="240px"
-                    priority
-                  />
-                  <span className="hero-photo-caption">{c.cardSubs.presse}</span>
-                </div>
+                <HeroSidePhone phone={c.hero.sidePhones.left} className="left" />
 
                 <div className="hero-phone-wrap">
                   <div className="glass-float top-left">
@@ -186,16 +182,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="hero-flank-photo right" data-parallax="0.1">
-                  <Image
-                    src={IMAGES.hero.side}
-                    alt={c.cardSubs.coiffeur}
-                    fill
-                    sizes="240px"
-                    priority
-                  />
-                  <span className="hero-photo-caption">{c.cardSubs.coiffeur}</span>
-                </div>
+                <HeroSidePhone phone={c.hero.sidePhones.right} className="right" />
               </div>
             </div>
           </div>
@@ -204,6 +191,42 @@ export default function Home() {
 
       {/* MARQUEE PARTNERS */}
       <PartnerMarquee />
+
+      {/* AVAILABILITY */}
+      <section className="availability-section" id="disponibilite">
+        <div className="container">
+          <div className="availability-card reveal">
+            <div className="availability-content">
+              <div className="section-label">{c.availability.label}</div>
+              <h2 className="availability-title">
+                {c.availability.title} <em>{c.availability.titleEm}</em>
+              </h2>
+              <p className="availability-sub">{c.availability.sub}</p>
+              <ul className="availability-points">
+                {c.availability.points.map((point, i) => (
+                  <li className={`availability-point reveal reveal-delay-${i + 1}`} key={i}>
+                    <span className="availability-point-icon" aria-hidden="true">{point.icon}</span>
+                    <div>
+                      <div className="availability-point-title">{point.title}</div>
+                      <p className="availability-point-text">{point.text}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="availability-visual" aria-hidden="true">
+              {c.availability.alerts.map((alert, i) => (
+                <div className="availability-alert" key={i}>
+                  <div className="availability-alert-badge">🔔 {alert.badge}</div>
+                  <div className="availability-alert-product">{alert.product}</div>
+                  <div className="availability-alert-meta">{alert.shop}</div>
+                  <div className="availability-alert-status">✓ {alert.status}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* FEATURES BENTO */}
       <section className="features-section" id="fonctionnalites">
@@ -289,7 +312,7 @@ export default function Home() {
                 ))}
               </div>
               <div className="reveal reveal-delay-3">
-                <Link href={REQUEST_DEMO_PATH} className="btn-primary">
+                <Link href={DOWNLOAD_APP_PATH} className="btn-primary">
                   {c.loyalty.cta}
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -310,7 +333,7 @@ export default function Home() {
                 </div>
 
                 <Link
-                  href={REQUEST_DEMO_PATH}
+                  href={DOWNLOAD_APP_PATH}
                   className={`big-loyalty-card ${card.theme}`}
                   aria-label={c.loyalty.cta}
                 >
@@ -424,15 +447,35 @@ export default function Home() {
       </section>
 
       {/* STORES */}
-      <section className="stores-section">
+      <section className="stores-section" id="partenaires">
         <div className="container">
           <div className="stores-header reveal">
             <div className="section-label">{c.stores.label}</div>
             <h2 className="stores-title">{c.stores.title} <em>{c.stores.titleEm}</em></h2>
             <p className="stores-sub">{c.stores.sub}</p>
+            <p className="stores-enterprise reveal reveal-delay-1">
+              {c.stores.enterpriseText}{' '}
+              <a href={COMPANY_URL} target="_blank" rel="noopener noreferrer">
+                {c.stores.enterpriseLink}
+              </a>
+            </p>
           </div>
           <div className="stores-grid">
-            {storeCards.map((store, i) => (
+            {storeCards.map((store, i) => {
+              const hoursToday = getShopOpeningHoursToday(store.openingHours, locale)
+              const hoursStatusLabel = !hoursToday
+                ? null
+                : !hoursToday.isOpenToday
+                  ? c.stores.closedToday
+                  : hoursToday.isOpenNow
+                    ? c.stores.openNow
+                    : c.stores.closedNow
+              const hoursTimeLabel =
+                hoursToday?.isOpenToday && hoursToday.openTime && hoursToday.closeTime
+                  ? `${hoursToday.openTime} – ${hoursToday.closeTime}`
+                  : null
+
+              return (
               <div
                 className={`store-card reveal reveal-delay-${i + 1}${store.cls ? ` ${store.cls}` : ''}`}
                 key={store.key ?? i}
@@ -445,27 +488,39 @@ export default function Home() {
                     sizes="(max-width:768px) 100vw, 400px"
                     className="store-card-cover"
                   />
+                  {store.logoUrl ? (
+                    <div className="sc-logo-overlay">
+                      <Image
+                        src={store.logoUrl}
+                        alt={`${store.companyName || store.name} logo`}
+                        width={120}
+                        height={40}
+                        className="sc-logo-overlay-img"
+                        unoptimized
+                      />
+                    </div>
+                  ) : null}
                   {store.online && (
                     <span className="sc-live-badge">{c.stores.online}</span>
                   )}
                 </div>
                 <div className="store-card-body">
-                  {store.source === 'firestore' && store.logoUrl ? (
-                    <div className="sc-logo">
-                      <Image
-                        src={store.logoUrl}
-                        alt={`${store.name} logo`}
-                        width={140}
-                        height={48}
-                        className="sc-logo-img"
-                        unoptimized
-                      />
-                    </div>
-                  ) : null}
                   <div className="sc-name">{store.name}</div>
                   {store.tag && <div className="sc-tag">{store.tag}</div>}
                   <div className="sc-addr">📍 {store.addr}</div>
-                  {store.showStats !== false && store.clients && store.orders ? (
+                  {hoursStatusLabel ? (
+                    <div className="sc-hours">
+                      <span
+                        className={`sc-hours-status${hoursToday?.isOpenNow ? ' is-open' : ' is-closed'}`}
+                      >
+                        {hoursStatusLabel}
+                      </span>
+                      {hoursTimeLabel ? (
+                        <span className="sc-hours-times">{hoursTimeLabel}</span>
+                      ) : null}
+                    </div>
+                  ) : null}
+                  {store.showStats !== false ? (
                     <div className="sc-stats">
                       <div>
                         <span className="sc-stat-num">{store.clients}</span>
@@ -489,7 +544,8 @@ export default function Home() {
                   )}
                 </div>
               </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
@@ -500,7 +556,7 @@ export default function Home() {
           <div className="testimonials-header reveal">
             <div className="section-label">{c.testimonials.label}</div>
             <h2 className="testimonials-title">
-              {WEBSITE_NAME} <em>{c.testimonials.titleEm}</em>
+              {c.testimonials.title} <em>{t(c.testimonials.titleEm)}</em>
             </h2>
             <p className="testimonials-sub">{t(c.testimonials.sub)}</p>
           </div>
@@ -555,98 +611,88 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PRICING */}
-      <section className="pricing-section" id="tarifs">
+      {/* CTA */}
+      <section className="cta-section" id="app">
         <div className="container">
-          <div className="pricing-header reveal">
-            <div className="section-label">{c.pricing.label}</div>
-            <h2 className="pricing-title">{c.pricing.title} <em>{c.pricing.titleEm}</em></h2>
-            <p style={{ color: 'var(--white-60)', fontSize: '15px' }}>{c.pricing.sub}</p>
-          </div>
-          <div className="pricing-billing-toggle reveal" role="tablist" aria-label={c.pricing.label}>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={!isAnnualBilling}
-              className={`pricing-billing-option${!isAnnualBilling ? ' active' : ''}`}
-              onClick={() => setBillingPeriod('monthly')}
-            >
-              {c.pricing.billingMonthly}
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={isAnnualBilling}
-              className={`pricing-billing-option${isAnnualBilling ? ' active' : ''}`}
-              onClick={() => setBillingPeriod('annual')}
-            >
-              {c.pricing.billingAnnual}
-              <span className="pricing-billing-save">{c.pricing.billingSave}</span>
-            </button>
-          </div>
-          <div className="pricing-grid">
-            {c.pricing.plans.map((plan, i) => (
-              <div
-                className={`price-card ${plan.featured ? 'featured' : ''} reveal reveal-delay-${i + 1}`}
-                key={plan.plan}
-              >
-                {plan.featured ? <span className="price-badge">{c.pricing.popular}</span> : null}
-                <div className="price-plan">{plan.plan}</div>
-                <div className="price-amount">
-                  <sup>{ClassCountry.DEFAULT_CURRENCY}</sup>
-                  {isAnnualBilling ? plan.priceAnnual : plan.price}
-                  <sub>{isAnnualBilling ? c.pricing.perYear : c.pricing.perMonth}</sub>
+          <div className="cta-banner reveal">
+            <div className="cta-banner-glow" aria-hidden="true" />
+            <div className="cta-inner">
+              <div className="cta-content">
+                <div className="gold-divider cta-divider reveal" />
+                <h2 className="cta-title reveal reveal-delay-1">
+                  {c.cta.title}
+                  <em>{c.cta.titleEm}</em>
+                </h2>
+                <p className="cta-sub reveal reveal-delay-2">{t(c.cta.sub)}</p>
+                <div className="cta-btns reveal reveal-delay-3">
+                  <Link href={DOWNLOAD_APP_PATH} className="btn-primary">
+                    {c.cta.primary}
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </Link>
+                  <Link href={CONTACT_PATH} className="btn-ghost">{c.cta.secondary}</Link>
                 </div>
-                <p className="price-desc">{plan.desc}</p>
-                <ul className="price-features">
-                  {plan.features.map((feature, j) => <li key={j}>{feature}</li>)}
-                </ul>
-                <Link href={REQUEST_DEMO_PATH} className={`btn-price ${plan.featured ? 'primary' : ''}`}>
-                  {plan.cta}
-                </Link>
+                <p className="cta-note reveal reveal-delay-4">{c.cta.note}</p>
               </div>
-            ))}
-          </div>
-          <div className="pricing-addon reveal">
-            <div className="pricing-addon-body">
-              <div className="section-label">{c.pricing.websiteOption.label}</div>
-              <h3 className="pricing-addon-title">{c.pricing.websiteOption.title}</h3>
-              <p className="pricing-addon-desc">{c.pricing.websiteOption.desc}</p>
-            </div>
-            <div className="pricing-addon-side">
-              <div className="price-amount pricing-addon-price">
-                <sup>{ClassCountry.DEFAULT_CURRENCY}</sup>{c.pricing.websiteOption.price}
-                <sub>{c.pricing.websiteOption.priceOnce}</sub>
+
+              <div className="cta-visual reveal reveal-delay-2" aria-hidden="true">
+                <div className="cta-visual-orb cta-visual-orb-1" />
+                <div className="cta-visual-orb cta-visual-orb-2" />
+                <div className="cta-visual-frame">
+                  <Image
+                    src={IMAGES.cta}
+                    alt=""
+                    fill
+                    sizes="(max-width:768px) 100vw, 520px"
+                  />
+                </div>
+                <div className="cta-chip cta-chip-1">
+                  <span className="cta-chip-icon">🎁</span>
+                  <div>
+                    <div className="cta-chip-label">{c.hero.floatReward.label}</div>
+                    <div className="cta-chip-value">{c.hero.floatReward.value}</div>
+                  </div>
+                </div>
+                <div className="cta-chip cta-chip-2">
+                  <span className="cta-chip-icon">⭐</span>
+                  <div>
+                    <div className="cta-chip-label">{c.hero.stats[0].label}</div>
+                    <div className="cta-chip-value">{c.hero.stats[0].num}</div>
+                  </div>
+                </div>
               </div>
-              <Link href={REQUEST_DEMO_PATH} className="btn-price">{c.pricing.websiteOption.cta}</Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="cta-section" id="demo">
-        <div className="cta-banner">
-          <div className="cta-bg">
-            <Image src={IMAGES.cta} alt="" fill sizes="100vw" priority={false} />
-          </div>
-          <div className="cta-content">
-            <div className="gold-divider reveal" />
-            <h2 className="cta-title reveal">
-              {c.cta.title}
-              <em>{c.cta.titleEm}</em>
-            </h2>
-            <p className="cta-sub reveal reveal-delay-1">{t(c.cta.sub)}</p>
-            <div className="cta-btns reveal reveal-delay-2">
-              <Link href={REQUEST_DEMO_PATH} className="btn-primary">
-                {c.cta.primary}
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      {/* ENTERPRISE */}
+      <section className="enterprise-section" id="entreprise">
+        <div className="container">
+          <div className="enterprise-card reveal">
+            <div className="enterprise-glow" aria-hidden="true" />
+            <div className="enterprise-content">
+              <div className="section-label">{c.enterprise.label}</div>
+              <h2 className="enterprise-title">
+                {c.enterprise.title} <em>{c.enterprise.titleEm}</em>
+              </h2>
+              <p className="enterprise-sub">{c.enterprise.sub}</p>
+            </div>
+            <div className="enterprise-actions">
+              <a
+                href={COMPANY_URL}
+                className="btn-primary"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {c.enterprise.cta}
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </Link>
-              <a href="tel:+33123456789" className="btn-ghost">{c.cta.secondary}</a>
+              </a>
+              <p className="enterprise-note">{c.enterprise.note}</p>
             </div>
-            <p className="cta-note reveal reveal-delay-3">{c.cta.note}</p>
           </div>
         </div>
       </section>
