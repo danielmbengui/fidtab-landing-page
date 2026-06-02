@@ -642,6 +642,12 @@ export class ClassUserCustomer extends ClassUserExternal {
   set friends(value) {
     this._friends = value;
   }
+  get uids_companies_loyalties() {
+    return this._uids_companies_loyalties;
+  }
+  set uids_companies_loyalties(value) {
+    this._uids_companies_loyalties = value;
+  }
   get uids_products_whishlist() {
     return this._uids_products_whishlist;
   }

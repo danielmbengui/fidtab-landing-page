@@ -2,18 +2,34 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-export function useScrollReveal(contentKey) {
+export function useScrollReveal(contentKey, rescanKey = '') {
   useEffect(() => {
-    const els = document.querySelectorAll('.reveal')
+    const observed = new WeakSet()
     const observer = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
         if (e.isIntersecting) e.target.classList.add('visible')
       }),
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' },
     )
-    els.forEach((el) => observer.observe(el))
-    return () => observer.disconnect()
-  }, [contentKey])
+
+    const observeNew = () => {
+      document.querySelectorAll('.reveal:not(.visible)').forEach((el) => {
+        if (observed.has(el)) return
+        observed.add(el)
+        observer.observe(el)
+      })
+    }
+
+    observeNew()
+
+    const mutationObserver = new MutationObserver(observeNew)
+    mutationObserver.observe(document.body, { childList: true, subtree: true })
+
+    return () => {
+      observer.disconnect()
+      mutationObserver.disconnect()
+    }
+  }, [contentKey, rescanKey])
 }
 
 export function useParallax() {

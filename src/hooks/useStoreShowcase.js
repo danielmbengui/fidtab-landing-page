@@ -1,131 +1,111 @@
 'use client'
 
-import { onSnapshot } from 'firebase/firestore'
+import { collectionGroup, onSnapshot, query } from 'firebase/firestore'
 import { useEffect, useMemo, useState } from 'react'
 import { ClassShop } from '@/classes/ClassShop'
 import { buildStoreShowcaseFromShops, fetchStatsForShops } from '@/lib/storeShowcase'
 import { usePartnerCompanies } from '@/hooks/usePartnerCompanies'
+import { firestore } from '@/lib/firebaseConfig'
 
-function shopFromSnapshot(docSnap, uidCompany) {
-  const data = docSnap.data()
-  const record = ClassShop.toJSON(
-    data instanceof ClassShop
-      ? data
-      : ClassShop.makeInstance(docSnap.id, { ...(data ?? {}), uid: docSnap.id }),
-  )
+function shopFromSnapshot(docSnap) {
+  try {
+    const data = docSnap.data()
+    const instance =
+      data instanceof ClassShop
+        ? data
+        : ClassShop.makeInstance(docSnap.id, {
+            uid: docSnap.id,
+            ...(typeof data === 'object' && data ? data : {}),
+          })
 
-  return {
-    ...record,
-    uid: record.uid || docSnap.id,
-    uid_company: record.uid_company || uidCompany,
+    const record = ClassShop.toJSON(instance)
+    const pathCompanyUid = docSnap.ref.parent.parent?.id ?? ''
+
+    return {
+      ...record,
+      uid: record.uid || docSnap.id,
+      uid_company: String(record.uid_company || pathCompanyUid || '').trim(),
+    }
+  } catch (error) {
+    console.error('shopFromSnapshot', docSnap.id, error)
+    return null
   }
 }
 
 export function useStoreShowcase(max = null) {
   const { companies, loading: companiesLoading } = usePartnerCompanies()
-  const [shopsByCompany, setShopsByCompany] = useState({})
+  const [shops, setShops] = useState([])
   const [statsByShopKey, setStatsByShopKey] = useState({})
   const [shopsLoading, setShopsLoading] = useState(true)
-  const [statsLoading, setStatsLoading] = useState(false)
+  const [shopsError, setShopsError] = useState(null)
 
   useEffect(() => {
-    if (companiesLoading) return undefined
-
-    if (companies.length === 0) {
-      setShopsByCompany({})
-      setShopsLoading(false)
-      return undefined
-    }
-
     let active = true
     setShopsLoading(true)
-    const pending = new Set(companies.map((company) => company.uid).filter(Boolean))
-    const unsubs = []
+    setShopsError(null)
 
-    for (const company of companies) {
-      const uidCompany = company.uid
-      if (!uidCompany) continue
+    const unsubscribe = onSnapshot(
+      query(collectionGroup(firestore, ClassShop.COLLECTION)),
+      (snapshot) => {
+        if (!active) return
 
-      const unsub = onSnapshot(
-        ClassShop.colRef(uidCompany),
-        (snapshot) => {
-          if (!active) return
+        const list = snapshot.docs
+          .map((docSnap) => shopFromSnapshot(docSnap))
+          .filter(
+            (shop) =>
+              shop &&
+              String(shop.name ?? '').trim() &&
+              shop.enabled !== false,
+          )
 
-          const shops = snapshot.docs
-            .map((docSnap) => shopFromSnapshot(docSnap, uidCompany))
-            .filter(
-              (shop) => shop.enabled !== false && String(shop.name ?? '').trim(),
-            )
-
-          setShopsByCompany((prev) => ({ ...prev, [uidCompany]: shops }))
-          pending.delete(uidCompany)
-          if (pending.size === 0) {
-            setShopsLoading(false)
-          }
-        },
-        (error) => {
-          if (!active) return
-          console.error('useStoreShowcase shops', error)
-          pending.delete(uidCompany)
-          if (pending.size === 0) {
-            setShopsLoading(false)
-          }
-        },
-      )
-
-      unsubs.push(unsub)
-    }
+        setShops(list)
+        setShopsLoading(false)
+      },
+      (error) => {
+        if (!active) return
+        console.error('useStoreShowcase shops', error)
+        setShops([])
+        setShopsError(error)
+        setShopsLoading(false)
+      },
+    )
 
     return () => {
       active = false
-      unsubs.forEach((unsub) => unsub())
+      unsubscribe()
     }
-  }, [companies, companiesLoading])
-
-  const allShops = useMemo(
-    () =>
-      Object.entries(shopsByCompany).flatMap(([uidCompany, shops]) =>
-        shops.map((shop) => ({
-          ...shop,
-          uid_company: shop.uid_company || uidCompany,
-        })),
-      ),
-    [shopsByCompany],
-  )
+  }, [])
 
   useEffect(() => {
-    if (shopsLoading) return undefined
-
-    if (allShops.length === 0) {
+    if (shopsLoading || shops.length === 0) {
       setStatsByShopKey({})
-      setStatsLoading(false)
       return undefined
     }
 
     let active = true
-    setStatsLoading(true)
 
-    fetchStatsForShops(allShops)
+    fetchStatsForShops(shops)
       .then((stats) => {
         if (active) setStatsByShopKey(stats)
       })
-      .finally(() => {
-        if (active) setStatsLoading(false)
+      .catch((error) => {
+        console.error('useStoreShowcase stats', error)
       })
 
     return () => {
       active = false
     }
-  }, [allShops, shopsLoading])
+  }, [shops, shopsLoading])
 
   const stores = useMemo(() => {
     const companyMap = new Map(companies.map((company) => [company.uid, company]))
-    const cards = buildStoreShowcaseFromShops(allShops, companyMap, statsByShopKey)
+    const cards = buildStoreShowcaseFromShops(shops, companyMap, statsByShopKey)
     return max ? cards.slice(0, max) : cards
-  }, [allShops, companies, statsByShopKey, max])
+  }, [shops, companies, statsByShopKey, max])
 
   return {
     stores,
-    loading: companiesLoading || shopsLoading || statsLoading,
+    loading: companiesLoading || shopsLoading,
+    error: shopsError,
   }
 }

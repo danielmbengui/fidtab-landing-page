@@ -1,8 +1,7 @@
-import { getCountFromServer, query, where } from 'firebase/firestore'
-import { ClassAddress } from '@/classes/ClassAddress'
+import { getCountFromServer, getDocs, query, where } from 'firebase/firestore'
 import { ClassCompany } from '@/classes/ClassCompany'
-import { ClassSale } from '@/classes/ClassSale'
 import { ClassShop } from '@/classes/ClassShop'
+import { ClassStock } from '@/classes/ClassStock'
 import { ClassUser } from '@/classes/ClassUser'
 
 const STORE_CLS = ['sc-vaakai', 'sc-amber', 'sc-blue']
@@ -94,28 +93,12 @@ export function normalizeCompanyRecord(company) {
 }
 
 export function formatShopAddress(shop) {
-  const address = shop?.address ?? {}
-  if (address.full_address) return address.full_address
-
   try {
-    const instance =
-      address instanceof ClassAddress ? address : new ClassAddress(address)
-    const formatted = instance.full_address
-    if (formatted) return formatted
-  } catch {
-    // fallback below
+    return ClassShop._createFullAddress(shop, '')
+  } catch (error) {
+    console.error('formatShopAddress', error)
+    return ''
   }
-
-  const locality = [address.zip_code, address.city_name].filter(Boolean).join(' ')
-  const parts = [address.street, locality].filter(Boolean)
-
-  if (address.country_code === 'CH') {
-    parts.push('Suisse')
-  } else if (address.country_code) {
-    parts.push(address.country_code)
-  }
-
-  return parts.join(', ')
 }
 
 export function getCompanyWebsite(company) {
@@ -150,18 +133,58 @@ export async function countCustomersForCompany(uidCompany) {
   }
 }
 
-export async function countSalesForShop(uidCompany, uidShop) {
+export async function countStocksForCompany(uidCompany) {
   const normalizedCompany = String(uidCompany ?? '').trim()
-  const normalizedShop = String(uidShop ?? '').trim()
-  if (!normalizedCompany || !normalizedShop) return 0
+  if (!normalizedCompany) return 0
 
   try {
     const snap = await getCountFromServer(
-      query(ClassSale.colRef(normalizedCompany, normalizedShop)),
+      query(
+        ClassStock.colGroupRef(),
+        where('uid_company', '==', normalizedCompany),
+      ),
     )
     return snap.data().count
   } catch (error) {
-    console.error('countSalesForShop', error)
+    console.error('countStocksForCompany', error)
+
+    try {
+      const stocks = await ClassStock.listFirestoreForCompany(normalizedCompany)
+      return stocks.length
+    } catch (fallbackError) {
+      console.error('countStocksForCompany fallback', fallbackError)
+      return 0
+    }
+  }
+}
+
+export async function sumLoyaltyPointsForCompany(uidCompany) {
+  const normalizedCompany = String(uidCompany ?? '').trim()
+  if (!normalizedCompany) return 0
+
+  try {
+    const snap = await getDocs(
+      query(
+        ClassUser.colRef(),
+        where('uids_companies_loyalties', 'array-contains', normalizedCompany),
+      ),
+    )
+
+    let total = 0
+    for (const docSnap of snap.docs) {
+      const data = docSnap.data()
+      const loyalties = Array.isArray(data?.loyalties) ? data.loyalties : []
+
+      for (const loyalty of loyalties) {
+        const companyUid = String(loyalty?.uid_company ?? '').trim()
+        if (companyUid !== normalizedCompany) continue
+        total += Number(loyalty?.loyalty_points ?? 0) || 0
+      }
+    }
+
+    return total
+  } catch (error) {
+    console.error('sumLoyaltyPointsForCompany', error)
     return 0
   }
 }
@@ -173,28 +196,35 @@ export async function fetchStatsForShops(shops = []) {
     ),
   ]
 
-  const clientCounts = {}
+  const statsByCompany = {}
   await Promise.all(
     companyUids.map(async (uidCompany) => {
-      clientCounts[uidCompany] = await countCustomersForCompany(uidCompany)
+      const [clients, products, loyaltyPoints] = await Promise.all([
+        countCustomersForCompany(uidCompany),
+        countStocksForCompany(uidCompany),
+        sumLoyaltyPointsForCompany(uidCompany),
+      ])
+
+      statsByCompany[uidCompany] = {
+        clients,
+        products,
+        loyaltyPoints,
+      }
     }),
   )
 
   const statsByShopKey = {}
-  await Promise.all(
-    shops.map(async (shop) => {
-      const uidCompany = String(shop.uid_company ?? '').trim()
-      const uidShop = String(shop.uid ?? '').trim()
-      if (!uidCompany || !uidShop) return
+  for (const shop of shops) {
+    const uidCompany = String(shop.uid_company ?? '').trim()
+    const uidShop = String(shop.uid ?? '').trim()
+    if (!uidCompany || !uidShop) continue
 
-      const key = `${uidCompany}:${uidShop}`
-      const orders = await countSalesForShop(uidCompany, uidShop)
-      statsByShopKey[key] = {
-        clients: clientCounts[uidCompany] ?? 0,
-        orders,
-      }
-    }),
-  )
+    statsByShopKey[`${uidCompany}:${uidShop}`] = statsByCompany[uidCompany] ?? {
+      clients: 0,
+      products: 0,
+      loyaltyPoints: 0,
+    }
+  }
 
   return statsByShopKey
 }
@@ -227,7 +257,8 @@ export function shopToStoreCard(shop, company, index = 0, stats = {}) {
     coverImage: getShopCoverImage(shopKey),
     showStats: true,
     clients: formatStoreStat(stats.clients ?? 0),
-    orders: formatStoreStat(stats.orders ?? 0),
+    loyaltyPoints: formatStoreStat(stats.loyaltyPoints ?? 0),
+    products: formatStoreStat(stats.products ?? 0),
   }
 }
 

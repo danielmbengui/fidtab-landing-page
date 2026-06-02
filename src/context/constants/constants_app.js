@@ -5,6 +5,7 @@ export const DOWNLOAD_APP_PATH = '/download'
 export const REQUEST_DEMO_PATH = DOWNLOAD_APP_PATH
 export const APP_STORE_URL = 'https://apps.apple.com/app/fidtab'
 export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.fidtab.app'
+export const PWA_URL = 'https://fidtab-app-mobile.vercel.app/get-pwa';
 export const LEGAL_NOTICE_PATH = '/legal-notice'
 export const TERMS_PATH = '/terms'
 export const PRIVACY_PATH = '/privacy'

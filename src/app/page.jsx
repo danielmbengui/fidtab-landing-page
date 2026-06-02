@@ -22,7 +22,7 @@ import { formatShopOpensInLabel, getShopOpeningHoursToday } from '@/lib/openingH
 import { AnimatedCounter, useParallax, useScrollReveal } from '@/hooks/useAnimations'
 import { useLoyaltyCards } from '@/hooks/useLoyaltyCards'
 import { useStoreShowcase } from '@/hooks/useStoreShowcase'
-import { AndroidIcon, AppleIcon, PwaIcon } from '@/components/DownloadPlatformIcons'
+import { AppleIcon, GooglePlayIcon, PwaIcon } from '@/components/DownloadPlatformIcons'
 
 const NAV_SECTIONS = ['fonctionnalites', 'fidelite', 'comment', 'partenaires', 'app']
 
@@ -593,7 +593,7 @@ export default function Home() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <AndroidIcon />
+                    <GooglePlayIcon />
                     <span>{c.cta.android}</span>
                   </a>
                   <a
@@ -615,7 +615,6 @@ export default function Home() {
                     <span>{c.cta.pwa}</span>
                   </a>
                 </div>
-                <p className="cta-note reveal reveal-delay-4">{c.cta.note}</p>
               </div>
 
               <div className="cta-visual reveal reveal-delay-2" aria-hidden="true">

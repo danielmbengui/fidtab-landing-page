@@ -8,20 +8,20 @@ export const IMAGES = {
     counter: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=640&q=85&auto=format&fit=crop',
   },
   features: {
-    /** Rayons produits — disponibilité stock */
-    stocks: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&q=85&auto=format&fit=crop',
-    /** Smartphone — alertes */
-    push: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&q=80&auto=format&fit=crop',
-    /** Paiement / commande mobile */
-    shop: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80&auto=format&fit=crop',
-    /** Récompenses / fidélité */
-    loyalty: 'https://images.unsplash.com/photo-1559526324-593bc073d938?w=800&q=80&auto=format&fit=crop',
-    /** Sac prêt au retrait — click & collect */
-    pickup: 'https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=800&q=80&auto=format&fit=crop',
-    /** Boutique — multi-commerces */
-    launch: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&q=85&auto=format&fit=crop',
-    /** Célébration — 100 % gratuit */
-    free: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80&auto=format&fit=crop',
+    /** Disponibilité en direct */
+    available: '/images/features/available.png',
+    /** Alertes stock */
+    alerts: '/images/features/alerts.png',
+    /** Commander en ligne */
+    online: '/images/features/online.png',
+    /** Carte de fidélité digitale */
+    loyalty: '/images/features/fidelite.png',
+    /** Click & collect */
+    pickup: '/images/features/click-and-collect.png',
+    /** Multi-tabacs */
+    multi: '/images/features/multi.png',
+    /** 100 % gratuit */
+    free: '/images/features/free.png',
     dashboard: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=520&fit=crop&crop=entropy&q=80&auto=format',
   },
   stores: [
@@ -45,11 +45,11 @@ export const IMAGES = {
  * - full: image pleine carte (largeur + hauteur)
  */
 export const FEATURE_LAYOUT = [
-  { span: 'bento-wide', image: 'stocks', imageMode: 'side' },
-  { span: '', image: 'push', imageMode: 'background' },
-  { span: '', image: 'shop', imageMode: 'background', comingSoon: true },
+  { span: 'bento-wide', image: 'available', imageMode: 'side' },
+  { span: '', image: 'alerts', imageMode: 'background' },
   { span: '', image: 'loyalty', imageMode: 'background' },
-  { span: '', image: 'pickup', imageMode: 'background', comingSoon: true },
-  { span: 'bento-wide', image: 'launch', imageMode: 'full' },
+  { span: 'bento-wide', image: 'multi', imageMode: 'background' },
   { span: '', image: 'free', imageMode: 'background' },
+  { span: '', image: 'online', imageMode: 'background', comingSoon: true },
+  { span: '', image: 'pickup', imageMode: 'background', comingSoon: true },
 ]

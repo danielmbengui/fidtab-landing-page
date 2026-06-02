@@ -42,21 +42,6 @@ export default function ContactPage() {
               </div>
               <span className="contact-method-action">{page.methods.email.action}</span>
             </a>
-
-            <a
-              href={whatsapp}
-              className="contact-method"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span className="contact-method-icon" aria-hidden="true">💬</span>
-              <div className="contact-method-body">
-                <h2>{page.methods.whatsapp.label}</h2>
-                <p>{page.methods.whatsapp.desc}</p>
-                <span className="contact-method-value">{CONTACT_WHATSAPP}</span>
-              </div>
-              <span className="contact-method-action">{page.methods.whatsapp.action}</span>
-            </a>
           </div>
         </div>
       </div>

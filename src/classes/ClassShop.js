@@ -223,6 +223,19 @@ export class ClassShop extends ClassFirestore {
     this._touchLastEdit();
   }
 
+  _createFullAddress(countryName = "") {
+    return this.address._createFullAddress(countryName);
+  }
+
+  static _createFullAddress(shop, countryName = "") {
+    const instance =
+      shop instanceof ClassShop
+        ? shop
+        : ClassShop.makeInstance(shop?.uid ?? shop?.id ?? "", shop ?? {});
+
+    return instance._createFullAddress(countryName);
+  }
+
   static toJSON(data = this) {
     const source =
       data instanceof ClassShop

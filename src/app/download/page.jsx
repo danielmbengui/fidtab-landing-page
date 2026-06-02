@@ -4,12 +4,14 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import SiteFooter from '@/components/SiteFooter'
 import SiteNav from '@/components/SiteNav'
+import { AndroidIcon, AppleIcon, PwaIcon } from '@/components/DownloadPlatformIcons'
 import { useLanguage } from '@/context/LanguageProvider'
 import {
   APP_STORE_URL,
   COMPANY_URL,
   CONTACT_PATH,
   PLAY_STORE_URL,
+  PWA_URL,
   WEBSITE_NAME,
 } from '@/context/constants/constants_app'
 
@@ -66,10 +68,8 @@ export default function DownloadPage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {dl.appStore}
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                <AppleIcon />
+                <span>{dl.appStore}</span>
               </a>
               <a
                 href={PLAY_STORE_URL}
@@ -77,7 +77,17 @@ export default function DownloadPage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {dl.playStore}
+                <AndroidIcon />
+                <span>{dl.playStore}</span>
+              </a>
+              <a
+                href={PWA_URL}
+                className="btn-ghost download-store-btn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <PwaIcon />
+                <span>{dl.pwa}</span>
               </a>
             </div>
 
