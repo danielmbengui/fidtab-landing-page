@@ -97,7 +97,6 @@ export function normalizeCompanyRecord(company) {
 export function formatShopAddress(shop, locale = defaultLocale) {
   try {
     const countryName = ClassCountry.getCountryByCode(shop.address.country_code, locale)?.name ?? '';
-    console.log("countryName", shop.address)
     return ClassShop._createFullAddress(shop, countryName)
   } catch (error) {
     console.error('formatShopAddress', error)
@@ -235,9 +234,6 @@ export async function fetchStatsForShops(shops = []) {
 
 export function shopToStoreCard(shop, company, index = 0, stats = {}, locale = defaultLocale) {
   const record = normalizeShopRecord(shop)
-  console.log("compamny", company)
-  console.log("shop", shop)
-  console.log("locale", locale)
   if (!record) return null
 
   const uidCompany = String(record.uid_company ?? company?.uid ?? '').trim()

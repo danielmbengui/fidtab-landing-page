@@ -90,8 +90,6 @@ export default function Home() {
     return () => cards.forEach((card) => card.removeEventListener('mousemove', onMove))
   }, [c])
 
-  console.log("storew", storeCards)
-
   return (
     <div className="page-wrap">
       <div className="page-ambient" aria-hidden="true">
