@@ -44,8 +44,13 @@ export function LanguageProvider({ children }) {
   useEffect(() => {
     document.documentElement.lang = locale
     document.documentElement.dir = isRtlLocale(locale) ? 'rtl' : 'ltr'
-    document.title = `${WEBSITE_NAME} — ${t(content.meta.titleSuffix)}`
-  }, [locale, content.meta.titleSuffix, t])
+    document.title = `${WEBSITE_NAME} — ${content.meta.titleSuffix}`
+
+    const metaDescription = document.querySelector('meta[name="description"]')
+    if (metaDescription) {
+      metaDescription.setAttribute('content', content.meta.description)
+    }
+  }, [locale, content.meta.titleSuffix, content.meta.description])
 
   const sortedLocales = useMemo(() => getSortedLocales(locale), [locale])
 

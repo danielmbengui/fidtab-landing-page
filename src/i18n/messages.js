@@ -132,9 +132,9 @@ function withShared(localeKey, locale) {
 export const messages = {
   fr: withShared('fr', {
     meta: {
-      titleSuffix: 'Votre carte de fidélité digitale',
+      titleSuffix: 'Fidélité digitale chez vos tabacs partenaires',
       description:
-        'Commandez, cumulez des points et profitez de récompenses chez vos tabacs partenaires favoris. Gratuit.',
+        'Cumulez des points à chaque passage en caisse, partagez-les entre clients du même tabac et débloquez vos récompenses. Toutes vos cartes dans une seule app — 100 % gratuit.',
     },
     nav: {
       features: 'Fonctionnalités',
@@ -568,9 +568,9 @@ export const messages = {
 
   en: withShared('en', {
     meta: {
-      titleSuffix: 'Your digital loyalty card',
+      titleSuffix: 'Digital loyalty at partner tobacco shops',
       description:
-        'Order, earn points and enjoy rewards at your favorite partner tobacco shops. Free.',
+        'Earn points at every checkout, share them with other customers at the same shop and unlock your rewards. All your cards in one app — 100% free.',
     },
     nav: {
       features: 'Features',
@@ -1003,9 +1003,9 @@ export const messages = {
   }),
   de: withShared('de', {
     meta: {
-      titleSuffix: 'Ihre digitale Treuekarte',
+      titleSuffix: 'Digitale Treue bei Partner-Tabakläden',
       description:
-        'Bestellen, Punkte sammeln und Prämien bei Ihren Partner-Tabakläden geniessen. Kostenlos.',
+        'Sammeln Sie bei jedem Kassenbesuch Punkte, teilen Sie sie mit anderen Kunden desselben Tabakladens und schalten Sie Prämien frei. Alle Karten in einer App — 100 % kostenlos.',
     },
     nav: {
       features: 'Funktionen',
@@ -1440,9 +1440,9 @@ export const messages = {
 
   it: withShared('it', {
     meta: {
-      titleSuffix: 'La tua carta fedeltà digitale',
+      titleSuffix: 'Fedeltà digitale presso tabaccherie partner',
       description:
-        'Ordina, accumula punti e goditi premi presso le tue tabaccherie partner preferite. Gratuito.',
+        'Accumula punti a ogni passaggio in cassa, condividili con altri clienti dello stesso tabaccheria e sblocca i tuoi premi. Tutte le tue carte in un\'unica app — 100% gratuita.',
     },
     nav: {
       features: 'Funzionalità',
