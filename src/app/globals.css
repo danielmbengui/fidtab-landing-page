@@ -1605,25 +1605,9 @@ body::before {
 .loyalty-desc { font-size: 16px; color: var(--white-60); line-height: 1.75; margin-bottom: 36px; max-width: 460px; }
 .loyalty-points {
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex-direction: column;
   gap: 14px;
   margin-bottom: 36px;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(212, 168, 83, 0.45) transparent;
-  padding-bottom: 8px;
-}
-.loyalty-points::-webkit-scrollbar {
-  height: 6px;
-}
-.loyalty-points::-webkit-scrollbar-thumb {
-  background: rgba(212, 168, 83, 0.45);
-  border-radius: 999px;
 }
 .loyalty-point {
   display: flex;
@@ -1634,9 +1618,6 @@ body::before {
   background: var(--bg-glass);
   border: 1px solid var(--white-10);
   transition: all var(--transition);
-  flex: 0 0 min(320px, 88%);
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 .loyalty-point:hover { border-color: var(--gold-line); background: var(--gold-dim); }
 .lp-check {
@@ -3679,11 +3660,6 @@ body::before {
 
   .loyalty-grid { gap: 36px; }
   .loyalty-desc { max-width: none; font-size: 15px; }
-  .loyalty-points {
-    margin-inline: calc(-1 * max(16px, env(safe-area-inset-left)));
-    padding-inline: max(16px, env(safe-area-inset-left));
-    scroll-padding-inline: max(16px, env(safe-area-inset-left));
-  }
   .big-card-wrap {
     width: calc(100% + 2 * max(16px, env(safe-area-inset-left)));
     margin-inline: calc(-1 * max(16px, env(safe-area-inset-left)));
