@@ -207,13 +207,13 @@ body::before {
 }
 .brand-logo-img {
   width: auto;
-  height: 100%;
+  height: auto;
   object-fit: contain;
   flex-shrink: 0;
 }
-.brand-logo-nav .brand-logo-img { height: 36px; }
-.brand-logo-hero .brand-logo-img { height: 56px; }
-.brand-logo-footer .brand-logo-img { height: 32px; }
+.brand-logo-nav .brand-logo-img { height: 36px; width: auto; }
+.brand-logo-hero .brand-logo-img { height: 56px; width: auto; }
+.brand-logo-footer .brand-logo-img { height: 32px; width: auto; }
 .brand-logo-text {
   font-family: var(--font-display);
   font-size: 20px;
@@ -3522,7 +3522,7 @@ body::before {
     max-width: none;
   }
   .nav-logo .brand-logo { min-width: 0; gap: 8px; }
-  .brand-logo-nav .brand-logo-img { height: 28px; width: 28px; }
+  .brand-logo-nav .brand-logo-img { height: 28px; width: auto; }
   .brand-logo-nav .brand-logo-text {
     font-size: 16px;
     overflow: hidden;
