@@ -29,13 +29,8 @@ export const IMAGES = {
     'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80&auto=format&fit=crop',
   ],
-  loyalty: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=900&q=85&auto=format&fit=crop',
-  cta: 'https://images.unsplash.com/photo-1559526324-593bc073d938?w=1400&q=85&auto=format&fit=crop',
-  avatars: [
-    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&q=80&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=120&q=80&auto=format&fit=crop',
-  ],
+  loyalty: '/images/loyalty/card.png',
+  cta: '/images/cta/download.png',
 }
 
 /**

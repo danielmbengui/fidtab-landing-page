@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useEffect } from 'react'
 import BrandLogo from '@/components/BrandLogo'
 import LanguageSelector from '@/components/LanguageSelector'
-import ThemeToggle from '@/components/ThemeToggle'
 import { COMPANY_URL } from '@/context/constants/constants_app'
 
 export default function SiteNav({
@@ -86,7 +85,6 @@ export default function SiteNav({
             </ul>
           ) : null}
           <div className="nav-right">
-            <ThemeToggle />
             <LanguageSelector />
             {!demoPageActive ? (
               <button
@@ -129,9 +127,6 @@ export default function SiteNav({
           >
             {c.nav.cta}
           </Link>
-          <div className="mobile-menu-theme">
-            <ThemeToggle />
-          </div>
         </div>
       ) : null}
     </>

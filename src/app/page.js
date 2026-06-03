@@ -15,13 +15,13 @@ import {
   DOWNLOAD_APP_PATH,
   PLAY_STORE_URL,
   PWA_URL,
-  WEBSITE_NAME,
 } from '@/context/constants/constants_app'
 import { FEATURE_LAYOUT, IMAGES } from '@/config/visuals'
 import { formatShopOpensInLabel, getShopOpeningHoursToday } from '@/lib/openingHoursDisplay'
 import { AnimatedCounter, useParallax, useScrollReveal } from '@/hooks/useAnimations'
 import { useLoyaltyCards } from '@/hooks/useLoyaltyCards'
 import { useStoreShowcase } from '@/hooks/useStoreShowcase'
+import LoyaltyCardsSlider from '@/components/LoyaltyCardsSlider'
 import { AndroidIcon, AppleIcon, PwaIcon } from '@/components/DownloadPlatformIcons'
 
 const NAV_SECTIONS = ['fonctionnalites', 'fidelite', 'comment', 'partenaires', 'app']
@@ -30,7 +30,6 @@ export default function Home() {
   const { content: c, t, locale } = useLanguage()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [activeCard, setActiveCard] = useState(0)
   const [activeSection, setActiveSection] = useState('')
 
   const { cards: loyaltyCards } = useLoyaltyCards(c.cards)
@@ -78,19 +77,6 @@ export default function Home() {
   }, [menuOpen])
 
   useEffect(() => {
-    if (loyaltyCards.length <= 1) return undefined
-    const timer = setInterval(
-      () => setActiveCard((i) => (i + 1) % loyaltyCards.length),
-      3500,
-    )
-    return () => clearInterval(timer)
-  }, [loyaltyCards.length])
-
-  useEffect(() => {
-    setActiveCard((index) => (index >= loyaltyCards.length ? 0 : index))
-  }, [loyaltyCards.length])
-
-  useEffect(() => {
     const cards = document.querySelectorAll('.bento-card')
     const onMove = (e) => {
       const card = e.currentTarget
@@ -103,8 +89,6 @@ export default function Home() {
     cards.forEach((card) => card.addEventListener('mousemove', onMove))
     return () => cards.forEach((card) => card.removeEventListener('mousemove', onMove))
   }, [c])
-
-  const card = loyaltyCards[activeCard] ?? loyaltyCards[0]
 
   return (
     <div className="page-wrap">
@@ -331,105 +315,13 @@ export default function Home() {
             </div>
 
             <div className="big-card-wrap reveal reveal-delay-1">
-              <div className="loyalty-visual-stack">
-                <div className="loyalty-bg-photo">
-                  <Image src={IMAGES.loyalty} alt="" fill sizes="420px" />
-                </div>
-
-                <div className="floating-stat stat-tl">
-                  <span className="fs-num">+68%</span>
-                  <span className="fs-label">{c.loyalty.statReturn}</span>
-                </div>
-
-                <Link
-                  href={DOWNLOAD_APP_PATH}
-                  className={`big-loyalty-card ${card.theme}`}
-                  aria-label={c.loyalty.cta}
-                >
-                  <div className="blc-shine" aria-hidden="true" />
-                  <div className="blc-stripe" aria-hidden="true" />
-                  <div className="blc-header">
-                    <div className="blc-chip" aria-hidden="true">
-                      <span />
-                      <span />
-                      <span />
-                    </div>
-                    <div className={`blc-logo ${card.logoClass}`}>
-                      {card.logoUrl ? (
-                        <Image
-                          src={card.logoUrl}
-                          alt=""
-                          width={28}
-                          height={28}
-                          className="blc-logo-img"
-                          unoptimized
-                        />
-                      ) : (
-                        card.logo
-                      )}
-                    </div>
-                  </div>
-                  <div className="blc-type">{c.loyalty.cardTypeLabel}</div>
-                  <div className="blc-store" style={{ color: card.accentColor }}>{card.store}</div>
-                  <div className="blc-store-sub">
-                    {card.subText || (card.subKey ? c.cardSubs[card.subKey] : '')}
-                  </div>
-                  <div className="blc-body">
-                    <div className="blc-points-block">
-                      <div className="blc-pts-num" style={{ color: card.accentColor }}>{card.points}</div>
-                      <div className="blc-pts-label">{c.loyalty.pointsLabel}</div>
-                    </div>
-                    <div className="blc-reward">
-                      <div className="blc-reward-val" style={{ color: card.accentColor }}>{card.reward}</div>
-                      <div className="blc-reward-label">{t(c.cardRewardLabel, { pts: card.rewardAt })}</div>
-                    </div>
-                  </div>
-                  <div className="blc-progress">
-                    <div className="blc-bar">
-                      <div
-                        className="blc-bar-fill"
-                        style={{
-                          width: card.barWidth,
-                          background: `linear-gradient(90deg, ${card.accentColor}, ${card.accentColor}cc)`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="blc-perforation" aria-hidden="true" />
-                  <div className="blc-footer">
-                    <div className="blc-member">
-                      <span className="blc-field-label">{c.loyalty.cardMemberLabel}</span>
-                      <span className="blc-field-value">{card.memberName}</span>
-                    </div>
-                    <div className="blc-card-no">
-                      <span className="blc-field-label">{c.loyalty.cardNumberLabel}</span>
-                      <span className="blc-field-value">{card.cardNumber}</span>
-                    </div>
-                  </div>
-                  <div className="blc-bottom">
-                    <div className="blc-barcode" aria-hidden="true" />
-                    <div className="blc-brand">{WEBSITE_NAME}</div>
-                  </div>
-                </Link>
-
-                <div className="card-switcher">
-                  {loyaltyCards.map((item, i) => (
-                    <button
-                      key={item.key}
-                      type="button"
-                      className={`cs-dot${item.source === 'firestore' ? ' cs-dot-live' : ''}${i === activeCard ? ' active' : ''}`}
-                      onClick={() => setActiveCard(i)}
-                      aria-label={item.store}
-                      aria-current={i === activeCard ? 'true' : undefined}
-                    />
-                  ))}
-                </div>
-
-                <div className="floating-stat stat-br">
-                  <span className="fs-num">3 200+</span>
-                  <span className="fs-label">{c.loyalty.statActive}</span>
-                </div>
-              </div>
+              <LoyaltyCardsSlider
+                cards={loyaltyCards}
+                loyalty={c.loyalty}
+                cardSubs={c.cardSubs}
+                cardRewardLabel={c.cardRewardLabel}
+                t={t}
+              />
             </div>
           </div>
         </div>
@@ -448,7 +340,7 @@ export default function Home() {
                 <span className="step-num">{step.num}</span>
                 <div className="step-icon-wrap">{step.icon}</div>
                 <div className="step-title">{step.title}</div>
-                <p className="step-desc">{step.desc}</p>
+                <p className="step-desc">{t(step.desc)}</p>
               </div>
             ))}
           </div>
@@ -657,7 +549,7 @@ export default function Home() {
             <div className="enterprise-content">
               <div className="section-label">{c.enterprise.label}</div>
               <h2 className="enterprise-title">
-                {c.enterprise.title} <em>{c.enterprise.titleEm}</em>
+                {c.enterprise.title} <em>{t(c.enterprise.titleEm)}</em>
               </h2>
               <p className="enterprise-sub">{c.enterprise.sub}</p>
             </div>

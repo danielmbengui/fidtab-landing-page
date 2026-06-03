@@ -1358,31 +1358,48 @@ body::before {
   padding: 0;
   min-height: 280px;
 }
-.bento-has-image .bento-body {
-  padding: 32px;
-  z-index: 3;
-}
-.bento-has-image .bento-body::before {
+.bento-has-image::after {
   content: '';
   position: absolute;
-  inset: -32px -32px -32px -32px;
-  background: linear-gradient(
-    to top,
-    rgba(5, 5, 6, 0.92) 0%,
-    rgba(5, 5, 6, 0.72) 45%,
-    rgba(5, 5, 6, 0.15) 100%
-  );
-  z-index: -1;
+  inset: 0;
+  z-index: 1;
   pointer-events: none;
   border-radius: inherit;
+  background: linear-gradient(
+    to top,
+    rgba(5, 5, 6, 0.94) 0%,
+    rgba(5, 5, 6, 0.72) 50%,
+    rgba(5, 5, 6, 0.48) 100%
+  );
 }
-.bento-image--side .bento-body::before {
+.bento-has-image.bento-image--side::after {
   background: linear-gradient(
     105deg,
     rgba(5, 5, 6, 0.94) 0%,
-    rgba(5, 5, 6, 0.82) 50%,
-    rgba(5, 5, 6, 0.2) 100%
+    rgba(5, 5, 6, 0.78) 45%,
+    rgba(5, 5, 6, 0.52) 100%
   );
+}
+.bento-has-image.bento-image--full::after {
+  background: linear-gradient(
+    to top,
+    rgba(5, 5, 6, 0.92) 0%,
+    rgba(5, 5, 6, 0.68) 45%,
+    rgba(5, 5, 6, 0.46) 100%
+  );
+}
+.bento-has-image.bento-card-dashboard::after {
+  background: linear-gradient(
+    to top,
+    rgba(5, 5, 6, 0.96) 0%,
+    rgba(5, 5, 6, 0.74) 50%,
+    rgba(5, 5, 6, 0.44) 100%
+  );
+}
+.bento-has-image .bento-body {
+  padding: 32px;
+  position: relative;
+  z-index: 3;
 }
 .bento-card::before {
   content: '';
@@ -1414,11 +1431,7 @@ body::before {
   height: 100% !important;
 }
 .bento-image::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
+  content: none;
 }
 .bento-image img {
   object-fit: cover;
@@ -1429,9 +1442,6 @@ body::before {
 }
 
 /* Image à droite, texte à gauche */
-.bento-image-side::after {
-  background: linear-gradient(105deg, rgba(5,5,6,0.55) 0%, rgba(5,5,6,0.35) 42%, rgba(5,5,6,0.1) 100%);
-}
 .bento-image--side .bento-body {
   max-width: 52%;
   min-height: 260px;
@@ -1441,8 +1451,14 @@ body::before {
 }
 
 /* Image de fond (carte fidélité, push, mise en ligne) */
-.bento-image-background::after {
-  background: linear-gradient(to top, rgba(5,5,6,0.45) 0%, rgba(5,5,6,0.2) 50%, rgba(5,5,6,0.05) 100%);
+.bento-image--background {
+  min-height: 280px;
+}
+.bento-image--background .bento-body {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 /* Tableau de bord — une seule image (graphiques), sans reflet ni doublon Next/Image */
@@ -1460,26 +1476,11 @@ body::before {
   background-position: center 20%;
   background-repeat: no-repeat;
 }
-.bento-image-dashboard-only::after {
-  background: linear-gradient(to top, rgba(5,5,6,0.97) 0%, rgba(5,5,6,0.7) 50%, rgba(5,5,6,0.25) 100%);
-}
 .bento-image-dashboard-only img {
   display: none !important;
 }
-.bento-image--background {
-  min-height: 280px;
-}
-.bento-image--background .bento-body {
-  min-height: 280px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
 
 /* Image pleine carte (multi-commerces) */
-.bento-image-full::after {
-  background: linear-gradient(to top, rgba(5,5,6,0.5) 0%, rgba(5,5,6,0.25) 45%, rgba(5,5,6,0.08) 100%);
-}
 .bento-image--full {
   min-height: 320px;
 }
@@ -1559,7 +1560,7 @@ body::before {
 .loyalty-section {
   padding: 120px 0;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 .loyalty-section::before {
   content: '';
@@ -1602,7 +1603,28 @@ body::before {
   background: var(--gold);
 }
 .loyalty-desc { font-size: 16px; color: var(--white-60); line-height: 1.75; margin-bottom: 36px; max-width: 460px; }
-.loyalty-points { display: flex; flex-direction: column; gap: 14px; margin-bottom: 36px; }
+.loyalty-points {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 14px;
+  margin-bottom: 36px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 168, 83, 0.45) transparent;
+  padding-bottom: 8px;
+}
+.loyalty-points::-webkit-scrollbar {
+  height: 6px;
+}
+.loyalty-points::-webkit-scrollbar-thumb {
+  background: rgba(212, 168, 83, 0.45);
+  border-radius: 999px;
+}
 .loyalty-point {
   display: flex;
   align-items: flex-start;
@@ -1612,6 +1634,9 @@ body::before {
   background: var(--bg-glass);
   border: 1px solid var(--white-10);
   transition: all var(--transition);
+  flex: 0 0 min(320px, 88%);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 .loyalty-point:hover { border-color: var(--gold-line); background: var(--gold-dim); }
 .lp-check {
@@ -1630,6 +1655,8 @@ body::before {
   display: flex;
   justify-content: center;
   perspective: 900px;
+  overflow: visible;
+  width: 100%;
 }
 .loyalty-visual-stack {
   position: relative;
@@ -1640,6 +1667,47 @@ body::before {
 }
 .loyalty-visual-stack:hover {
   transform: rotateY(-4deg) rotateX(2deg) rotateZ(0deg);
+}
+.loyalty-cards-track {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 168, 83, 0.5) transparent;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 100%;
+  padding: 2px 2px 10px;
+  cursor: grab;
+}
+.loyalty-cards-track:active {
+  cursor: grabbing;
+}
+.loyalty-cards-track::-webkit-scrollbar {
+  height: 6px;
+}
+.loyalty-cards-track::-webkit-scrollbar-thumb {
+  background: rgba(212, 168, 83, 0.5);
+  border-radius: 999px;
+}
+.loyalty-card-slide-wrap {
+  flex: 0 0 100%;
+  width: 100%;
+  max-width: 100%;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+.loyalty-card-slide {
+  width: 100%;
+  touch-action: pan-y;
 }
 .loyalty-bg-photo {
   position: absolute;
@@ -1665,20 +1733,12 @@ body::before {
   border-radius: 16px;
   padding: 22px 24px 18px;
   border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.65) inset,
-    0 18px 40px rgba(0, 0, 0, 0.38),
-    0 4px 12px rgba(0, 0, 0, 0.18);
   transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease;
   overflow: hidden;
   user-select: none;
 }
 .big-loyalty-card:hover {
   transform: translateY(-6px);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.7) inset,
-    0 28px 56px rgba(0, 0, 0, 0.45),
-    0 8px 20px rgba(0, 0, 0, 0.22);
 }
 .big-loyalty-card.card-theme-1 {
   background:
@@ -3425,7 +3485,7 @@ body::before {
 /* ── Responsive ── */
 @media (max-width: 1024px) {
   .hero-grid, .loyalty-grid { grid-template-columns: 1fr; gap: 48px; }
-  .loyalty-visual-stack { transform: none; max-width: 360px; margin: 0 auto; }
+  .loyalty-visual-stack { transform: none; max-width: 420px; width: 100%; margin: 0 auto; }
   .hero-visual { min-height: 440px; order: -1; }
   .hero-flank-phone { display: none; }
   .hero-flank-photo { display: none; }
@@ -3614,10 +3674,28 @@ body::before {
   .bento-image--background .bento-body,
   .bento-image--full .bento-body-full { max-width: 100%; min-height: 220px; }
   .bento-card:not(.bento-has-image) { padding: 22px 18px; }
+  .bento-has-image { min-height: 240px; }
   .bento-has-image .bento-body { padding: 24px 20px; }
 
   .loyalty-grid { gap: 36px; }
   .loyalty-desc { max-width: none; font-size: 15px; }
+  .loyalty-points {
+    margin-inline: calc(-1 * max(16px, env(safe-area-inset-left)));
+    padding-inline: max(16px, env(safe-area-inset-left));
+    scroll-padding-inline: max(16px, env(safe-area-inset-left));
+  }
+  .big-card-wrap {
+    width: calc(100% + 2 * max(16px, env(safe-area-inset-left)));
+    margin-inline: calc(-1 * max(16px, env(safe-area-inset-left)));
+  }
+  .loyalty-visual-stack {
+    max-width: none;
+    width: 100%;
+  }
+  .loyalty-cards-track {
+    scroll-padding-inline: max(16px, env(safe-area-inset-left));
+    padding-inline: max(16px, env(safe-area-inset-left));
+  }
   .loyalty-content .btn-primary {
     width: 100%;
     justify-content: center;

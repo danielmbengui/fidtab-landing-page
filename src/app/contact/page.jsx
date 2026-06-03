@@ -16,7 +16,7 @@ export default function ContactPage() {
   const { content: c, t } = useLanguage()
   const page = c.contactPage
 
-  const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(page.emailSubject)}`
+  const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(t(page.emailSubject))}`
   const whatsapp = whatsappHref(CONTACT_WHATSAPP)
 
   return (

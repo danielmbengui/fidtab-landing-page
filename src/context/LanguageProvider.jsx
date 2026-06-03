@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useSyncExternalStore } from 'react'
-import { WEBSITE_NAME } from '@/context/constants/constants_app'
+import { COMPANY_NAME, WEBSITE_NAME } from '@/context/constants/constants_app'
 import { interpolate, LOCALES, messages } from '@/i18n/messages'
 import { getLocaleLabel, getSortedLocales, isRtlLocale, LOCALE_FLAGS, LOCALE_NAMES } from '@/i18n/locales'
 
@@ -37,7 +37,7 @@ export function LanguageProvider({ children }) {
   const content = useMemo(() => messages[locale] ?? messages.fr, [locale])
 
   const t = useCallback(
-    (text, vars = {}) => interpolate(text, { name: WEBSITE_NAME, ...vars }),
+    (text, vars = {}) => interpolate(text, { name: WEBSITE_NAME, company: COMPANY_NAME, ...vars }),
     []
   )
 

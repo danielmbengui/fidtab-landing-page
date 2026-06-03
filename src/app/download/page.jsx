@@ -102,7 +102,7 @@ export default function DownloadPage() {
             <div className="download-enterprise">
               <p className="download-enterprise-text">{c.enterprise.label}</p>
               <h2 className="download-enterprise-title">
-                {c.enterprise.title} <em>{c.enterprise.titleEm}</em>
+                {c.enterprise.title} <em>{t(c.enterprise.titleEm)}</em>
               </h2>
               <p className="download-enterprise-sub">{c.enterprise.sub}</p>
               <a

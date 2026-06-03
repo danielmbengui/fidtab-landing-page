@@ -154,7 +154,7 @@ export const messages = {
       eyebrow: 'L\'app gratuite pour vos tabacs partenaires',
       titleLines: ['Vos points,', 'vos produits,', 'dans votre poche.'],
       titleGoldIndex: 1,
-      sub: 'Commandez, cumulez des points et vérifiez la disponibilité des produits avant de vous déplacer — avec des alertes quand ils reviennent en stock. 100 % gratuit.',
+      sub: 'Cumulez des points à chaque passage en caisse, partagez-les entre clients du même tabac et débloquez bons, cadeaux et avantages. Toutes vos cartes dans une seule app, avec des rappels quand une récompense ou une promo vous attend — 100 % gratuit.',
       ctaPrimary: 'Télécharger l\'app',
       ctaSecondary: 'Voir comment ça marche',
       stats: [
@@ -266,7 +266,7 @@ export const messages = {
       title: 'Prêt en',
       titleEm: '3 étapes simples',
       steps: [
-        { num: '01', icon: '📲', title: 'Téléchargez l\'app', desc: 'Installez {name} gratuitement sur iPhone ou Android.' },
+        { num: '01', icon: '📲', title: 'Téléchargez l\'app', desc: 'Installez {company} gratuitement sur iPhone ou Android.' },
         { num: '02', icon: '🏪', title: 'Rejoignez un partenaire', desc: 'Créez la carte du magasin directement dans l\'app : elle s\'active automatiquement. Il ne vous reste plus qu\'à vous rendre sur place pour l\'utiliser.' },
         { num: '03', icon: '🎁', title: 'Collectez et profitez', desc: 'Cumulez des points à chaque passage en magasin, utilisez-les sur place et débloquez des récompenses à chaque palier.' },
       ],
@@ -326,7 +326,7 @@ export const messages = {
     enterprise: {
       label: 'Espace professionnel',
       title: 'Vous tenez un tabac ?',
-      titleEm: 'Rejoignez FidTab.',
+      titleEm: 'Rejoignez {company}.',
       sub: 'Inscrivez votre tabac sur notre plateforme professionnelle : boutique en ligne, fidélité digitale et tableau de bord.',
       cta: 'Accéder à l\'espace entreprise',
       note: 'Solution dédiée aux tabacs indépendants · company.fidtab.ch',
@@ -345,7 +345,7 @@ export const messages = {
     downloadApp: {
       metaTitle: 'Télécharger l\'app',
       title: 'Installez',
-      titleEm: '{name}',
+      titleEm: '{company}',
       sub: 'Téléchargez l\'app gratuitement sur votre téléphone et commencez à cumuler des points chez vos tabacs partenaires.',
       appStore: 'App Store',
       playStore: 'Google Play',
@@ -359,7 +359,7 @@ export const messages = {
     requestDemo: {
       metaTitle: 'Télécharger l\'app',
       title: 'Installez',
-      titleEm: '{name}',
+      titleEm: '{company}',
       sub: 'Téléchargez l\'app gratuitement sur votre téléphone et commencez à cumuler des points chez vos tabacs partenaires.',
       methodLabel: 'Comment souhaitez-vous être rappelé ?',
       methods: {
@@ -393,7 +393,7 @@ export const messages = {
         {
           title: 'Éditeur du site',
           paragraphs: [
-            'Le site {name} est édité par FidTab, application de fidélité pour les tabacs partenaires.',
+            'Le site {name} est édité par {company}, application de fidélité pour les tabacs partenaires.',
             'Contact : contact@fidtab.com',
           ],
         },
@@ -414,7 +414,7 @@ export const messages = {
         {
           title: 'Responsabilité',
           paragraphs: [
-            'FidTab s\'efforce de fournir des informations exactes et à jour. Toutefois, nous ne pouvons garantir l\'absence d\'erreurs ou d\'omissions.',
+            '{company} s\'efforce de fournir des informations exactes et à jour. Toutefois, nous ne pouvons garantir l\'absence d\'erreurs ou d\'omissions.',
             'L\'utilisateur reste seul responsable de l\'usage qu\'il fait des informations disponibles sur le site.',
             'Concernant la carte de fidélité digitale, les points gagnés et les récompenses dépendent de chaque commerce partenaire. Le commerçant partenaire est seul responsable de l\'attribution des points et du contrôle de l\'âge requis le cas échéant. Voir les conditions générales d\'utilisation pour le détail.',
           ],
@@ -468,7 +468,7 @@ export const messages = {
         {
           title: 'Droit applicable',
           paragraphs: [
-            'Les présentes conditions sont soumises au droit applicable au siège de FidTab.',
+            'Les présentes conditions sont soumises au droit applicable au siège de {company}.',
             'En cas de litige, les parties s\'efforceront de trouver une solution amiable avant toute action judiciaire.',
           ],
         },
@@ -484,7 +484,7 @@ export const messages = {
         {
           title: 'Responsable du traitement',
           paragraphs: [
-            'FidTab est responsable du traitement des données collectées via l\'application {name} et le site associé.',
+            '{company} est responsable du traitement des données collectées via l\'application {name} et le site associé.',
             'Pour toute question : contact@fidtab.com',
           ],
         },
@@ -539,7 +539,7 @@ export const messages = {
       titleEm: 'contacter',
       sub: 'Une question sur l\'app {name} ? Écrivez-nous ou contactez-nous sur WhatsApp — nous répondons rapidement.',
       back: '← Retour à l\'accueil',
-      emailSubject: 'Contact FidTab',
+      emailSubject: 'Contact {company}',
       methods: {
         email: {
           label: 'Par e-mail',
@@ -562,7 +562,7 @@ export const messages = {
       terms: 'CGU',
       privacy: 'Confidentialité',
       contact: 'Contact',
-      copyright: '© {year} {name}. Tous droits réservés.',
+      copyright: '© {year} {company}. Tous droits réservés.',
     },
   }),
 
@@ -590,7 +590,7 @@ export const messages = {
       eyebrow: 'The free app for your partner tobacco shops',
       titleLines: ['Your points,', 'your products,', 'in your pocket.'],
       titleGoldIndex: 1,
-      sub: 'Order, earn points and check product availability before heading out — with alerts when items are back in stock. 100% free.',
+      sub: 'Earn points automatically at every checkout, share them with other customers at the same shop and unlock vouchers, gifts and perks. All your cards in one app, with reminders when a reward or promo is near — 100% free.',
       ctaPrimary: 'Download the app',
       ctaSecondary: 'See how it works',
       stats: [
@@ -702,7 +702,7 @@ export const messages = {
       title: 'Ready in',
       titleEm: '3 simple steps',
       steps: [
-        { num: '01', icon: '📲', title: 'Download the app', desc: 'Install {name} for free on iPhone or Android.' },
+        { num: '01', icon: '📲', title: 'Download the app', desc: 'Install {company} for free on iPhone or Android.' },
         { num: '02', icon: '🏪', title: 'Join a partner shop', desc: 'Create the shop\'s card directly in the app — it activates automatically. Then head to the store to start using it.' },
         { num: '03', icon: '🎁', title: 'Collect and enjoy', desc: 'Earn points every time you visit the shop, use them in store and unlock rewards at each milestone.' },
       ],
@@ -762,7 +762,7 @@ export const messages = {
     enterprise: {
       label: 'Business portal',
       title: 'Run a tobacco shop?',
-      titleEm: 'Join FidTab.',
+      titleEm: 'Join {company}.',
       sub: 'Register your shop on our professional platform: online store, digital loyalty and dashboard.',
       cta: 'Go to business portal',
       note: 'Built for independent tobacco shops · company.fidtab.ch',
@@ -781,7 +781,7 @@ export const messages = {
     downloadApp: {
       metaTitle: 'Download the app',
       title: 'Install',
-      titleEm: '{name}',
+      titleEm: '{company}',
       sub: 'Download the app for free on your phone and start earning points at partner tobacco shops.',
       appStore: 'App Store',
       playStore: 'Google Play',
@@ -795,7 +795,7 @@ export const messages = {
     requestDemo: {
       metaTitle: 'Download the app',
       title: 'Install',
-      titleEm: '{name}',
+      titleEm: '{company}',
       sub: 'Download the app for free on your phone and start earning points at partner tobacco shops.',
       methodLabel: 'How would you like to be contacted?',
       methods: {
@@ -829,7 +829,7 @@ export const messages = {
         {
           title: 'Site publisher',
           paragraphs: [
-            'The {name} website is published by FidTab, a loyalty and ordering app for local shops.',
+            'The {name} website is published by {company}, a loyalty and ordering app for local shops.',
             'Contact: contact@fidtab.com',
           ],
         },
@@ -850,7 +850,7 @@ export const messages = {
         {
           title: 'Liability',
           paragraphs: [
-            'FidTab strives to provide accurate, up-to-date information but cannot guarantee the absence of errors or omissions.',
+            '{company} strives to provide accurate, up-to-date information but cannot guarantee the absence of errors or omissions.',
             'Users remain solely responsible for how they use information available on the site.',
             'Regarding the digital loyalty card, points earned and rewards depend on each partner shop. The partner merchant is solely responsible for awarding points and verifying the required minimum age where applicable. See our terms of use for details.',
           ],
@@ -904,7 +904,7 @@ export const messages = {
         {
           title: 'Applicable law',
           paragraphs: [
-            'These terms are governed by the law applicable at FidTab\'s registered office.',
+            'These terms are governed by the law applicable at {company}\'s registered office.',
             'In case of dispute, parties will seek an amicable solution before any legal action.',
           ],
         },
@@ -920,7 +920,7 @@ export const messages = {
         {
           title: 'Data controller',
           paragraphs: [
-            'FidTab is responsible for processing data collected via the {name} app and associated website.',
+            '{company} is responsible for processing data collected via the {name} app and associated website.',
             'Questions: contact@fidtab.com',
           ],
         },
@@ -975,7 +975,7 @@ export const messages = {
       titleEm: 'touch',
       sub: 'Have a question about the {name} app? Email us or reach us on WhatsApp — we reply quickly.',
       back: '← Back to home',
-      emailSubject: 'FidTab contact',
+      emailSubject: '{company} contact',
       methods: {
         email: {
           label: 'By email',
@@ -998,7 +998,7 @@ export const messages = {
       terms: 'Terms',
       privacy: 'Privacy',
       contact: 'Contact',
-      copyright: '© {year} {name}. All rights reserved.',
+      copyright: '© {year} {company}. All rights reserved.',
     },
   }),
   de: withShared('de', {
@@ -1025,7 +1025,7 @@ export const messages = {
       eyebrow: 'Die kostenlose App für Ihre Partner-Tabakläden',
       titleLines: ['Ihre Punkte,', 'Ihre Produkte,', 'in Ihrer Tasche.'],
       titleGoldIndex: 1,
-      sub: 'Bestellen, Punkte sammeln und die Verfügbarkeit prüfen, bevor Sie losfahren — mit Benachrichtigungen, sobald Produkte wieder da sind. 100 % kostenlos.',
+      sub: 'Sammeln Sie bei jedem Kassenbesuch automatisch Punkte, teilen Sie sie mit anderen Kunden desselben Tabakladens und schalten Sie Gutscheine, Gratisprodukte und Vorteile frei. Alle Karten in einer App — mit Erinnerungen, wenn eine Prämie oder Aktion naht — 100 % kostenlos.',
       ctaPrimary: 'App herunterladen',
       ctaSecondary: 'So funktioniert\'s',
       stats: [
@@ -1137,7 +1137,7 @@ export const messages = {
       title: 'Bereit in',
       titleEm: '3 einfachen Schritten',
       steps: [
-        { num: '01', icon: '📲', title: 'App herunterladen', desc: 'Installieren Sie {name} kostenlos auf iPhone oder Android.' },
+        { num: '01', icon: '📲', title: 'App herunterladen', desc: 'Installieren Sie {company} kostenlos auf iPhone oder Android.' },
         { num: '02', icon: '🏪', title: 'Partner beitreten', desc: 'Erstellen Sie die Ladkarte direkt in der App — sie wird automatisch aktiviert. Gehen Sie anschliessend vor Ort hin, um sie zu nutzen.' },
         { num: '03', icon: '🎁', title: 'Sammeln und profitieren', desc: 'Sammeln Sie bei jedem Besuch im Laden Punkte, nutzen Sie sie vor Ort und schalten Sie bei jedem Meilenstein Prämien frei.' },
       ],
@@ -1197,7 +1197,7 @@ export const messages = {
     enterprise: {
       label: 'Unternehmensbereich',
       title: 'Sie führen einen Tabakladen?',
-      titleEm: 'Werden Sie FidTab-Partner.',
+      titleEm: 'Werden Sie {company}-Partner.',
       sub: 'Registrieren Sie Ihren Tabakladen auf unserer professionellen Plattform: Online-Shop, digitale Treue und Dashboard.',
       cta: 'Zum Unternehmensbereich',
       note: 'Für unabhängige Tabakläden · company.fidtab.ch',
@@ -1216,7 +1216,7 @@ export const messages = {
     downloadApp: {
       metaTitle: 'App herunterladen',
       title: 'Installieren Sie',
-      titleEm: '{name}',
+      titleEm: '{company}',
       sub: 'Laden Sie die App kostenlos auf Ihr Handy und beginnen Sie, Punkte bei Partner-Tabakläden zu sammeln.',
       appStore: 'App Store',
       playStore: 'Google Play',
@@ -1230,7 +1230,7 @@ export const messages = {
     requestDemo: {
       metaTitle: 'App herunterladen',
       title: 'Installieren Sie',
-      titleEm: '{name}',
+      titleEm: '{company}',
       sub: 'Laden Sie die App kostenlos auf Ihr Handy und beginnen Sie, Punkte bei Partner-Tabakläden zu sammeln.',
       methodLabel: 'Wie möchten Sie kontaktiert werden?',
       methods: {
@@ -1264,7 +1264,7 @@ export const messages = {
         {
           title: 'Herausgeber',
           paragraphs: [
-            'Die Website {name} wird von FidTab betrieben, einer Treue- und Bestell-App für lokale Geschäfte.',
+            'Die Website {name} wird von {company} betrieben, einer Treue- und Bestell-App für lokale Geschäfte.',
             'Kontakt: contact@fidtab.com',
           ],
         },
@@ -1285,7 +1285,7 @@ export const messages = {
         {
           title: 'Haftung',
           paragraphs: [
-            'FidTab bemüht sich, genaue und aktuelle Informationen bereitzustellen, kann jedoch Fehler oder Auslassungen nicht ausschließen.',
+            '{company} bemüht sich, genaue und aktuelle Informationen bereitzustellen, kann jedoch Fehler oder Auslassungen nicht ausschließen.',
             'Der Nutzer ist allein verantwortlich für die Nutzung der auf der Website verfügbaren Informationen.',
             'Bei der digitalen Treuekarte hängen gesammelte Punkte und Prämien vom jeweiligen Partnergeschäft ab. Der Partnerhändler ist allein verantwortlich für die Punktevergabe und die Alterskontrolle, wo erforderlich. Details finden Sie in unseren Nutzungsbedingungen.',
           ],
@@ -1339,7 +1339,7 @@ export const messages = {
         {
           title: 'Anwendbares Recht',
           paragraphs: [
-            'Diese Bedingungen unterliegen dem am Sitz von FidTab geltenden Recht.',
+            'Diese Bedingungen unterliegen dem am Sitz von {company} geltenden Recht.',
             'Im Streitfall bemühen sich die Parteien um eine gütliche Einigung, bevor sie rechtliche Schritte einleiten.',
           ],
         },
@@ -1355,7 +1355,7 @@ export const messages = {
         {
           title: 'Verantwortlicher',
           paragraphs: [
-            'FidTab ist für die Verarbeitung der über die App {name} und die zugehörige Website erhobenen Daten verantwortlich.',
+            '{company} ist für die Verarbeitung der über die App {name} und die zugehörige Website erhobenen Daten verantwortlich.',
             'Fragen: contact@fidtab.com',
           ],
         },
@@ -1410,7 +1410,7 @@ export const messages = {
       titleEm: 'aufnehmen',
       sub: 'Fragen zur App {name}? Schreiben Sie uns oder kontaktieren Sie uns per WhatsApp — wir antworten schnell.',
       back: '← Zurück zur Startseite',
-      emailSubject: 'FidTab Kontakt',
+      emailSubject: '{company} Kontakt',
       methods: {
         email: {
           label: 'Per E-Mail',
@@ -1433,7 +1433,7 @@ export const messages = {
       terms: 'AGB',
       privacy: 'Datenschutz',
       contact: 'Kontakt',
-      copyright: '© {year} {name}. Alle Rechte vorbehalten.',
+      copyright: '© {year} {company}. Alle Rechte vorbehalten.',
     },
   }),
 
@@ -1462,7 +1462,7 @@ export const messages = {
       eyebrow: 'L\'app gratuita per le tue tabaccherie partner',
       titleLines: ['I tuoi punti,', 'i tuoi prodotti,', 'in tasca.'],
       titleGoldIndex: 1,
-      sub: 'Ordina, accumula punti e controlla la disponibilità dei prodotti prima di uscire — con avvisi quando tornano in stock. 100% gratuita.',
+      sub: 'Accumula punti automaticamente a ogni passaggio in cassa, condividili con altri clienti dello stesso tabaccheria e sblocca buoni, omaggi e vantaggi. Tutte le tue carte in un\'unica app, con promemoria quando una ricompensa o un\'offerta è vicina — 100% gratuita.',
       ctaPrimary: 'Scarica l\'app',
       ctaSecondary: 'Scopri come funziona',
       stats: [
@@ -1574,7 +1574,7 @@ export const messages = {
       title: 'Pronto in',
       titleEm: '3 semplici passi',
       steps: [
-        { num: '01', icon: '📲', title: 'Scarica l\'app', desc: 'Installa {name} gratuitamente su iPhone o Android.' },
+        { num: '01', icon: '📲', title: 'Scarica l\'app', desc: 'Installa {company} gratuitamente su iPhone o Android.' },
         { num: '02', icon: '🏪', title: 'Unisciti a un partner', desc: 'Crea la carta del negozio direttamente nell\'app: si attiva automaticamente. Poi recati in negozio per utilizzarla.' },
         { num: '03', icon: '🎁', title: 'Accumula e riscatta', desc: 'Accumula punti ad ogni visita in negozio, usali sul posto e sblocca premi a ogni traguardo.' },
       ],
@@ -1634,7 +1634,7 @@ export const messages = {
     enterprise: {
       label: 'Area professionale',
       title: 'Gestisci una tabaccheria?',
-      titleEm: 'Unisciti a FidTab.',
+      titleEm: 'Unisciti a {company}.',
       sub: 'Registra la tua tabaccheria sulla nostra piattaforma professionale: negozio online, fedeltà digitale e dashboard.',
       cta: 'Accedi all\'area aziendale',
       note: 'Pensata per tabaccherie indipendenti · company.fidtab.ch',
@@ -1653,7 +1653,7 @@ export const messages = {
     downloadApp: {
       metaTitle: 'Scarica l\'app',
       title: 'Installa',
-      titleEm: '{name}',
+      titleEm: '{company}',
       sub: 'Scarica l\'app gratuitamente sul telefono e inizia ad accumulare punti presso le tabaccherie partner.',
       appStore: 'App Store',
       playStore: 'Google Play',
@@ -1667,7 +1667,7 @@ export const messages = {
     requestDemo: {
       metaTitle: 'Scarica l\'app',
       title: 'Installa',
-      titleEm: '{name}',
+      titleEm: '{company}',
       sub: 'Scarica l\'app gratuitamente sul telefono e inizia ad accumulare punti presso le tabaccherie partner.',
       methodLabel: 'Come preferisci essere ricontattato?',
       methods: {
@@ -1701,7 +1701,7 @@ export const messages = {
         {
           title: 'Editore del sito',
           paragraphs: [
-            'Il sito {name} è edito da FidTab, app di fedeltà e ordini per negozi locali.',
+            'Il sito {name} è edito da {company}, app di fedeltà e ordini per negozi locali.',
             'Contatto: contact@fidtab.com',
           ],
         },
@@ -1722,7 +1722,7 @@ export const messages = {
         {
           title: 'Responsabilità',
           paragraphs: [
-            'FidTab si impegna a fornire informazioni accurate e aggiornate, senza tuttavia garantire l\'assenza di errori o omissioni.',
+            '{company} si impegna a fornire informazioni accurate e aggiornate, senza tuttavia garantire l\'assenza di errori o omissioni.',
             'L\'utente è l\'unico responsabile dell\'uso delle informazioni disponibili sul sito.',
             'Per quanto riguarda la carta fedeltà digitale, i punti guadagnati e i premi dipendono da ciascun negozio partner. Il commerciante partner è l\'unico responsabile dell\'attribuzione dei punti e del controllo dell\'età minima, ove richiesto. Vedi le nostre condizioni generali d\'uso per i dettagli.',
           ],
@@ -1776,7 +1776,7 @@ export const messages = {
         {
           title: 'Diritto applicabile',
           paragraphs: [
-            'Le presenti condizioni sono soggette al diritto applicabile presso la sede di FidTab.',
+            'Le presenti condizioni sono soggette al diritto applicabile presso la sede di {company}.',
             'In caso di controversia, le parti cercheranno una soluzione amichevole prima di qualsiasi azione legale.',
           ],
         },
@@ -1792,7 +1792,7 @@ export const messages = {
         {
           title: 'Titolare del trattamento',
           paragraphs: [
-            'FidTab è responsabile del trattamento dei dati raccolti tramite l\'app {name} e il sito associato.',
+            '{company} è responsabile del trattamento dei dati raccolti tramite l\'app {name} e il sito associato.',
             'Domande: contact@fidtab.com',
           ],
         },
@@ -1847,7 +1847,7 @@ export const messages = {
       titleEm: 'subito',
       sub: 'Hai una domanda sull\'app {name}? Scrivici o contattaci su WhatsApp — rispondiamo rapidamente.',
       back: '← Torna alla home',
-      emailSubject: 'Contatto FidTab',
+      emailSubject: 'Contatto {company}',
       methods: {
         email: {
           label: 'Via e-mail',
@@ -1870,7 +1870,7 @@ export const messages = {
       terms: 'Condizioni',
       privacy: 'Privacy',
       contact: 'Contatto',
-      copyright: '© {year} {name}. Tutti i diritti riservati.',
+      copyright: '© {year} {company}. Tutti i diritti riservati.',
     },
   }),
 

@@ -1,4 +1,7 @@
+export const COMPANY_NAME = 'FidTab'
 export const WEBSITE_NAME = 'FidTab'
+/** @deprecated Utiliser COMPANY_NAME */
+export const COMPNY_NAME = COMPANY_NAME
 export const COMPANY_URL = 'https://www.company.fidtab.ch/'
 export const DOWNLOAD_APP_PATH = '/download'
 /** @deprecated Utiliser DOWNLOAD_APP_PATH */
