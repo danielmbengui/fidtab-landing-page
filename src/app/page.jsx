@@ -90,6 +90,8 @@ export default function Home() {
     return () => cards.forEach((card) => card.removeEventListener('mousemove', onMove))
   }, [c])
 
+  console.log("storew", storeCards)
+
   return (
     <div className="page-wrap">
       <div className="page-ambient" aria-hidden="true">
@@ -390,11 +392,13 @@ export default function Home() {
               >
                 <div className={`store-card-top${store.cls ? ` ${store.cls}` : ''}`}>
                   <Image
-                    src={store.coverImage ?? IMAGES.stores[i] ?? IMAGES.stores[0]}
+                    src={store.cover_image || null}
                     alt={store.name}
                     fill
                     sizes="(max-width:768px) 100vw, 400px"
                     className="store-card-cover"
+                    loading="eager"
+                    //style={{ width: 'auto', height: 'auto' }}
                   />
                   {store.logoUrl ? (
                     <div className="sc-logo-overlay">

@@ -6,6 +6,7 @@ import { ClassShop } from '@/classes/ClassShop'
 import { buildStoreShowcaseFromShops, fetchStatsForShops } from '@/lib/storeShowcase'
 import { usePartnerCompanies } from '@/hooks/usePartnerCompanies'
 import { firestore } from '@/lib/firebaseConfig'
+import { useLanguage } from '@/context/LanguageProvider'
 
 function shopFromSnapshot(docSnap) {
   try {
@@ -22,7 +23,7 @@ function shopFromSnapshot(docSnap) {
     const pathCompanyUid = docSnap.ref.parent.parent?.id ?? ''
 
     return {
-      ...record,
+      ...instance,
       uid: record.uid || docSnap.id,
       uid_company: String(record.uid_company || pathCompanyUid || '').trim(),
     }
@@ -37,7 +38,8 @@ export function useStoreShowcase(max = null) {
   const [shops, setShops] = useState([])
   const [statsByShopKey, setStatsByShopKey] = useState({})
   const [shopsLoading, setShopsLoading] = useState(true)
-  const [shopsError, setShopsError] = useState(null)
+  const [shopsError, setShopsError] = useState(null);
+  const {locale} = useLanguage();
 
   useEffect(() => {
     let active = true
@@ -45,12 +47,12 @@ export function useStoreShowcase(max = null) {
     setShopsError(null)
 
     const unsubscribe = onSnapshot(
-      query(collectionGroup(firestore, ClassShop.COLLECTION)),
+      query(collectionGroup(firestore, ClassShop.COLLECTION)).withConverter(ClassShop.converter),
       (snapshot) => {
         if (!active) return
 
         const list = snapshot.docs
-          .map((docSnap) => shopFromSnapshot(docSnap))
+          .map((docSnap) => docSnap.data())
           .filter(
             (shop) =>
               shop &&
@@ -99,9 +101,9 @@ export function useStoreShowcase(max = null) {
 
   const stores = useMemo(() => {
     const companyMap = new Map(companies.map((company) => [company.uid, company]))
-    const cards = buildStoreShowcaseFromShops(shops, companyMap, statsByShopKey)
+    const cards = buildStoreShowcaseFromShops(shops, companyMap, statsByShopKey, locale)
     return max ? cards.slice(0, max) : cards
-  }, [shops, companies, statsByShopKey, max])
+  }, [shops, companies, statsByShopKey, max, locale])
 
   return {
     stores,

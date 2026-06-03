@@ -3,6 +3,8 @@ import { ClassCompany } from '@/classes/ClassCompany'
 import { ClassShop } from '@/classes/ClassShop'
 import { ClassStock } from '@/classes/ClassStock'
 import { ClassUser } from '@/classes/ClassUser'
+import { defaultLocale } from '@/i18n/locales'
+import { ClassCountry } from '@/classes/ClassCountry'
 
 const STORE_CLS = ['sc-vaakai', 'sc-amber', 'sc-blue']
 
@@ -92,9 +94,11 @@ export function normalizeCompanyRecord(company) {
   return null
 }
 
-export function formatShopAddress(shop) {
+export function formatShopAddress(shop, locale = defaultLocale) {
   try {
-    return ClassShop._createFullAddress(shop, '')
+    const countryName = ClassCountry.getCountryByCode(shop.address.country_code, locale)?.name ?? '';
+    console.log("countryName", shop.address)
+    return ClassShop._createFullAddress(shop, countryName)
   } catch (error) {
     console.error('formatShopAddress', error)
     return ''
@@ -229,8 +233,11 @@ export async function fetchStatsForShops(shops = []) {
   return statsByShopKey
 }
 
-export function shopToStoreCard(shop, company, index = 0, stats = {}) {
+export function shopToStoreCard(shop, company, index = 0, stats = {}, locale = defaultLocale) {
   const record = normalizeShopRecord(shop)
+  console.log("compamny", company)
+  console.log("shop", shop)
+  console.log("locale", locale)
   if (!record) return null
 
   const uidCompany = String(record.uid_company ?? company?.uid ?? '').trim()
@@ -250,11 +257,11 @@ export function shopToStoreCard(shop, company, index = 0, stats = {}) {
     companyName: String(companyRecord?.name ?? '').trim(),
     name,
     tag: String(record.tag ?? companyRecord?.tag ?? '').trim(),
-    addr: formatShopAddress(record),
-    openingHours: record.opening_hours ?? null,
+    addr: formatShopAddress(shop, locale),
+    openingHours: shop.opening_hours ?? null,
     url: website,
     online: Boolean(website),
-    coverImage: getShopCoverImage(shopKey),
+    cover_image: shop.cover_image,
     showStats: true,
     clients: formatStoreStat(stats.clients ?? 0),
     loyaltyPoints: formatStoreStat(stats.loyaltyPoints ?? 0),
@@ -266,13 +273,14 @@ export function buildStoreShowcaseFromShops(
   shops = [],
   companyMap = new Map(),
   statsByShopKey = {},
+  locale = defaultLocale,
 ) {
   return shops
     .map((shop, index) => {
       const uidCompany = String(shop.uid_company ?? '').trim()
       const company = companyMap.get(uidCompany)
       const key = `${uidCompany}:${shop.uid}`
-      return shopToStoreCard(shop, company, index, statsByShopKey[key] ?? {})
+      return shopToStoreCard(shop, company, index, statsByShopKey[key] ?? {}, locale)
     })
     .filter(Boolean)
     .sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }))

@@ -153,10 +153,11 @@ export class ClassShop extends ClassFirestore {
     contact = ClassShop.createDefaultContact(),
     opening_hours = ClassShop.createDefaultOpeningHours(),
     enabled = false,
+    cover_image = "",
     created_time = new Date(),
     last_edit_time = new Date(),
   } = {}) {
-    const storagePath = `${ClassCompany.STORAGE_FOLDER}/${uid}/logo.jpg`;
+    const storagePath = `${ClassCompany.STORAGE_FOLDER}/${uid_company}/${ClassShop.STORAGE_FOLDER}/${uid}`;
     super(uid, created_time, last_edit_time, storagePath);
     this._uid_company = String(uid_company ?? "").trim();
     this._name = String(name ?? "").trim();
@@ -165,6 +166,7 @@ export class ClassShop extends ClassFirestore {
     this._contact = hydrateContact(contact);
     this._opening_hours = hydrateOpeningHours(opening_hours);
     this._enabled = Boolean(enabled);
+    this._cover_image = cover_image;
   }
 
   get uid_company() {
@@ -222,6 +224,13 @@ export class ClassShop extends ClassFirestore {
     this._enabled = Boolean(value);
     this._touchLastEdit();
   }
+  get cover_image() {
+    return this._cover_image;
+  }
+  set cover_image(value) {
+    this._cover_image = String(value ?? "").trim();
+    this._touchLastEdit();
+  }
 
   _createFullAddress(countryName = "") {
     return this.address._createFullAddress(countryName);
@@ -242,18 +251,11 @@ export class ClassShop extends ClassFirestore {
         ? data
         : ClassShop.makeInstance(data?.uid ?? "", data ?? {});
 
-    const cleaned = {
-      uid: source.uid,
-      uid_company: source.uid_company,
-      name: source.name,
-      tag: source.tag,
-      address: ClassAddress.toFirestore(source.address),
-      contact: ClassContact.toFirestore(source.contact),
-      opening_hours: ClassOpeningHours.toFirestore(source.opening_hours),
-      enabled: source.enabled,
-      created_time: source.created_time,
-      last_edit_time: source.last_edit_time,
-    };
+    const cleaned = Object.fromEntries(
+      Object.entries(source)
+        .filter(([k, v]) => k.startsWith("_") && v !== undefined)
+        .map(([k, v]) => [k.replace(/^_/, ""), v]),
+    );
 
     for (const field of ClassShop.FIELDS_TO_OMIT_FIREBASE) {
       delete cleaned[field];
